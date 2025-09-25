@@ -34,8 +34,8 @@ logs/
 coverage/
 lcov.info
 
-# Dependencies
-lib/
+# Dependencies (Foundry)
+/lib/
 
 # Temporary files
 *.tmp
