@@ -1,50 +1,94 @@
 @import "tailwindcss";
 
-@theme {
-  /* Colors */
-  --color-background: oklch(0.09 0.02 264);
-  --color-foreground: oklch(0.91 0.05 264);
-  --color-card: oklch(0.09 0.02 264);
-  --color-card-foreground: oklch(0.91 0.05 264);
-  --color-popover: oklch(0.09 0.02 264);
-  --color-popover-foreground: oklch(0.91 0.05 264);
-  --color-primary: oklch(0.60 0.20 264);
-  --color-primary-foreground: oklch(0.05 0.02 264);
-  --color-secondary: oklch(0.05 0.02 264);
-  --color-secondary-foreground: oklch(0.91 0.05 264);
-  --color-muted: oklch(0.11 0.02 264);
-  --color-muted-foreground: oklch(0.57 0.02 264);
-  --color-accent: oklch(0.17 0.02 264);
-  --color-accent-foreground: oklch(0.98 0.00 0);
-  --color-destructive: oklch(0.49 0.20 0);
-  --color-destructive-foreground: oklch(0.98 0.00 0);
-  --color-border: oklch(0.17 0.02 264);
-  --color-input: oklch(0.17 0.02 264);
-  --color-ring: oklch(0.60 0.20 264);
-  --color-chart-1: oklch(0.60 0.20 264);
-  --color-chart-2: oklch(0.36 0.15 142);
-  --color-chart-3: oklch(0.49 0.20 346);
-  --color-chart-4: oklch(0.66 0.15 43);
-  --color-chart-5: oklch(0.67 0.20 340);
+/* Premium startup dark theme */
+body {
+  background: #000000;
+  color: #ffffff;
+  font-family: 'JetBrains Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  overflow-x: hidden;
+}
 
-  /* Border Radius */
-  --radius: 0.75rem;
+/* Terminal-style animations */
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink {
+  0%, 50% { border-color: #00ff41; }
+  51%, 100% { border-color: transparent; }
+}
+
+.terminal-cursor {
+  border-right: 2px solid #00ff41;
+  animation: blink 1s infinite;
+}
+
+.typing-animation {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid #00ff41;
+  animation: typing 2s steps(40, end), blink 1s infinite;
+}
+
+/* Glowing effects for premium feel */
+.glow-green {
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+}
+
+.glow-blue {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+}
+
+.glow-purple {
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+}
+
+/* Terminal output styling */
+.terminal-output {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  border: 1px solid #333;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Input field styling */
+.contract-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.contract-input:focus {
+  border-color: #00ff41;
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+  outline: none;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: oklch(0.11 0.02 264);
+  background: #1a1a1a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: oklch(0.17 0.02 264);
-  border-radius: 9999px;
+  background: #333;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: oklch(0.3 0.02 264);
+  background: #555;
+}
+
+/* Matrix-style background dots */
+.matrix-bg {
+  background-image:
+    radial-gradient(circle at 25% 25%, #00ff41 1px, transparent 1px),
+    radial-gradient(circle at 75% 75%, #3b82f6 1px, transparent 1px);
+  background-size: 100px 100px;
+  background-position: 0 0, 50px 50px;
+  opacity: 0.1;
 }
