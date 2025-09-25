@@ -163,17 +163,20 @@ export default function Home() {
         </main>
 
         {/* Professional footer */}
-        <footer className="nav-border px-8 py-8">
+        <footer className="nav-border px-4 md:px-8 py-8">
           <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-gray-500 text-sm">
-              © 2025 BuildProof. Enterprise-grade contract verification.
+            <div className="text-gray-500 text-sm font-medium">
+              © 2025 BuildProof. Enterprise-grade contract verification platform.
             </div>
-            <div className="flex items-center gap-6 text-sm text-gray-500">
-              <span>Ethereum Mainnet</span>
+            <div className="flex items-center gap-4 md:gap-6 text-sm text-gray-500">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span>Live Network</span>
+              </div>
               <div className="w-px h-4 bg-gray-700"></div>
-              <span>Real-time Analysis</span>
+              <span>SOC 2 Compliant</span>
               <div className="w-px h-4 bg-gray-700"></div>
-              <span>Secure Infrastructure</span>
+              <span>24/7 Monitoring</span>
             </div>
           </div>
         </footer>
