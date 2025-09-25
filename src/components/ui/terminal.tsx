@@ -33,39 +33,53 @@ export function Terminal({ output, isLoading }: TerminalProps) {
   }, [output])
 
   return (
-    <div className="terminal-output rounded-lg p-6 h-96 overflow-y-auto font-mono text-sm">
-      <div className="flex items-center mb-4 text-green-400">
-        <span className="mr-2">$</span>
-        <span className="typing-animation">BuildProof Contract Verifier v1.0.0</span>
+    <div className="terminal-output card p-8 min-h-96 overflow-y-auto font-mono text-sm">
+      <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-800">
+        <div className="flex items-center accent-blue">
+          <span className="mr-3">$</span>
+          <span className="typing-animation font-medium">BuildProof Enterprise Verifier v2.1.0</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-red-500"></div>
+          <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+        </div>
       </div>
 
-      {displayedOutput.map((line, index) => (
-        <div key={index} className="mb-1">
-          <span className="text-gray-500 mr-2">›</span>
-          <span className={
-            line.startsWith('ERROR') ? 'text-red-400' :
-            line.startsWith('SUCCESS') ? 'text-green-400' :
-            line.startsWith('WARN') ? 'text-yellow-400' :
-            line.startsWith('INFO') ? 'text-blue-400' :
-            'text-gray-300'
-          }>
-            {line}
-          </span>
-        </div>
-      ))}
+      <div className="space-y-2">
+        {displayedOutput.map((line, index) => (
+          <div key={index} className="flex items-start gap-3 py-1">
+            <span className="text-gray-600 text-xs mt-0.5 font-mono w-4">›</span>
+            <span className={
+              line.startsWith('ERROR') ? 'status-error' :
+              line.startsWith('SUCCESS') ? 'status-success' :
+              line.startsWith('WARN') ? 'status-warning' :
+              line.startsWith('INFO') ? 'status-info' :
+              'text-gray-300'
+            }>
+              {line}
+            </span>
+          </div>
+        ))}
+      </div>
 
       {isLoading && (
-        <div className="flex items-center text-green-400">
-          <span className="mr-2">›</span>
-          <span>Verifying contract</span>
-          <span className="animate-pulse ml-1">...</span>
+        <div className="flex items-center status-info mt-4 py-2 border-t border-gray-800">
+          <span className="mr-3 text-gray-600">›</span>
+          <span>Processing contract verification</span>
+          <div className="ml-2 flex gap-1">
+            <div className="w-1 h-1 bg-blue-500 rounded-full animate-pulse"></div>
+            <div className="w-1 h-1 bg-blue-500 rounded-full animate-pulse delay-100"></div>
+            <div className="w-1 h-1 bg-blue-500 rounded-full animate-pulse delay-200"></div>
+          </div>
         </div>
       )}
 
       {displayedOutput.length > 0 && !isLoading && (
-        <div className="flex items-center text-green-400 mt-2">
-          <span className="mr-2">$</span>
+        <div className="flex items-center accent-blue mt-4 py-2 border-t border-gray-800">
+          <span className="mr-3">$</span>
           <span className="terminal-cursor">&nbsp;</span>
+          <span className="text-gray-600 text-xs ml-2">Ready for next verification</span>
         </div>
       )}
     </div>
