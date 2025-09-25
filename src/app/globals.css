@@ -4,7 +4,7 @@
 body {
   background: #000000;
   color: #ffffff;
-  font-family: 'JetBrains Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-family: var(--font-plus-jakarta-sans), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   overflow-x: hidden;
 }
 
@@ -48,7 +48,7 @@ body {
 .terminal-output {
   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
   border: 1px solid #333;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
 /* Input field styling */
