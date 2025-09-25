@@ -71,7 +71,6 @@ body {
   background: #000000;
   border: 1px solid #1a1a1a;
   font-family: 'JetBrains Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  backdrop-filter: blur(20px);
 }
 
 /* Professional input styling */
@@ -146,7 +145,6 @@ body {
 .card {
   background: #000000;
   border: 1px solid #1a1a1a;
-  backdrop-filter: blur(20px);
 }
 
 /* Navigation styling */
