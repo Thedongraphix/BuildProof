@@ -33,30 +33,33 @@ export function Terminal({ output, isLoading }: TerminalProps) {
   }, [output])
 
   return (
-    <div className="terminal-output card p-8 min-h-96 overflow-y-auto font-mono text-sm">
+    <div className="terminal-output card p-8 min-h-96 overflow-y-auto font-mono text-sm" role="log" aria-live="polite">
       <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-800">
         <div className="flex items-center accent-blue">
-          <span className="mr-3">$</span>
+          <span className="mr-3" aria-hidden="true">$</span>
           <span className="typing-animation font-medium">BuildProof Enterprise Verifier v2.1.0</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-red-500"></div>
-          <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+        <div className="flex items-center gap-2" role="presentation">
+          <div className="w-3 h-3 rounded-full bg-red-500" aria-label="Close"></div>
+          <div className="w-3 h-3 rounded-full bg-yellow-500" aria-label="Minimize"></div>
+          <div className="w-3 h-3 rounded-full bg-green-500" aria-label="Maximize"></div>
         </div>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-2" role="log">
         {displayedOutput.map((line, index) => (
           <div key={index} className="flex items-start gap-3 py-1">
-            <span className="text-gray-600 text-xs mt-0.5 font-mono w-4">›</span>
-            <span className={
-              line.startsWith('ERROR') ? 'status-error' :
-              line.startsWith('SUCCESS') ? 'status-success' :
-              line.startsWith('WARN') ? 'status-warning' :
-              line.startsWith('INFO') ? 'status-info' :
-              'text-gray-300'
-            }>
+            <span className="text-gray-600 text-xs mt-0.5 font-mono w-4" aria-hidden="true">›</span>
+            <span
+              className={
+                line.startsWith('ERROR') ? 'status-error' :
+                line.startsWith('SUCCESS') ? 'status-success' :
+                line.startsWith('WARN') ? 'status-warning' :
+                line.startsWith('INFO') ? 'status-info' :
+                'text-gray-300'
+              }
+              role={line.startsWith('ERROR') ? 'alert' : 'status'}
+            >
               {line}
             </span>
           </div>
