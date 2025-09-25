@@ -1,85 +1,77 @@
 # BuildProof
 
 <div align="center">
-  <img src="https://img.shields.io/badge/Solidity-0.8.26-e6007a?style=for-the-badge&logo=solidity&logoColor=white" alt="Solidity" />
+  <img src="https://img.shields.io/badge/Smart_Contract-Verifier-00ff41?style=for-the-badge&logo=ethereum&logoColor=black" alt="Smart Contract" />
+  <img src="https://img.shields.io/badge/Security-Analysis-3b82f6?style=for-the-badge&logo=shield&logoColor=white" alt="Security" />
   <img src="https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js" />
   <img src="https://img.shields.io/badge/TypeScript-5-3178c6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Foundry-Latest-1e1e3f?style=for-the-badge&logo=ethereum&logoColor=white" alt="Foundry" />
-  <img src="https://img.shields.io/badge/OpenZeppelin-v5.4.0-4e5ee4?style=for-the-badge&logo=openzeppelin&logoColor=white" alt="OpenZeppelin" />
 </div>
 
 <div align="center">
-  <h3>🛡️ Modern Smart Contract Development Platform</h3>
-  <p>A comprehensive full-stack blockchain development environment combining the power of Foundry with a premium Next.js frontend interface.</p>
+  <h3>🔍 Smart Contract Security Verifier</h3>
+  <p>Instantly verify and analyze the security of any smart contract on the blockchain with our advanced verification engine.</p>
 </div>
 
 ---
 
-## ✨ Features
+## ✨ What BuildProof Does
 
-### 🔐 **Smart Contract Development**
-- **Foundry Framework**: Blazing fast smart contract development and testing
-- **OpenZeppelin Integration**: Industry-standard secure contract libraries (v5.4.0)
-- **Comprehensive Testing**: Full test coverage with advanced debugging capabilities
-- **Gas Optimization**: Automated gas usage analysis and optimization recommendations
-- **Multi-Network Support**: Seamless deployment across multiple EVM networks
+BuildProof is a **smart contract security verifier** that helps you check if blockchain contracts are safe to interact with. Think of it as a security scanner for crypto contracts.
 
-### 🎨 **Premium Frontend Interface**
-- **Modern Design System**: Professional dark theme with blue accent colors
-- **Responsive Layout**: Mobile-first design optimized for all devices
-- **Component Library**: Custom UI components built on Radix UI primitives
-- **Performance Optimized**: Built with Next.js 15 and App Router architecture
-- **TypeScript Integration**: Full type safety across the entire application
+### 🔍 **How It Works**
+1. **Paste Any Contract Address**: Copy any Ethereum contract address (those long 0x... addresses)
+2. **Instant Verification**: Our system analyzes the contract's code and security
+3. **Get Results**: See a detailed security report in real-time
 
-### ⚡ **Developer Experience**
-- **Hot Reload**: Instant feedback during development
-- **Automated CI/CD**: GitHub Actions pipeline with comprehensive testing
-- **Security Analysis**: Integrated Slither static analysis
-- **Professional Tooling**: ESLint, Prettier, and automated code formatting
-- **Documentation**: Comprehensive guides and API documentation
+### 🛡️ **What We Check**
+- **Security Vulnerabilities**: Common attack patterns like reentrancy, overflow, etc.
+- **Access Controls**: Who can control the contract and how
+- **Code Quality**: How well the contract is written and optimized
+- **Gas Efficiency**: How much it costs to use the contract
+- **Compliance**: Whether it follows industry standards
+
+### 💡 **Why Use BuildProof?**
+- **Stay Safe**: Avoid scam contracts and malicious code
+- **Save Money**: Don't lose funds to poorly written contracts
+- **Quick Analysis**: Get results in seconds, not hours
+- **Easy to Use**: Just paste an address - no technical knowledge required
+- **Always Free**: Complete security analysis at no cost
+
+### 🎯 **Perfect For**
+- **Crypto Investors**: Verify tokens before buying
+- **DeFi Users**: Check protocols before depositing funds
+- **NFT Collectors**: Analyze NFT contracts before minting
+- **Developers**: Quick security audits during development
+- **Anyone**: Who wants to stay safe in crypto
 
 ---
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### 🌐 **Use Online (Easiest)**
+Just visit our website and start verifying contracts immediately - no installation required!
 
-Ensure you have the following installed:
-- [Node.js](https://nodejs.org/) (v18 or higher)
-- [Foundry](https://getfoundry.sh/)
-- [Git](https://git-scm.com/)
+### 💻 **Run Locally**
+Want to run BuildProof on your own computer? Here's how:
 
-### Installation
-
-1. **Clone the repository:**
+1. **Download the code:**
 ```bash
-git clone https://github.com/yourusername/buildproof.git
-cd buildproof
+git clone https://github.com/Thedongraphix/BuildProof.git
+cd BuildProof
 ```
 
-2. **Install dependencies:**
+2. **Install requirements:**
 ```bash
-# Install Foundry dependencies
-forge install
-
-# Install Node.js dependencies
 npm install
 ```
 
-3. **Set up environment variables:**
+3. **Start the app:**
 ```bash
-cp .env.example .env
-# Edit .env with your configuration values
-```
-
-4. **Start development servers:**
-```bash
-# Terminal 1: Start the frontend
 npm run dev
-
-# Terminal 2: Start local blockchain (optional)
-anvil
 ```
+
+4. **Open in browser:**
+Go to `http://localhost:3000` and start verifying contracts!
 
 ---
 
