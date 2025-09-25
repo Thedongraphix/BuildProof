@@ -154,17 +154,20 @@ body {
   border-bottom: 1px solid #0f172a;
 }
 
-/* Animation classes */
+/* Animation classes with GPU acceleration */
 .fade-in {
   animation: fadeIn 0.8s ease-out;
+  transform: translateZ(0); /* Force GPU acceleration */
 }
 
 .slide-in-left {
   animation: slideInFromLeft 0.6s ease-out;
+  transform: translateZ(0); /* Force GPU acceleration */
 }
 
 .slide-in-right {
   animation: slideInFromRight 0.6s ease-out;
+  transform: translateZ(0); /* Force GPU acceleration */
 }
 
 .stagger-1 { animation-delay: 0.1s; }
@@ -179,10 +182,15 @@ input:focus-visible {
   outline-offset: 2px;
 }
 
-/* Hover states */
+/* Hover states with hardware acceleration */
 .hover-lift:hover {
   transform: translateY(-2px);
   transition: transform 0.2s ease;
+  will-change: transform;
+}
+
+.hover-lift {
+  transform: translateZ(0); /* Force hardware acceleration */
 }
 
 /* Professional borders */
