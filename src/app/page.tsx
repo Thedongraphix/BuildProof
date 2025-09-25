@@ -56,90 +56,122 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">
-      {/* Matrix background */}
-      <div className="absolute inset-0 matrix-bg"></div>
-
-      {/* Subtle gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900/50 to-black"></div>
-
-      <div className="relative z-10">
-        {/* Minimal header */}
-        <header className="flex items-center justify-between p-6 border-b border-gray-800/50">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-lg flex items-center justify-center glow-green">
-              <span className="text-black font-bold text-sm">BP</span>
+    <div className="min-h-screen bg-black clean-bg fade-in">
+      <div className="relative">
+        {/* Professional header */}
+        <header className="flex items-center justify-between px-8 py-6 nav-border">
+          <div className="flex items-center space-x-4">
+            <div className="w-10 h-10 bg-black border border-gray-800 rounded flex items-center justify-center">
+              <span className="text-white font-bold text-base tracking-wider">BP</span>
             </div>
-            <span className="text-white font-mono text-lg tracking-wide">BuildProof</span>
+            <div className="flex flex-col">
+              <span className="text-white font-semibold text-xl tracking-tight">BuildProof</span>
+              <span className="text-gray-500 text-xs font-medium">Contract Verifier</span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <appkit-button />
             <a
               href="https://github.com/Thedongraphix/BuildProof"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-gray-900/50 rounded"
             >
-              <Github size={20} />
+              <Github size={18} />
             </a>
           </div>
         </header>
 
         {/* Main content */}
-        <main className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] px-6">
-          <div className="w-full max-w-4xl mx-auto text-center space-y-12">
-            {/* Title */}
-            <div className="space-y-4">
-              <h1 className="text-4xl md:text-6xl font-mono font-bold text-white">
-                Contract
-                <span className="text-green-400 glow-green ml-4">Verifier</span>
-              </h1>
-              <p className="text-gray-400 text-lg max-w-2xl mx-auto font-mono">
-                Verify smart contracts onchain with advanced security analysis
-              </p>
+        <main className="flex flex-col items-center justify-center px-8 py-16">
+          <div className="w-full max-w-5xl mx-auto space-y-16">
+            {/* Hero section */}
+            <div className="text-center space-y-6">
+              <div className="space-y-3">
+                <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight">
+                  Contract
+                  <span className="accent-blue block md:inline md:ml-4">Verification</span>
+                </h1>
+                <p className="text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
+                  Professional smart contract security analysis with institutional-grade verification protocols
+                </p>
+              </div>
+
+              <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span>Mainnet</span>
+                </div>
+                <div className="w-px h-4 bg-gray-700"></div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                  <span>Real-time</span>
+                </div>
+                <div className="w-px h-4 bg-gray-700"></div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-blue-300 rounded-full"></div>
+                  <span>Secure</span>
+                </div>
+              </div>
             </div>
 
             {/* Input section */}
-            <div className="space-y-6">
-              <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto">
-                <div className="flex-1 relative">
-                  <input
-                    type="text"
-                    value={contractAddress}
-                    onChange={(e) => setContractAddress(e.target.value)}
-                    placeholder="0x742d35c6d46ad0c8f121d0c0e98f5e6e9d8b9c7a"
-                    className="contract-input w-full px-6 py-4 rounded-lg text-white font-mono text-lg placeholder-gray-500 focus:glow-green"
-                  />
-                  {!isValidAddress(contractAddress) && contractAddress && (
-                    <div className="absolute top-full mt-2 text-red-400 text-sm font-mono">
-                      Invalid address format
-                    </div>
-                  )}
+            <div className="space-y-8">
+              <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex-1 relative">
+                    <label className="block text-sm font-medium text-gray-400 mb-3">
+                      Contract Address
+                    </label>
+                    <input
+                      type="text"
+                      value={contractAddress}
+                      onChange={(e) => setContractAddress(e.target.value)}
+                      placeholder="0x742d35c6d46ad0c8f121d0c0e98f5e6e9d8b9c7a"
+                      className="contract-input w-full px-6 py-4 text-white text-base border-gray-800 rounded-none"
+                    />
+                    {!isValidAddress(contractAddress) && contractAddress && (
+                      <div className="absolute top-full mt-2 text-red-400 text-sm">
+                        Invalid address format
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col justify-end">
+                    <button
+                      type="submit"
+                      disabled={!contractAddress || !isValidAddress(contractAddress) || isLoading}
+                      className="btn-primary px-8 py-4 font-semibold rounded-none disabled:cursor-not-allowed"
+                    >
+                      <Search className="inline mr-2" size={18} />
+                      {isLoading ? 'Analyzing...' : 'Verify Contract'}
+                    </button>
+                  </div>
                 </div>
-                <button
-                  type="submit"
-                  disabled={!contractAddress || !isValidAddress(contractAddress) || isLoading}
-                  className="px-8 py-4 bg-gradient-to-r from-green-500 to-blue-500 text-black font-mono font-bold rounded-lg hover:from-green-400 hover:to-blue-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all glow-green"
-                >
-                  <Search className="inline mr-2" size={18} />
-                  Verify
-                </button>
               </form>
             </div>
 
             {/* Terminal output */}
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-5xl mx-auto">
               <Terminal output={terminalOutput} isLoading={isLoading} />
             </div>
           </div>
         </main>
 
-        {/* Footer */}
-        <footer className="border-t border-gray-800/50 p-6 text-center">
-          <p className="text-gray-500 font-mono text-sm">
-            Powered by blockchain security protocols
-          </p>
+        {/* Professional footer */}
+        <footer className="nav-border px-8 py-8">
+          <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-gray-500 text-sm">
+              © 2025 BuildProof. Enterprise-grade contract verification.
+            </div>
+            <div className="flex items-center gap-6 text-sm text-gray-500">
+              <span>Ethereum Mainnet</span>
+              <div className="w-px h-4 bg-gray-700"></div>
+              <span>Real-time Analysis</span>
+              <div className="w-px h-4 bg-gray-700"></div>
+              <span>Secure Infrastructure</span>
+            </div>
+          </div>
         </footer>
       </div>
     </div>
