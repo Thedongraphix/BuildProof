@@ -60,24 +60,25 @@ export default function Home() {
     <div className="min-h-screen bg-black clean-bg fade-in">
       <div className="relative">
         {/* Professional header */}
-        <header className="flex items-center justify-between px-8 py-6 nav-border">
+        <header className="flex items-center justify-between px-4 md:px-8 py-6 nav-border slide-in-left">
           <div className="flex items-center space-x-4">
-            <div className="w-10 h-10 bg-black border border-gray-800 rounded flex items-center justify-center">
+            <div className="w-10 h-10 bg-black border border-gray-800 flex items-center justify-center hover-lift">
               <span className="text-white font-bold text-base tracking-wider">BP</span>
             </div>
             <div className="flex flex-col">
-              <span className="text-white font-semibold text-xl tracking-tight">BuildProof</span>
-              <span className="text-gray-500 text-xs font-medium">Contract Verifier</span>
+              <span className="text-white font-semibold text-lg md:text-xl tracking-tight">BuildProof</span>
+              <span className="text-gray-500 text-xs font-medium">Enterprise Verifier</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 md:gap-6 slide-in-right">
             <appkit-button />
             <a
               href="https://github.com/Thedongraphix/BuildProof"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-gray-900/50 rounded"
+              className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-gray-900/20 hover-lift"
+              aria-label="View source code"
             >
               <Github size={18} />
             </a>
@@ -85,34 +86,36 @@ export default function Home() {
         </header>
 
         {/* Main content */}
-        <main className="flex flex-col items-center justify-center px-8 py-16">
-          <div className="w-full max-w-5xl mx-auto space-y-16">
+        <main className="flex flex-col items-center justify-center px-4 md:px-8 py-12 md:py-16">
+          <div className="w-full max-w-5xl mx-auto space-y-12 md:space-y-16">
             {/* Hero section */}
-            <div className="text-center space-y-6">
-              <div className="space-y-3">
-                <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight">
+            <div className="text-center space-y-8 fade-in">
+              <div className="space-y-4">
+                <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-white leading-tight stagger-1">
                   Contract
-                  <span className="accent-blue block md:inline md:ml-4">Verification</span>
+                  <span className="accent-blue block md:inline md:ml-4 stagger-2">Verification</span>
                 </h1>
-                <p className="text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
+                <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed stagger-3">
                   Professional smart contract security analysis with institutional-grade verification protocols
                 </p>
               </div>
 
-              <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
+              <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm text-gray-500 stagger-4">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                  <span className="hidden sm:inline">Ethereum</span>
+                  <span className="sm:hidden">ETH</span>
                   <span>Mainnet</span>
                 </div>
                 <div className="w-px h-4 bg-gray-700"></div>
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                  <span>Real-time</span>
+                  <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                  <span>Real-time Analysis</span>
                 </div>
                 <div className="w-px h-4 bg-gray-700"></div>
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-300 rounded-full"></div>
-                  <span>Secure</span>
+                  <div className="w-2 h-2 bg-blue-300 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
+                  <span>Enterprise Security</span>
                 </div>
               </div>
             </div>
