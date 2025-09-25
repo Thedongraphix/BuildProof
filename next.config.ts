@@ -10,6 +10,13 @@ const nextConfig: NextConfig = {
       { module: /node_modules\/@metamask\/sdk\/dist\/browser\/es\/metamask-sdk\.js/ }
     ]
 
+    // Add alias for external directories
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@/config': './config',
+      '@/context': './context',
+    }
+
     return config
   },
 };

@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { Terminal } from "@/components/ui/terminal"
-import { WalletConnectButton } from "@/components/ui/wallet-connect-button-wrapper"
 import { Search, Github } from "lucide-react"
 
 export default function Home() {
@@ -75,7 +74,7 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-4">
-            <WalletConnectButton />
+            <appkit-button />
             <a
               href="https://github.com/Thedongraphix/BuildProof"
               target="_blank"

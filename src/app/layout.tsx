@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import { Web3Provider } from "@/components/providers/web3-provider";
+import { headers } from "next/headers";
+import ContextProvider from "@/context";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -14,19 +15,22 @@ export const metadata: Metadata = {
   description: "Instantly verify and analyze the security of any smart contract on the blockchain with our advanced verification engine.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersObj = await headers();
+  const cookies = headersObj.get('cookie')
+
   return (
     <html lang="en" className="dark">
       <body
         className={`${plusJakartaSans.variable} antialiased`}
       >
-        <Web3Provider>
+        <ContextProvider cookies={cookies}>
           {children}
-        </Web3Provider>
+        </ContextProvider>
       </body>
     </html>
   );

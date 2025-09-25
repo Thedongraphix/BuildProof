@@ -9,7 +9,6 @@
     "id": 44209,
     "files": [
       "static/chunks/837.02cbbd1850db88e5.js",
-      "static/chunks/3455-bad4295d95404511.js",
       "static/chunks/1323.b03fe58017db649c.js",
       "static/chunks/4209.547d606081eae282.js"
     ]
@@ -380,117 +379,80 @@
   "../node_modules/@reown/appkit/dist/esm/src/client/appkit.js -> @reown/appkit-pay": {
     "id": 15920,
     "files": [
-      "static/chunks/71.d3eab4aa3dd09763.js",
-      "static/chunks/5920.2969063270b1378c.js"
+      "static/chunks/5920.1c22424d1d0b6571.js"
     ]
   },
   "../node_modules/@reown/appkit/dist/esm/src/client/appkit.js -> @reown/appkit-scaffold-ui": {
     "id": 13682,
-    "files": [
-      "static/chunks/71.d3eab4aa3dd09763.js",
-      "static/chunks/768.522f77c51a25031d.js",
-      "static/chunks/4563.245dd04f5a357ff3.js",
-      "static/chunks/5913.33d4b9843979f98a.js",
-      "static/chunks/5795.46b14439a1a8405c.js",
-      "static/chunks/6884.e574df91198925a3.js",
-      "static/chunks/943.2be93994e38939ed.js",
-      "static/chunks/3682.9892c08b75bcb993.js"
-    ]
+    "files": []
   },
   "../node_modules/@reown/appkit/dist/esm/src/client/appkit.js -> @reown/appkit-scaffold-ui/email": {
     "id": 45744,
     "files": [
-      "static/chunks/71.d3eab4aa3dd09763.js",
-      "static/chunks/768.522f77c51a25031d.js",
-      "static/chunks/4883.1e4b6833608e8d91.js",
-      "static/chunks/5744.10026088d1931b19.js"
+      "static/chunks/5744.6940ce4351cc5ecc.js"
     ]
   },
   "../node_modules/@reown/appkit/dist/esm/src/client/appkit.js -> @reown/appkit-scaffold-ui/embedded-wallet": {
     "id": 68558,
     "files": [
-      "static/chunks/71.d3eab4aa3dd09763.js",
-      "static/chunks/768.522f77c51a25031d.js",
-      "static/chunks/8558.9a77ee2d1bf35917.js"
+      "static/chunks/8558.b5df90dad562c792.js"
     ]
   },
   "../node_modules/@reown/appkit/dist/esm/src/client/appkit.js -> @reown/appkit-scaffold-ui/onramp": {
     "id": 17838,
     "files": [
-      "static/chunks/71.d3eab4aa3dd09763.js",
-      "static/chunks/768.522f77c51a25031d.js",
-      "static/chunks/5795.46b14439a1a8405c.js",
-      "static/chunks/7838.f4c6e0e1f49d5066.js"
+      "static/chunks/7838.59032121b7edd204.js"
     ]
   },
   "../node_modules/@reown/appkit/dist/esm/src/client/appkit.js -> @reown/appkit-scaffold-ui/pay-with-exchange": {
     "id": 74329,
     "files": [
-      "static/chunks/71.d3eab4aa3dd09763.js",
-      "static/chunks/768.522f77c51a25031d.js",
-      "static/chunks/5913.33d4b9843979f98a.js",
-      "static/chunks/4329.a64d902d7af0a820.js"
+      "static/chunks/4329.18a353e68c8faab6.js"
     ]
   },
   "../node_modules/@reown/appkit/dist/esm/src/client/appkit.js -> @reown/appkit-scaffold-ui/receive": {
     "id": 19872,
     "files": [
-      "static/chunks/71.d3eab4aa3dd09763.js",
-      "static/chunks/4563.245dd04f5a357ff3.js",
-      "static/chunks/9872.a297698f010687f1.js"
+      "static/chunks/9872.ae65a7e57ae191ca.js"
     ]
   },
   "../node_modules/@reown/appkit/dist/esm/src/client/appkit.js -> @reown/appkit-scaffold-ui/reown-authentication/data-capture": {
     "id": 16226,
     "files": [
-      "static/chunks/71.d3eab4aa3dd09763.js",
-      "static/chunks/4883.1e4b6833608e8d91.js",
-      "static/chunks/350.36852178106f8891.js"
+      "static/chunks/6226.f1e9b449a49d62e1.js"
     ]
   },
   "../node_modules/@reown/appkit/dist/esm/src/client/appkit.js -> @reown/appkit-scaffold-ui/send": {
     "id": 28309,
     "files": [
-      "static/chunks/71.d3eab4aa3dd09763.js",
-      "static/chunks/768.522f77c51a25031d.js",
-      "static/chunks/5913.33d4b9843979f98a.js",
-      "static/chunks/7287.a34906cc3dca87ea.js",
-      "static/chunks/8309.55236efb39df9a0e.js"
+      "static/chunks/4836.571922ae8cd3e458.js",
+      "static/chunks/8309.ab401ed00775ec37.js"
     ]
   },
   "../node_modules/@reown/appkit/dist/esm/src/client/appkit.js -> @reown/appkit-scaffold-ui/socials": {
     "id": 92170,
     "files": [
-      "static/chunks/71.d3eab4aa3dd09763.js",
-      "static/chunks/768.522f77c51a25031d.js",
-      "static/chunks/4563.245dd04f5a357ff3.js",
-      "static/chunks/2170.1e532292d462c1ae.js"
+      "static/chunks/2170.5b973849abb98c48.js"
     ]
   },
   "../node_modules/@reown/appkit/dist/esm/src/client/appkit.js -> @reown/appkit-scaffold-ui/swaps": {
     "id": 51745,
     "files": [
-      "static/chunks/71.d3eab4aa3dd09763.js",
-      "static/chunks/768.522f77c51a25031d.js",
-      "static/chunks/7287.a34906cc3dca87ea.js",
-      "static/chunks/1745.106fb26f5d9872a3.js"
+      "static/chunks/4836.571922ae8cd3e458.js",
+      "static/chunks/1745.d92eb6d7dce749c3.js"
     ]
   },
   "../node_modules/@reown/appkit/dist/esm/src/client/appkit.js -> @reown/appkit-scaffold-ui/transactions": {
     "id": 20840,
     "files": [
-      "static/chunks/71.d3eab4aa3dd09763.js",
-      "static/chunks/943.2be93994e38939ed.js",
-      "static/chunks/6249.ab4bebc46053c6e4.js"
+      "static/chunks/840.06c40bfe0dc4981f.js"
     ]
   },
   "../node_modules/@reown/appkit/dist/esm/src/client/appkit.js -> @reown/appkit-scaffold-ui/w3m-modal": {
     "id": 51557,
     "files": [
-      "static/chunks/71.d3eab4aa3dd09763.js",
-      "static/chunks/6884.e574df91198925a3.js",
-      "static/chunks/7287.a34906cc3dca87ea.js",
-      "static/chunks/5184.e34869782a9008bf.js"
+      "static/chunks/4836.571922ae8cd3e458.js",
+      "static/chunks/1557.150d79d681bb09f1.js"
     ]
   },
   "../node_modules/@wagmi/connectors/dist/esm/baseAccount.js -> @base-org/account": {
@@ -910,21 +872,6 @@
     "id": 20837,
     "files": [
       "static/chunks/837.02cbbd1850db88e5.js"
-    ]
-  },
-  "components/ui/wallet-connect-button-wrapper.tsx -> ./wallet-connect-button-client": {
-    "id": 71372,
-    "files": [
-      "static/chunks/71.d3eab4aa3dd09763.js",
-      "static/chunks/768.522f77c51a25031d.js",
-      "static/chunks/4563.245dd04f5a357ff3.js",
-      "static/chunks/5913.33d4b9843979f98a.js",
-      "static/chunks/5795.46b14439a1a8405c.js",
-      "static/chunks/6884.e574df91198925a3.js",
-      "static/chunks/943.2be93994e38939ed.js",
-      "static/chunks/9233-efadd0483fd4584f.js",
-      "static/chunks/3682.9892c08b75bcb993.js",
-      "static/chunks/1372.61ce874757e70714.js"
     ]
   }
 }
