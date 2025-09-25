@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Terminal } from "@/components/ui/terminal"
+import { WalletConnectButton } from "@/components/ui/wallet-connect-button-wrapper"
 import { Search, Github } from "lucide-react"
 
 export default function Home() {
@@ -72,14 +73,18 @@ export default function Home() {
             </div>
             <span className="text-white font-mono text-lg tracking-wide">BuildProof</span>
           </div>
-          <a
-            href="https://github.com/Thedongraphix/BuildProof"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            <Github size={20} />
-          </a>
+
+          <div className="flex items-center gap-4">
+            <WalletConnectButton />
+            <a
+              href="https://github.com/Thedongraphix/BuildProof"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              <Github size={20} />
+            </a>
+          </div>
         </header>
 
         {/* Main content */}
