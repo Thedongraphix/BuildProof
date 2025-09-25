@@ -34,9 +34,11 @@ const modal = createAppKit({
   },
   themeMode: 'dark',
   themeVariables: {
-    '--w3m-color-mix': '#00ff41',
-    '--w3m-color-mix-strength': 20,
-    '--w3m-accent': '#3b82f6'
+    '--w3m-color-mix': '#3b82f6',
+    '--w3m-color-mix-strength': 40,
+    '--w3m-accent': '#3b82f6',
+    '--w3m-background-color': '#000000',
+    '--w3m-foreground-color': '#000000'
   }
 })
 
