@@ -3,7 +3,7 @@
 import { wagmiAdapter, projectId } from '@/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
-import { mainnet, arbitrum, polygon, sepolia } from '@reown/appkit/networks'
+import { mainnet, arbitrum } from '@reown/appkit/networks'
 import React, { type ReactNode } from 'react'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
 
@@ -14,11 +14,11 @@ if (!projectId) {
   throw new Error('Project ID is not defined')
 }
 
-// Set up metadata - fix the URL to match deployment
+// Set up metadata
 const metadata = {
   name: 'BuildProof',
   description: 'Smart Contract Security Verifier',
-  url: 'https://build-proof.vercel.app', // Updated to match actual deployment URL
+  url: 'https://build-proof.vercel.app', // origin must match your domain & subdomain
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
@@ -26,17 +26,11 @@ const metadata = {
 const modal = createAppKit({
   adapters: [wagmiAdapter],
   projectId,
-  networks: [mainnet, arbitrum, polygon, sepolia],
+  networks: [mainnet, arbitrum],
   defaultNetwork: mainnet,
   metadata: metadata,
   features: {
-    analytics: true
-  },
-  themeMode: 'dark',
-  themeVariables: {
-    '--w3m-color-mix': '#3b82f6',
-    '--w3m-color-mix-strength': 40,
-    '--w3m-accent': '#3b82f6'
+    analytics: true // Optional - defaults to your Cloud configuration
   }
 })
 
