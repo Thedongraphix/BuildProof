@@ -2,59 +2,40 @@
 
 import { useState } from 'react'
 import { Terminal } from "@/components/ui/terminal"
-import { Search, Github } from "lucide-react"
+import { VerificationResults } from "@/components/ui/verification-results"
+import { Search, Github, Copy } from "lucide-react"
+import { useContractVerification } from "@/hooks/useContractVerification"
+import { TEST_CONTRACTS } from "@/lib/test-contracts"
 
 export default function Home() {
   const [contractAddress, setContractAddress] = useState('')
-  const [terminalOutput, setTerminalOutput] = useState<string[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const { verifyContract, isLoading, currentSteps, result, reset } = useContractVerification()
 
   const isValidAddress = (address: string) => {
     return /^0x[a-fA-F0-9]{40}$/.test(address)
   }
 
-  const verifyContract = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
     if (!contractAddress || !isValidAddress(contractAddress)) {
-      setTerminalOutput(['ERROR: Invalid contract address format'])
       return
     }
 
-    setIsLoading(true)
-    setTerminalOutput([])
-
-    // Professional contract verification process
-    const simulatedOutput = [
-      'INFO: Initializing enterprise verification engine...',
-      `INFO: Contract analysis initiated for ${contractAddress}`,
-      'INFO: Retrieving bytecode from Ethereum mainnet...',
-      'INFO: Performing static code analysis...',
-      'SUCCESS: Bytecode extraction completed',
-      'INFO: Running comprehensive security audit...',
-      'INFO: Scanning for vulnerability patterns...',
-      'WARN: Potential reentrancy vector identified - flagged for review',
-      'INFO: Validating access control mechanisms...',
-      'SUCCESS: Access controls verified and compliant',
-      'INFO: Evaluating gas optimization patterns...',
-      'INFO: Generating compliance report...',
-      'SUCCESS: Contract verification protocol completed',
-      `SUCCESS: ${contractAddress} cleared for production deployment`,
-      'INFO: Enterprise security report available for download'
-    ]
-
-    for (let i = 0; i < simulatedOutput.length; i++) {
-      setTimeout(() => {
-        setTerminalOutput(prev => [...prev, simulatedOutput[i]])
-        if (i === simulatedOutput.length - 1) {
-          setIsLoading(false)
-        }
-      }, i * 300)
-    }
+    reset()
+    await verifyContract(contractAddress)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    verifyContract()
+  const handleSampleClick = (address: string) => {
+    setContractAddress(address)
   }
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+  }
+
+  // Convert verification steps to terminal output format
+  const terminalOutput = currentSteps.map(step => step.message)
 
   return (
     <div className="min-h-screen bg-black clean-bg fade-in">
@@ -155,9 +136,63 @@ export default function Home() {
               </form>
             </div>
 
+            {/* Sample Contracts */}
+            {!isLoading && terminalOutput.length === 0 && (
+              <div className="max-w-4xl mx-auto mb-8">
+                <h3 className="text-lg font-semibold text-white mb-4 text-center">
+                  Try these sample contracts:
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="card p-4 hover:bg-gray-900/50 transition-colors cursor-pointer" onClick={() => handleSampleClick(TEST_CONTRACTS.USDC)}>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium text-white">USDC Token</h4>
+                        <p className="text-sm text-gray-400">ERC-20 Stablecoin</p>
+                      </div>
+                      <Copy className="w-4 h-4 text-gray-400" onClick={(e) => {
+                        e.stopPropagation()
+                        copyToClipboard(TEST_CONTRACTS.USDC)
+                      }} />
+                    </div>
+                  </div>
+
+                  <div className="card p-4 hover:bg-gray-900/50 transition-colors cursor-pointer" onClick={() => handleSampleClick(TEST_CONTRACTS.UNISWAP_V3_FACTORY)}>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium text-white">Uniswap V3</h4>
+                        <p className="text-sm text-gray-400">DEX Factory</p>
+                      </div>
+                      <Copy className="w-4 h-4 text-gray-400" onClick={(e) => {
+                        e.stopPropagation()
+                        copyToClipboard(TEST_CONTRACTS.UNISWAP_V3_FACTORY)
+                      }} />
+                    </div>
+                  </div>
+
+                  <div className="card p-4 hover:bg-gray-900/50 transition-colors cursor-pointer" onClick={() => handleSampleClick(TEST_CONTRACTS.ENS)}>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium text-white">ENS Registry</h4>
+                        <p className="text-sm text-gray-400">Name Service</p>
+                      </div>
+                      <Copy className="w-4 h-4 text-gray-400" onClick={(e) => {
+                        e.stopPropagation()
+                        copyToClipboard(TEST_CONTRACTS.ENS)
+                      }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Terminal output */}
             <div className="max-w-5xl mx-auto">
               <Terminal output={terminalOutput} isLoading={isLoading} />
+
+              {/* Verification Results */}
+              {result && result.isComplete && (
+                <VerificationResults result={result} />
+              )}
             </div>
           </div>
         </main>
