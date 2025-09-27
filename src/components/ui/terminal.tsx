@@ -47,7 +47,7 @@ export function Terminal({ output, isLoading }: TerminalProps) {
       </div>
 
       <div className="space-y-2" role="log">
-        {displayedOutput.map((line, index) => (
+        {displayedOutput.filter(line => line && typeof line === 'string').map((line, index) => (
           <div key={index} className="flex items-start gap-3 py-1">
             <span className="text-gray-600 text-xs mt-0.5 font-mono w-4" aria-hidden="true">›</span>
             <span

@@ -25,6 +25,15 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className="dark">
+      <head>
+        <link
+          rel="preload"
+          href="https://fonts.reown.com/KHTeka-Medium.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body
         className={`${plusJakartaSans.variable} antialiased`}
       >

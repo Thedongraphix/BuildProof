@@ -20,6 +20,11 @@ export function useContractVerification() {
   const [currentSteps, setCurrentSteps] = useState<VerificationStep[]>([])
 
   const addStep = useCallback((message: string, type: VerificationStep['type'] = 'INFO') => {
+    if (!message || typeof message !== 'string') {
+      console.warn('Invalid message passed to addStep:', message)
+      return
+    }
+
     const step: VerificationStep = {
       message,
       type,
