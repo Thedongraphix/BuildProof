@@ -41,4 +41,4 @@ mainnet = { key = "${ETHERSCAN_API_KEY}" }
 sepolia = { key = "${ETHERSCAN_API_KEY}" }
 polygon = { key = "${POLYGONSCAN_API_KEY}" }
 arbitrum = { key = "${ARBISCAN_API_KEY}" }
-base_sepolia = { key = "${BASESCAN_API_KEY}", url = "https://api-sepolia.basescan.org/api" }
+base_sepolia = { key = "${BASESCAN_API_KEY}", url = "https://api-sepolia.basescan.org/api", chain = 84532 }
