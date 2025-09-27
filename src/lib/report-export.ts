@@ -58,15 +58,15 @@ export class ReportExporter {
     }
 
     if (options.includeSourceCode && contractInfo.sourceCode) {
-      report.contractInfo.sourceCode = contractInfo.sourceCode
+      (report.contractInfo as Record<string, unknown>).sourceCode = contractInfo.sourceCode
     }
 
     if (options.includeBytecode && contractInfo.bytecode) {
-      report.contractInfo.bytecode = contractInfo.bytecode
+      (report.contractInfo as Record<string, unknown>).bytecode = contractInfo.bytecode
     }
 
     if (options.includeFullABI && contractInfo.abi) {
-      report.contractInfo.abi = contractInfo.abi
+      (report.contractInfo as Record<string, unknown>).abi = contractInfo.abi
     }
 
     return report
