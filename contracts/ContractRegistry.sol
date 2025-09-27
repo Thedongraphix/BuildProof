@@ -169,10 +169,10 @@ contract ContractRegistry {
         // or implement pagination for large datasets
 
         address[] memory results = new address[](totalContracts);
-        uint256 count = 0;
 
         // This is not gas-efficient for large datasets - consider using events/indexing
         // for production use
+        // TODO: Implement actual filtering logic based on stored contracts
 
         return results;
     }
