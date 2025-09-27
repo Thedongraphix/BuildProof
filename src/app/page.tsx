@@ -143,41 +143,41 @@ export default function Home() {
                   Try these sample contracts:
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="card p-4 hover:bg-gray-900/50 transition-colors cursor-pointer" onClick={() => handleSampleClick(TEST_CONTRACTS.BASE_SEPOLIA_USDC)}>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium text-white">Base USDC</h4>
+                        <p className="text-sm text-gray-400">Base Sepolia Testnet</p>
+                      </div>
+                      <Copy className="w-4 h-4 text-gray-400" onClick={(e) => {
+                        e.stopPropagation()
+                        copyToClipboard(TEST_CONTRACTS.BASE_SEPOLIA_USDC)
+                      }} />
+                    </div>
+                  </div>
+
+                  <div className="card p-4 hover:bg-gray-900/50 transition-colors cursor-pointer" onClick={() => handleSampleClick(TEST_CONTRACTS.BASE_SEPOLIA_WETH)}>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium text-white">Base WETH</h4>
+                        <p className="text-sm text-gray-400">Wrapped ETH on Base</p>
+                      </div>
+                      <Copy className="w-4 h-4 text-gray-400" onClick={(e) => {
+                        e.stopPropagation()
+                        copyToClipboard(TEST_CONTRACTS.BASE_SEPOLIA_WETH)
+                      }} />
+                    </div>
+                  </div>
+
                   <div className="card p-4 hover:bg-gray-900/50 transition-colors cursor-pointer" onClick={() => handleSampleClick(TEST_CONTRACTS.USDC)}>
                     <div className="flex items-center justify-between">
                       <div>
-                        <h4 className="font-medium text-white">USDC Token</h4>
-                        <p className="text-sm text-gray-400">ERC-20 Stablecoin</p>
+                        <h4 className="font-medium text-white">ETH USDC</h4>
+                        <p className="text-sm text-gray-400">Ethereum Mainnet</p>
                       </div>
                       <Copy className="w-4 h-4 text-gray-400" onClick={(e) => {
                         e.stopPropagation()
                         copyToClipboard(TEST_CONTRACTS.USDC)
-                      }} />
-                    </div>
-                  </div>
-
-                  <div className="card p-4 hover:bg-gray-900/50 transition-colors cursor-pointer" onClick={() => handleSampleClick(TEST_CONTRACTS.UNISWAP_V3_FACTORY)}>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-medium text-white">Uniswap V3</h4>
-                        <p className="text-sm text-gray-400">DEX Factory</p>
-                      </div>
-                      <Copy className="w-4 h-4 text-gray-400" onClick={(e) => {
-                        e.stopPropagation()
-                        copyToClipboard(TEST_CONTRACTS.UNISWAP_V3_FACTORY)
-                      }} />
-                    </div>
-                  </div>
-
-                  <div className="card p-4 hover:bg-gray-900/50 transition-colors cursor-pointer" onClick={() => handleSampleClick(TEST_CONTRACTS.ENS)}>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-medium text-white">ENS Registry</h4>
-                        <p className="text-sm text-gray-400">Name Service</p>
-                      </div>
-                      <Copy className="w-4 h-4 text-gray-400" onClick={(e) => {
-                        e.stopPropagation()
-                        copyToClipboard(TEST_CONTRACTS.ENS)
                       }} />
                     </div>
                   </div>

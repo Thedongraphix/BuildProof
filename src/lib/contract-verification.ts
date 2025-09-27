@@ -65,6 +65,13 @@ export const SUPPORTED_NETWORKS: Record<string, NetworkConfig> = {
     explorerApiUrl: 'https://api.polygonscan.com/api',
     explorerApiKey: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY || '',
     chainId: 137
+  },
+  baseTestnet: {
+    name: 'Base Sepolia Testnet',
+    rpcUrl: process.env.NEXT_PUBLIC_BASE_TESTNET_RPC_URL || 'https://sepolia.base.org',
+    explorerApiUrl: 'https://api-sepolia.basescan.org/api',
+    explorerApiKey: process.env.NEXT_PUBLIC_BASESCAN_API_KEY || '',
+    chainId: 84532
   }
 }
 
