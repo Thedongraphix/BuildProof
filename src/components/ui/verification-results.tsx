@@ -1,6 +1,8 @@
 "use client"
 
 import { VerificationResult } from "@/hooks/useContractVerification"
+import { SourceCodeViewer } from "./source-code-viewer"
+import { ExportButton } from "./export-button"
 import { CheckCircle, AlertTriangle, XCircle, Shield, Gauge, Key } from "lucide-react"
 
 interface VerificationResultsProps {
@@ -39,6 +41,11 @@ export function VerificationResults({ result }: VerificationResultsProps) {
 
   return (
     <div className="space-y-8 mt-8">
+      {/* Export Button */}
+      <div className="flex justify-end">
+        <ExportButton result={result} />
+      </div>
+
       {/* Contract Info */}
       <div className="card p-6">
         <h3 className="text-xl font-semibold text-white mb-4 flex items-center">
@@ -204,6 +211,9 @@ export function VerificationResults({ result }: VerificationResultsProps) {
           </div>
         )}
       </div>
+
+      {/* Source Code Viewer */}
+      <SourceCodeViewer contractInfo={contractInfo} />
     </div>
   )
 }

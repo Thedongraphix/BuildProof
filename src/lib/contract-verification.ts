@@ -36,19 +36,49 @@ export interface AccessControlAnalysis {
   risks: string[]
 }
 
-export class ContractVerificationService {
-  private etherscanApiKey: string
-  private rpcUrl: string
+export type NetworkConfig = {
+  name: string
+  rpcUrl: string
+  explorerApiUrl: string
+  explorerApiKey: string
+  chainId: number
+}
 
-  constructor(etherscanApiKey: string = '', rpcUrl: string = '') {
-    this.etherscanApiKey = etherscanApiKey || process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY || ''
-    this.rpcUrl = rpcUrl || process.env.NEXT_PUBLIC_ETHEREUM_RPC_URL || 'https://eth-mainnet.g.alchemy.com/v2/demo'
+export const SUPPORTED_NETWORKS: Record<string, NetworkConfig> = {
+  ethereum: {
+    name: 'Ethereum Mainnet',
+    rpcUrl: process.env.NEXT_PUBLIC_ETHEREUM_RPC_URL || 'https://eth-mainnet.g.alchemy.com/v2/demo',
+    explorerApiUrl: 'https://api.etherscan.io/api',
+    explorerApiKey: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY || '',
+    chainId: 1
+  },
+  arbitrum: {
+    name: 'Arbitrum One',
+    rpcUrl: process.env.NEXT_PUBLIC_ARBITRUM_RPC_URL || 'https://arb-mainnet.g.alchemy.com/v2/demo',
+    explorerApiUrl: 'https://api.arbiscan.io/api',
+    explorerApiKey: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY || '',
+    chainId: 42161
+  },
+  polygon: {
+    name: 'Polygon Mainnet',
+    rpcUrl: process.env.NEXT_PUBLIC_POLYGON_RPC_URL || 'https://polygon-mainnet.g.alchemy.com/v2/demo',
+    explorerApiUrl: 'https://api.polygonscan.com/api',
+    explorerApiKey: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY || '',
+    chainId: 137
+  }
+}
+
+export class ContractVerificationService {
+  private network: NetworkConfig
+
+  constructor(networkName: string = 'ethereum') {
+    this.network = SUPPORTED_NETWORKS[networkName] || SUPPORTED_NETWORKS.ethereum
   }
 
   async getContractInfo(address: string): Promise<ContractInfo> {
     try {
       // Fetch bytecode from RPC
-      const bytecodeResponse = await fetch(this.rpcUrl, {
+      const bytecodeResponse = await fetch(this.network.rpcUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -66,33 +96,33 @@ export class ContractVerificationService {
         throw new Error('No contract found at this address')
       }
 
-      // Try to get verified contract info from Etherscan
+      // Try to get verified contract info from block explorer
       let contractInfo: ContractInfo = {
         address,
         bytecode,
         isVerified: false
       }
 
-      if (this.etherscanApiKey && this.etherscanApiKey !== 'YourEtherscanApiKey') {
+      if (this.network.explorerApiKey && this.network.explorerApiKey !== 'YourEtherscanApiKey') {
         try {
-          const etherscanResponse = await fetch(
-            `https://api.etherscan.io/api?module=contract&action=getsourcecode&address=${address}&apikey=${this.etherscanApiKey}`
+          const explorerResponse = await fetch(
+            `${this.network.explorerApiUrl}?module=contract&action=getsourcecode&address=${address}&apikey=${this.network.explorerApiKey}`
           )
-          const etherscanData = await etherscanResponse.json()
+          const explorerData = await explorerResponse.json()
 
-          if (etherscanData.result && etherscanData.result[0] && etherscanData.result[0].SourceCode) {
+          if (explorerData.result && explorerData.result[0] && explorerData.result[0].SourceCode) {
             contractInfo.isVerified = true
-            contractInfo.contractName = etherscanData.result[0].ContractName
-            contractInfo.compiler = etherscanData.result[0].CompilerVersion
-            contractInfo.sourceCode = etherscanData.result[0].SourceCode
+            contractInfo.contractName = explorerData.result[0].ContractName
+            contractInfo.compiler = explorerData.result[0].CompilerVersion
+            contractInfo.sourceCode = explorerData.result[0].SourceCode
             try {
-              contractInfo.abi = JSON.parse(etherscanData.result[0].ABI)
+              contractInfo.abi = JSON.parse(explorerData.result[0].ABI)
             } catch (e) {
               // ABI parsing failed, continue without it
             }
           }
         } catch (error) {
-          console.warn('Etherscan API request failed:', error)
+          console.warn(`${this.network.name} API request failed:`, error)
         }
       }
 
@@ -165,13 +195,64 @@ export class ContractVerificationService {
       })
     }
 
+    // Check for inline assembly
+    if (bytecode.includes('7f') && bytecode.includes('52')) { // PUSH32 + MSTORE pattern (common in assembly)
+      vulnerabilities.push({
+        type: 'INLINE_ASSEMBLY_DETECTED',
+        severity: 'MEDIUM',
+        description: 'Contract contains inline assembly which bypasses Solidity safety checks',
+        recommendation: 'Review assembly code carefully for memory safety and reentrancy issues'
+      })
+    }
+
+    // Check for CREATE2 usage (deterministic contract creation)
+    if (bytecode.includes('f5')) { // CREATE2 opcode
+      vulnerabilities.push({
+        type: 'CREATE2_USAGE',
+        severity: 'LOW',
+        description: 'Contract uses CREATE2 for deterministic contract deployment',
+        recommendation: 'Ensure salt values are properly randomized and access-controlled'
+      })
+    }
+
+    // Check for STATICCALL usage
+    if (bytecode.includes('fa')) { // STATICCALL opcode
+      vulnerabilities.push({
+        type: 'STATIC_CALL_USAGE',
+        severity: 'LOW',
+        description: 'Contract uses staticcall for view-only external calls',
+        recommendation: 'Good practice - staticcall prevents state changes in external calls'
+      })
+    }
+
     // Check for large bytecode (potential complexity issue)
     if (bytecode.length > 50000) {
+      const severity = bytecode.length > 100000 ? 'MEDIUM' : 'LOW'
       vulnerabilities.push({
         type: 'LARGE_CONTRACT_SIZE',
-        severity: 'LOW',
-        description: 'Contract bytecode is unusually large',
+        severity,
+        description: `Contract bytecode is unusually large (${Math.round(bytecode.length/1000)}KB)`,
         recommendation: 'Consider code optimization or splitting into multiple contracts'
+      })
+    }
+
+    // Check for potential proxy patterns
+    if (bytecode.includes('3d') && bytecode.includes('f3') && bytecode.length < 200) {
+      vulnerabilities.push({
+        type: 'MINIMAL_PROXY_PATTERN',
+        severity: 'LOW',
+        description: 'Contract appears to be a minimal proxy (EIP-1167)',
+        recommendation: 'Verify the implementation contract being proxied to'
+      })
+    }
+
+    // Check for EXTCODECOPY usage (code copying)
+    if (bytecode.includes('3c')) { // EXTCODECOPY opcode
+      vulnerabilities.push({
+        type: 'EXTERNAL_CODE_COPY',
+        severity: 'MEDIUM',
+        description: 'Contract copies code from external contracts',
+        recommendation: 'Ensure copied code is from trusted sources and properly validated'
       })
     }
 
@@ -201,13 +282,105 @@ export class ContractVerificationService {
       })
     }
 
+    // Check for tx.origin usage
+    if (sourceCode.includes('tx.origin')) {
+      vulnerabilities.push({
+        type: 'TX_ORIGIN_USAGE',
+        severity: 'HIGH',
+        description: 'Contract uses tx.origin which is vulnerable to phishing attacks',
+        recommendation: 'Use msg.sender instead of tx.origin for authorization'
+      })
+    }
+
+    // Check for block.timestamp dependency
+    if (sourceCode.includes('block.timestamp') || sourceCode.includes('now')) {
+      vulnerabilities.push({
+        type: 'TIMESTAMP_DEPENDENCY',
+        severity: 'MEDIUM',
+        description: 'Contract relies on block timestamp which can be manipulated by miners',
+        recommendation: 'Use block.number or external oracle for time-sensitive operations'
+      })
+    }
+
+    // Check for unchecked arithmetic (pre-0.8.0)
+    if (sourceCode.includes('pragma solidity') && !sourceCode.includes('0.8') && !sourceCode.includes('SafeMath')) {
+      vulnerabilities.push({
+        type: 'UNCHECKED_ARITHMETIC',
+        severity: 'HIGH',
+        description: 'Contract may be vulnerable to integer overflow/underflow',
+        recommendation: 'Use SafeMath library or upgrade to Solidity 0.8.0+'
+      })
+    }
+
+    // Check for missing input validation
+    if (!sourceCode.includes('require(') && !sourceCode.includes('revert(')) {
+      vulnerabilities.push({
+        type: 'MISSING_INPUT_VALIDATION',
+        severity: 'MEDIUM',
+        description: 'Contract may lack proper input validation',
+        recommendation: 'Add require statements to validate function parameters'
+      })
+    }
+
     // Check for access control
-    if (!sourceCode.includes('onlyOwner') && !sourceCode.includes('AccessControl')) {
+    if (!sourceCode.includes('onlyOwner') && !sourceCode.includes('AccessControl') && !sourceCode.includes('msg.sender')) {
       vulnerabilities.push({
         type: 'MISSING_ACCESS_CONTROL',
         severity: 'MEDIUM',
         description: 'Contract may lack proper access control mechanisms',
         recommendation: 'Implement role-based access control for sensitive functions'
+      })
+    }
+
+    // Check for hardcoded addresses
+    const addressPattern = /0x[a-fA-F0-9]{40}/g
+    const addresses = sourceCode.match(addressPattern)
+    if (addresses && addresses.length > 3) {
+      vulnerabilities.push({
+        type: 'HARDCODED_ADDRESSES',
+        severity: 'LOW',
+        description: 'Contract contains multiple hardcoded addresses',
+        recommendation: 'Consider using configurable addresses for better flexibility'
+      })
+    }
+
+    // Check for unsafe assembly
+    if (sourceCode.includes('assembly {')) {
+      vulnerabilities.push({
+        type: 'UNSAFE_ASSEMBLY',
+        severity: 'MEDIUM',
+        description: 'Contract uses inline assembly which bypasses safety checks',
+        recommendation: 'Review assembly code for memory safety and overflow protection'
+      })
+    }
+
+    // Check for deprecated functions
+    if (sourceCode.includes('suicide(') || sourceCode.includes('sha3(')) {
+      vulnerabilities.push({
+        type: 'DEPRECATED_FUNCTIONS',
+        severity: 'LOW',
+        description: 'Contract uses deprecated Solidity functions',
+        recommendation: 'Replace suicide() with selfdestruct() and sha3() with keccak256()'
+      })
+    }
+
+    // Check for missing events
+    if (!sourceCode.includes('emit ') && !sourceCode.includes('event ')) {
+      vulnerabilities.push({
+        type: 'MISSING_EVENTS',
+        severity: 'LOW',
+        description: 'Contract lacks events for important state changes',
+        recommendation: 'Add events to track important contract interactions'
+      })
+    }
+
+    // Check for floating pragma
+    if (sourceCode.includes('pragma solidity ^')) {
+      vulnerabilities.push({
+        type: 'FLOATING_PRAGMA',
+        severity: 'LOW',
+        description: 'Contract uses floating pragma which may cause compilation issues',
+        recommendation: 'Use a specific compiler version for production contracts'
       })
     }
 
