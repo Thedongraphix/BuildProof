@@ -5,7 +5,7 @@ export interface ContractInfo {
   contractName?: string
   compiler?: string
   sourceCode?: string
-  abi?: any[]
+  abi?: unknown[]
 }
 
 export interface SecurityAnalysis {
@@ -97,7 +97,7 @@ export class ContractVerificationService {
       }
 
       // Try to get verified contract info from block explorer
-      let contractInfo: ContractInfo = {
+      const contractInfo: ContractInfo = {
         address,
         bytecode,
         isVerified: false
@@ -117,7 +117,7 @@ export class ContractVerificationService {
             contractInfo.sourceCode = explorerData.result[0].SourceCode
             try {
               contractInfo.abi = JSON.parse(explorerData.result[0].ABI)
-            } catch (e) {
+            } catch {
               // ABI parsing failed, continue without it
             }
           }

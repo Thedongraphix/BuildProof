@@ -27,10 +27,10 @@ export class ReportExporter {
     this.downloadBlob(blob, `contract-verification-report-${result.contractInfo.address}.html`)
   }
 
-  private static generateJSONReport(result: VerificationResult, options: ExportOptions): any {
+  private static generateJSONReport(result: VerificationResult, options: ExportOptions): Record<string, unknown> {
     const { contractInfo, securityAnalysis, steps } = result
 
-    const report: any = {
+    const report: Record<string, unknown> = {
       reportMetadata: {
         generatedAt: new Date().toISOString(),
         toolVersion: 'BuildProof v1.0',
