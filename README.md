@@ -233,24 +233,75 @@ npm run test:e2e
 
 ## 🚀 Deployment
 
+### Deploy to Celo Sepolia Testnet
+
+**Step 1: Add Celo Sepolia to MetaMask**
+```
+Network Name: Celo Sepolia Testnet
+RPC URL: https://1rpc.io/celo/sepolia
+Chain ID: 11142220
+Currency: CELO
+Explorer: https://celo-sepolia.blockscout.com
+```
+
+**Step 2: Get Test Tokens**
+- Faucet 1: https://faucet.celo.org/celo-sepolia
+- Faucet 2: https://cloud.google.com/application/web3/faucet/celo/sepolia
+
+**Step 3: Configure Private Key**
+```bash
+# Edit .env file
+nano .env
+
+# Add your private key (without 0x prefix)
+PRIVATE_KEY=your_private_key_here
+```
+
+**Step 4: Install Dependencies**
+```bash
+forge install
+npm install
+```
+
+**Step 5: Compile & Test**
+```bash
+forge build
+forge test
+```
+
+**Step 6: Deploy**
+```bash
+# Deploy without verification
+forge script script/DeployCelo.s.sol --rpc-url celo_sepolia --broadcast
+
+# Deploy with verification (requires CELOSCAN_API_KEY in .env)
+forge script script/DeployCelo.s.sol --rpc-url celo_sepolia --broadcast --verify
+```
+
+**Step 7: Interact with Deployed Contract**
+```bash
+# Read contract state
+cast call YOUR_CONTRACT_ADDRESS "number()" --rpc-url celo_sepolia
+
+# Write to contract
+cast send YOUR_CONTRACT_ADDRESS "increment()" --rpc-url celo_sepolia --private-key $PRIVATE_KEY
+```
+
+**Step 8: Connect Frontend**
+```bash
+npm run dev
+# Open http://localhost:3000
+# Connect wallet and select Celo Sepolia
+```
+
 ### Local Deployment
 
-1. **Start Anvil:**
 ```bash
+# Start Anvil
 anvil
-```
 
-2. **Deploy contracts:**
-```bash
+# Deploy contracts
 forge script script/Deploy.s.sol --rpc-url http://localhost:8545 --broadcast
-```
-
-### Testnet Deployment
-
-1. **Configure environment variables**
-2. **Deploy with verification:**
-```bash
-forge script script/Deploy.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast --verify
 ```
 
 ### Production Deployment
