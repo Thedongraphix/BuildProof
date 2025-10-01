@@ -1,9 +1,9 @@
 'use client'
 
-import { wagmiAdapter, projectId } from '@/config'
+import { wagmiAdapter, projectId, celoSepolia } from '@/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
-import { mainnet, arbitrum, baseSepolia, celo, celoAlfajores } from '@reown/appkit/networks'
+import { mainnet, arbitrum, baseSepolia, celo } from '@reown/appkit/networks'
 import React, { type ReactNode } from 'react'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
 
@@ -22,12 +22,12 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
-// Create the modal with Celo support
+// Create the modal with Celo Sepolia support
 const modal = createAppKit({
   adapters: [wagmiAdapter],
   projectId,
-  networks: [mainnet, arbitrum, baseSepolia, celo, celoAlfajores],
-  defaultNetwork: celoAlfajores, // Default to Celo Alfajores testnet
+  networks: [mainnet, arbitrum, baseSepolia, celo, celoSepolia],
+  defaultNetwork: celoSepolia, // Default to Celo Sepolia testnet
   metadata: metadata,
   features: {
     analytics: false, // Disable analytics to prevent third-party errors

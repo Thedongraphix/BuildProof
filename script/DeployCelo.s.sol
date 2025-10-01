@@ -7,8 +7,8 @@ import {Counter} from "../contracts/Counter.sol";
 
 /**
  * @title DeployCelo
- * @notice Deployment script for Celo Alfajores testnet
- * @dev Run with: forge script script/DeployCelo.s.sol --rpc-url celo_alfajores --broadcast --verify
+ * @notice Deployment script for Celo Sepolia testnet
+ * @dev Run with: forge script script/DeployCelo.s.sol --rpc-url celo_sepolia --broadcast --verify
  */
 contract DeployCelo is Script {
     function run() external {
@@ -22,22 +22,23 @@ contract DeployCelo is Script {
         Counter counter = new Counter();
 
         console.log("========================================");
-        console.log("Celo Alfajores Deployment Complete");
+        console.log("Celo Sepolia Deployment Complete");
         console.log("========================================");
         console.log("Counter deployed to:", address(counter));
-        console.log("Network: Celo Alfajores Testnet");
-        console.log("Chain ID: 44787");
+        console.log("Network: Celo Sepolia Testnet");
+        console.log("Chain ID: 11142220");
         console.log("========================================");
         console.log("");
         console.log("Next steps:");
-        console.log("1. Verify contract on Celoscan:");
-        console.log("   Visit: https://alfajores.celoscan.io/address/%s", address(counter));
+        console.log("1. View contract on Blockscout:");
+        console.log("   Visit: https://celo-sepolia.blockscout.com/address/%s", address(counter));
         console.log("");
         console.log("2. Get testnet CELO:");
-        console.log("   Visit: https://faucet.celo.org/alfajores");
+        console.log("   Faucet 1: https://faucet.celo.org/celo-sepolia");
+        console.log("   Faucet 2: https://cloud.google.com/application/web3/faucet/celo/sepolia");
         console.log("");
         console.log("3. Interact with contract:");
-        console.log("   cast call %s \"number()\" --rpc-url celo_alfajores", address(counter));
+        console.log("   cast call %s \"number()\" --rpc-url celo_sepolia", address(counter));
         console.log("========================================");
 
         vm.stopBroadcast();

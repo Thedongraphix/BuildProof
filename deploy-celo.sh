@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# BuildProof - Celo Alfajores Deployment Script
-# This script automates the deployment process to Celo Alfajores testnet
+# BuildProof - Celo Sepolia Deployment Script
+# This script automates the deployment process to Celo Sepolia testnet
 
 set -e  # Exit on error
 
@@ -67,23 +67,23 @@ fi
 echo ""
 
 # Step 4: Deploy
-echo -e "${BLUE}🚀 Step 4: Deploying to Celo Alfajores...${NC}"
+echo -e "${BLUE}🚀 Step 4: Deploying to Celo Sepolia...${NC}"
 echo -e "${YELLOW}⏳ This may take a minute...${NC}"
 echo ""
 
 # Check if user wants to verify
-read -p "Do you want to verify the contract on Celoscan? (y/n): " verify_choice
+read -p "Do you want to verify the contract on Blockscout? (y/n): " verify_choice
 
 if [ "$verify_choice" = "y" ] || [ "$verify_choice" = "Y" ]; then
     if [ -z "$CELOSCAN_API_KEY" ] || [ "$CELOSCAN_API_KEY" = "your_celoscan_api_key" ]; then
         echo -e "${YELLOW}⚠️  Warning: CELOSCAN_API_KEY not configured${NC}"
         echo -e "${YELLOW}Deploying without verification...${NC}"
-        forge script script/DeployCelo.s.sol --rpc-url celo_alfajores --broadcast
+        forge script script/DeployCelo.s.sol --rpc-url celo_sepolia --broadcast
     else
-        forge script script/DeployCelo.s.sol --rpc-url celo_alfajores --broadcast --verify
+        forge script script/DeployCelo.s.sol --rpc-url celo_sepolia --broadcast --verify
     fi
 else
-    forge script script/DeployCelo.s.sol --rpc-url celo_alfajores --broadcast
+    forge script script/DeployCelo.s.sol --rpc-url celo_sepolia --broadcast
 fi
 
 echo ""
@@ -92,7 +92,7 @@ echo -e "${GREEN}  ✅ Deployment Complete!${NC}"
 echo -e "${GREEN}========================================${NC}"
 echo ""
 echo -e "${BLUE}📝 Next Steps:${NC}"
-echo -e "1. Visit Celoscan to view your contract:"
+echo -e "1. Visit Blockscout to view your contract:"
 echo -e "   ${YELLOW}https://alfajores.celoscan.io${NC}"
 echo ""
 echo -e "2. Get testnet CELO if needed:"
