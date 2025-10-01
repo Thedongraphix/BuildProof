@@ -8,7 +8,7 @@ import {Counter} from "../contracts/Counter.sol";
 /**
  * @title DeployCelo
  * @notice Deployment script for Celo Sepolia testnet
- * @dev Run with: forge script script/DeployCelo.s.sol --rpc-url celo_sepolia --broadcast --verify
+ * @dev Run with: forge script script/DeployCelo.s.sol --rpc-url celo-sepolia --broadcast
  */
 contract DeployCelo is Script {
     function run() external {
@@ -38,7 +38,7 @@ contract DeployCelo is Script {
         console.log("   Faucet 2: https://cloud.google.com/application/web3/faucet/celo/sepolia");
         console.log("");
         console.log("3. Interact with contract:");
-        console.log("   cast call %s \"number()\" --rpc-url celo_sepolia", address(counter));
+        console.log("   cast call %s \"number()\" --rpc-url celo-sepolia", address(counter));
         console.log("========================================");
 
         vm.stopBroadcast();

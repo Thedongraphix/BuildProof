@@ -271,20 +271,20 @@ forge test
 
 **Step 6: Deploy**
 ```bash
-# Deploy without verification
-forge script script/DeployCelo.s.sol --rpc-url celo_sepolia --broadcast
+# Method 1: Using forge script (recommended for complex deployments)
+forge script script/DeployCelo.s.sol --rpc-url celo-sepolia --broadcast
 
-# Deploy with verification (requires CELOSCAN_API_KEY in .env)
-forge script script/DeployCelo.s.sol --rpc-url celo_sepolia --broadcast --verify
+# Method 2: Using forge create (simpler, direct deployment)
+forge create --rpc-url celo-sepolia --private-key $PRIVATE_KEY src/contracts/Counter.sol:Counter
 ```
 
 **Step 7: Interact with Deployed Contract**
 ```bash
 # Read contract state
-cast call YOUR_CONTRACT_ADDRESS "number()" --rpc-url celo_sepolia
+cast call YOUR_CONTRACT_ADDRESS "number()" --rpc-url celo-sepolia
 
 # Write to contract
-cast send YOUR_CONTRACT_ADDRESS "increment()" --rpc-url celo_sepolia --private-key $PRIVATE_KEY
+cast send YOUR_CONTRACT_ADDRESS "increment()" --rpc-url celo-sepolia --private-key $PRIVATE_KEY
 ```
 
 **Step 8: Connect Frontend**
