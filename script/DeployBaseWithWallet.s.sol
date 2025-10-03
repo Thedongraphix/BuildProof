@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
-import {Script, console} from "forge-std/Script.sol";
-import {ContractRegistry} from "../contracts/ContractRegistry.sol";
+import { Script, console } from "forge-std/Script.sol";
+import { ContractRegistry } from "../contracts/ContractRegistry.sol";
 
 /**
  * @title DeployBaseWithWallet

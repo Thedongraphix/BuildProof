@@ -31,9 +31,7 @@ contract ContractRegistry {
     );
 
     event ContractVerified(
-        address indexed contractAddress,
-        address indexed verifier,
-        uint256 newSecurityScore
+        address indexed contractAddress, address indexed verifier, uint256 newSecurityScore
     );
 
     event VerifierAdded(address indexed verifier);
@@ -45,7 +43,9 @@ contract ContractRegistry {
     }
 
     modifier onlyVerifier() {
-        require(verifiers[msg.sender] || msg.sender == owner, "Only verifiers can call this function");
+        require(
+            verifiers[msg.sender] || msg.sender == owner, "Only verifiers can call this function"
+        );
         _;
     }
 
@@ -68,7 +68,9 @@ contract ContractRegistry {
         string memory _version,
         uint256 _securityScore,
         string memory _ipfsHash
-    ) external {
+    )
+        external
+    {
         require(_contractAddress != address(0), "Invalid contract address");
         require(_securityScore <= 100, "Security score must be <= 100");
         require(bytes(_name).length > 0, "Contract name cannot be empty");
@@ -102,8 +104,13 @@ contract ContractRegistry {
         address _contractAddress,
         uint256 _newSecurityScore,
         string memory _ipfsHash
-    ) external onlyVerifier {
-        require(contracts[_contractAddress].contractAddress != address(0), "Contract not registered");
+    )
+        external
+        onlyVerifier
+    {
+        require(
+            contracts[_contractAddress].contractAddress != address(0), "Contract not registered"
+        );
         require(_newSecurityScore <= 100, "Security score must be <= 100");
 
         contracts[_contractAddress].securityScore = _newSecurityScore;
@@ -138,7 +145,11 @@ contract ContractRegistry {
      * @param _contractAddress Address of the contract
      * @return ContractInfo struct containing all contract details
      */
-    function getContractInfo(address _contractAddress) external view returns (ContractInfo memory) {
+    function getContractInfo(address _contractAddress)
+        external
+        view
+        returns (ContractInfo memory)
+    {
         return contracts[_contractAddress];
     }
 
@@ -160,7 +171,11 @@ contract ContractRegistry {
     function getContractsBySecurityScore(
         uint256 _minScore,
         uint256 _maxScore
-    ) external view returns (address[] memory) {
+    )
+        external
+        view
+        returns (address[] memory)
+    {
         require(_minScore <= _maxScore, "Invalid score range");
         require(_maxScore <= 100, "Max score cannot exceed 100");
 
