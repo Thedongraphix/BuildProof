@@ -9,10 +9,28 @@ import { TEST_CONTRACTS } from "@/lib/test-contracts"
 
 export default function Home() {
   const [contractAddress, setContractAddress] = useState('')
+  const [selectedNetwork, setSelectedNetwork] = useState('ethereum')
   const { verifyContract, isLoading, currentSteps, result, reset } = useContractVerification()
+
+  const networks = [
+    { id: 'ethereum', name: 'Ethereum Mainnet' },
+    { id: 'baseTestnet', name: 'Base Sepolia' },
+    { id: 'arbitrum', name: 'Arbitrum One' },
+    { id: 'polygon', name: 'Polygon' }
+  ]
 
   const isValidAddress = (address: string) => {
     return /^0x[a-fA-F0-9]{40}$/.test(address)
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value
+    setContractAddress(newValue)
+
+    // Reset terminal when input is cleared
+    if (!newValue || newValue.trim() === '') {
+      reset()
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,11 +41,12 @@ export default function Home() {
     }
 
     reset()
-    await verifyContract(contractAddress)
+    await verifyContract(contractAddress, selectedNetwork)
   }
 
-  const handleSampleClick = (address: string) => {
+  const handleSampleClick = (address: string, network: string = 'ethereum') => {
     setContractAddress(address)
+    setSelectedNetwork(network)
   }
 
   const copyToClipboard = (text: string) => {
@@ -104,33 +123,53 @@ export default function Home() {
             {/* Input section */}
             <div className="space-y-8">
               <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex-1 relative">
-                    <label className="block text-sm font-medium text-gray-400 mb-3">
-                      Contract Address
-                    </label>
-                    <input
-                      type="text"
-                      value={contractAddress}
-                      onChange={(e) => setContractAddress(e.target.value)}
-                      placeholder="0x742d35c6d46ad0c8f121d0c0e98f5e6e9d8b9c7a"
-                      className="contract-input w-full px-6 py-4 text-white text-base border-gray-800 rounded-none"
-                    />
-                    {!isValidAddress(contractAddress) && contractAddress && (
-                      <div className="absolute top-full mt-2 text-red-400 text-sm">
-                        Invalid address format
-                      </div>
-                    )}
+                <div className="space-y-4">
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1 relative">
+                      <label className="block text-sm font-medium text-gray-400 mb-3">
+                        Contract Address
+                      </label>
+                      <input
+                        type="text"
+                        value={contractAddress}
+                        onChange={handleInputChange}
+                        placeholder="0x742d35c6d46ad0c8f121d0c0e98f5e6e9d8b9c7a"
+                        className="contract-input w-full px-6 py-4 text-white text-base border-gray-800 rounded-none"
+                      />
+                      {!isValidAddress(contractAddress) && contractAddress && (
+                        <div className="absolute top-full mt-2 text-red-400 text-sm">
+                          Invalid address format
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex flex-col justify-end">
-                    <button
-                      type="submit"
-                      disabled={!contractAddress || !isValidAddress(contractAddress) || isLoading}
-                      className="btn-primary px-8 py-4 font-semibold rounded-none disabled:cursor-not-allowed"
-                    >
-                      <Search className="inline mr-2" size={18} />
-                      {isLoading ? 'Analyzing...' : 'Verify Contract'}
-                    </button>
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-gray-400 mb-3">
+                        Network
+                      </label>
+                      <select
+                        value={selectedNetwork}
+                        onChange={(e) => setSelectedNetwork(e.target.value)}
+                        className="contract-input w-full px-6 py-4 text-white text-base border-gray-800 rounded-none bg-black cursor-pointer"
+                      >
+                        {networks.map((network) => (
+                          <option key={network.id} value={network.id} className="bg-black">
+                            {network.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="flex flex-col justify-end">
+                      <button
+                        type="submit"
+                        disabled={!contractAddress || !isValidAddress(contractAddress) || isLoading}
+                        className="btn-primary px-8 py-4 font-semibold rounded-none disabled:cursor-not-allowed"
+                      >
+                        <Search className="inline mr-2" size={18} />
+                        {isLoading ? 'Analyzing...' : 'Verify Contract'}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </form>
@@ -143,7 +182,7 @@ export default function Home() {
                   Try these sample contracts:
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div className="card p-4 hover:bg-gray-900/50 transition-colors cursor-pointer" onClick={() => handleSampleClick(TEST_CONTRACTS.BASE_SEPOLIA_USDC)}>
+                  <div className="card p-4 hover:bg-gray-900/50 transition-colors cursor-pointer" onClick={() => handleSampleClick(TEST_CONTRACTS.BASE_SEPOLIA_USDC, 'baseTestnet')}>
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="font-medium text-white">Base USDC</h4>
@@ -156,7 +195,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="card p-4 hover:bg-gray-900/50 transition-colors cursor-pointer" onClick={() => handleSampleClick(TEST_CONTRACTS.BASE_SEPOLIA_WETH)}>
+                  <div className="card p-4 hover:bg-gray-900/50 transition-colors cursor-pointer" onClick={() => handleSampleClick(TEST_CONTRACTS.BASE_SEPOLIA_WETH, 'baseTestnet')}>
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="font-medium text-white">Base WETH</h4>
@@ -169,7 +208,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="card p-4 hover:bg-gray-900/50 transition-colors cursor-pointer" onClick={() => handleSampleClick(TEST_CONTRACTS.USDC)}>
+                  <div className="card p-4 hover:bg-gray-900/50 transition-colors cursor-pointer" onClick={() => handleSampleClick(TEST_CONTRACTS.USDC, 'ethereum')}>
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="font-medium text-white">ETH USDC</h4>
