@@ -135,11 +135,11 @@ body {
   transform: none;
 }
 
-/* Status colors - refined */
-.status-success { color: #60a5fa; }
-.status-error { color: #f87171; }
-.status-warning { color: #fbbf24; }
-.status-info { color: #94a3b8; }
+/* Status colors - blue-themed */
+.status-success { color: #3b82f6; }
+.status-error { color: #ef4444; }
+.status-warning { color: #f59e0b; }
+.status-info { color: #9ca3af; }
 
 /* Card styling */
 .card {
