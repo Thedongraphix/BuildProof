@@ -100,24 +100,7 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm text-gray-500 stagger-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                  <span className="hidden sm:inline">Ethereum</span>
-                  <span className="sm:hidden">ETH</span>
-                  <span>Mainnet</span>
-                </div>
-                <div className="w-px h-4 bg-gray-700"></div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-                  <span>Real-time Analysis</span>
-                </div>
-                <div className="w-px h-4 bg-gray-700"></div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-300 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
-                  <span>Enterprise Security</span>
-                </div>
-              </div>
+              
             </div>
 
             {/* Input section */}

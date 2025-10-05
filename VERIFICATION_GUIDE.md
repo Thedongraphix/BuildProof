@@ -173,7 +173,7 @@ forge script script/DeployBase.s.sol \
 2. Navigate to your contract address
 3. Click "Contract" tab → "Verify and Publish"
 4. Fill in the details:
-   - **Compiler Type**: Solidity (Single file)
+   - **Compiler Type**: Solidity (Single file)5JEW27EDW968I5FTM8SMBH9Z854S3PKW4N
    - **Compiler Version**: v0.8.26
    - **License**: MIT
 5. Paste the flattened contract source:
