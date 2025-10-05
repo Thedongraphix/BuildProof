@@ -34,7 +34,7 @@ export function useContractVerification() {
     return step
   }, [])
 
-  const verifyContract = useCallback(async (address: string) => {
+  const verifyContract = useCallback(async (address: string, network: string = 'ethereum') => {
     if (!address || !/^0x[a-fA-F0-9]{40}$/.test(address)) {
       addStep('ERROR: Invalid contract address format', 'ERROR')
       return null
@@ -44,7 +44,16 @@ export function useContractVerification() {
     setCurrentSteps([])
     setResult(null)
 
-    const verificationService = new ContractVerificationService()
+    const verificationService = new ContractVerificationService(network)
+
+    // Get network name for display
+    const networkNames: Record<string, string> = {
+      ethereum: 'Ethereum Mainnet',
+      baseTestnet: 'Base Sepolia',
+      arbitrum: 'Arbitrum One',
+      polygon: 'Polygon Mainnet'
+    }
+    const networkName = networkNames[network] || 'Ethereum Mainnet'
 
     try {
       // Step 1: Initialize
@@ -56,7 +65,7 @@ export function useContractVerification() {
       await new Promise(resolve => setTimeout(resolve, 300))
 
       // Step 3: Fetch bytecode
-      addStep('Retrieving bytecode from Ethereum mainnet...', 'INFO')
+      addStep(`Retrieving bytecode from ${networkName}...`, 'INFO')
       const contractInfo = await verificationService.getContractInfo(address)
 
       if (!contractInfo.bytecode || contractInfo.bytecode === '0x') {
