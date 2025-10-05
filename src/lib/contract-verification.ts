@@ -227,38 +227,42 @@ export class ContractVerificationService {
     // Normalize bytecode (remove 0x prefix and convert to lowercase)
     const normalizedBytecode = bytecode.toLowerCase().replace(/^0x/, '')
 
-    // More accurate opcode detection using regex patterns
-    // DELEGATECALL opcode (0xf4) - match as complete byte
-    if (/f4[0-9a-f]{0,2}/.test(normalizedBytecode)) {
-      const occurrences = (normalizedBytecode.match(/f4/g) || []).length
-      if (occurrences > 0) {
-        vulnerabilities.push({
-          type: 'DELEGATECALL_USAGE',
-          severity: 'MEDIUM',
-          description: `Contract uses delegatecall (${occurrences} occurrence${occurrences > 1 ? 's' : ''}) which could be risky if not properly implemented`,
-          recommendation: 'Ensure delegatecall targets are validated and trusted. Consider using upgradeable proxy patterns like UUPS or Transparent Proxy'
-        })
-      }
+    // More accurate opcode detection - checking for actual opcode in context
+    // DELEGATECALL opcode (0xf4) with proper context checking
+    const delegatecallPattern = /(?:60|61|62|63|64|65|66|67|68|69|6a|6b|6c|6d|6e|6f|70|71|72|73|74|75|76|77|78|79|7a|7b|7c|7d|7e|7f|80|81)[0-9a-f]*f4/g
+    const delegatecallMatches = normalizedBytecode.match(delegatecallPattern)
+    if (delegatecallMatches && delegatecallMatches.length > 0) {
+      const occurrences = delegatecallMatches.length
+      vulnerabilities.push({
+        type: 'DELEGATECALL_USAGE',
+        severity: occurrences > 2 ? 'HIGH' : 'MEDIUM',
+        description: `Contract uses delegatecall (${occurrences} occurrence${occurrences > 1 ? 's' : ''}) which could be risky if not properly implemented`,
+        recommendation: 'Ensure delegatecall targets are validated and trusted. Consider using upgradeable proxy patterns like UUPS or Transparent Proxy'
+      })
     }
 
-    // SELFDESTRUCT opcode (0xff) - more precise matching
-    if (/ff(?![0-9a-f]{62})/.test(normalizedBytecode)) {
+    // SELFDESTRUCT opcode (0xff) - check with proper context
+    const selfdestructPattern = /(?:60|61|62|63|64|65|66|67|68|69|6a|6b|6c|6d|6e|6f)[0-9a-f]{2,40}ff/g
+    if (selfdestructPattern.test(normalizedBytecode)) {
       vulnerabilities.push({
         type: 'SELFDESTRUCT_PRESENT',
         severity: 'HIGH',
-        description: 'Contract can be destroyed using selfdestruct',
+        description: 'Contract contains selfdestruct functionality which allows contract destruction',
         recommendation: 'Ensure selfdestruct is properly protected with access controls and only callable by authorized parties. Consider if this functionality is truly necessary.'
       })
     }
 
-    // Check for CALL opcode (0xf1) - potential for reentrancy
-    const callOccurrences = (normalizedBytecode.match(/f1/g) || []).length
-    if (callOccurrences > 3) {
+    // Check for CALL opcode (0xf1) with proper context - potential for reentrancy
+    const callPattern = /(?:5b|5f|60|61|62|63|64|65|66|67|68|69|6a|6b|6c|6d|6e|6f|70|71|72|73|74|75|76|77|78|79|7a|7b|7c|7d|7e|7f|80|81)[0-9a-f]*f1/g
+    const callMatches = normalizedBytecode.match(callPattern)
+    const callOccurrences = callMatches ? callMatches.length : 0
+
+    if (callOccurrences > 5) {
       vulnerabilities.push({
         type: 'MULTIPLE_EXTERNAL_CALLS',
-        severity: 'MEDIUM',
+        severity: callOccurrences > 10 ? 'HIGH' : 'MEDIUM',
         description: `Contract has ${callOccurrences} external calls which may be vulnerable to reentrancy`,
-        recommendation: 'Implement checks-effects-interactions pattern and consider using ReentrancyGuard'
+        recommendation: 'Implement checks-effects-interactions pattern and consider using ReentrancyGuard from OpenZeppelin'
       })
     }
 
