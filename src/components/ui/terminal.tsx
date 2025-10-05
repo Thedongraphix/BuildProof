@@ -32,32 +32,45 @@ export function Terminal({ output, isLoading }: TerminalProps) {
     return () => clearInterval(interval)
   }, [output])
 
+  const getLineIcon = (line: string) => {
+    if (line.startsWith('ERROR') || line.includes('CRITICAL')) return '✖'
+    if (line.startsWith('SUCCESS')) return '✓'
+    if (line.startsWith('WARN')) return '⚠'
+    if (line.startsWith('INFO')) return '●'
+    return '›'
+  }
+
+  const getLineColor = (line: string) => {
+    if (line.startsWith('ERROR') || line.includes('CRITICAL')) return 'text-red-400'
+    if (line.startsWith('SUCCESS')) return 'text-blue-400'
+    if (line.startsWith('WARN')) return 'text-yellow-400'
+    if (line.startsWith('INFO')) return 'text-gray-400'
+    return 'text-gray-500'
+  }
+
   return (
-    <div className="terminal-output card p-8 min-h-96 overflow-y-auto font-mono text-sm" role="log" aria-live="polite">
+    <div className="terminal-output card border border-gray-800 p-6 min-h-96 overflow-y-auto font-mono text-sm" role="log" aria-live="polite">
       <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-800">
-        <div className="flex items-center accent-blue">
-          <span className="mr-3" aria-hidden="true">$</span>
-          <span className="typing-animation font-medium">BuildProof Enterprise Verifier v2.1.0</span>
+        <div className="flex items-center">
+          <span className="text-blue-400 mr-3 font-bold" aria-hidden="true">$</span>
+          <span className="text-blue-400 font-semibold tracking-wide">BuildProof Security Verifier</span>
+          <span className="ml-3 text-gray-600 text-xs">v2.1.0</span>
         </div>
         <div className="flex items-center gap-2" role="presentation">
-          <div className="w-3 h-3 rounded-full bg-red-500" aria-label="Close"></div>
-          <div className="w-3 h-3 rounded-full bg-yellow-500" aria-label="Minimize"></div>
-          <div className="w-3 h-3 rounded-full bg-green-500" aria-label="Maximize"></div>
+          <div className="w-2.5 h-2.5 rounded-full bg-red-500/60"></div>
+          <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></div>
+          <div className="w-2.5 h-2.5 rounded-full bg-blue-500/60"></div>
         </div>
       </div>
 
-      <div className="space-y-2" role="log">
+      <div className="space-y-1.5" role="log">
         {displayedOutput.filter(line => line && typeof line === 'string').map((line, index) => (
-          <div key={index} className="flex items-start gap-3 py-1">
-            <span className="text-gray-600 text-xs mt-0.5 font-mono w-4" aria-hidden="true">›</span>
+          <div key={index} className="flex items-start gap-3 py-1.5 hover:bg-gray-900/20 transition-colors px-2 -mx-2">
+            <span className={`${getLineColor(line)} text-sm mt-0.5 font-bold w-4 flex-shrink-0`} aria-hidden="true">
+              {getLineIcon(line)}
+            </span>
             <span
-              className={
-                line.startsWith('ERROR') ? 'status-error' :
-                line.startsWith('SUCCESS') ? 'status-success' :
-                line.startsWith('WARN') ? 'status-warning' :
-                line.startsWith('INFO') ? 'status-info' :
-                'text-gray-300'
-              }
+              className={`${getLineColor(line)} leading-relaxed`}
               role={line.startsWith('ERROR') ? 'alert' : 'status'}
             >
               {line}
@@ -67,22 +80,22 @@ export function Terminal({ output, isLoading }: TerminalProps) {
       </div>
 
       {isLoading && (
-        <div className="flex items-center status-info mt-4 py-2 border-t border-gray-800">
-          <span className="mr-3 text-gray-600">›</span>
+        <div className="flex items-center text-blue-400 mt-6 py-3 border-t border-gray-800">
+          <span className="mr-3 font-bold">●</span>
           <span>Processing contract verification</span>
-          <div className="ml-2 flex gap-1">
-            <div className="w-1 h-1 bg-blue-500 rounded-full animate-pulse"></div>
-            <div className="w-1 h-1 bg-blue-500 rounded-full animate-pulse delay-100"></div>
-            <div className="w-1 h-1 bg-blue-500 rounded-full animate-pulse delay-200"></div>
+          <div className="ml-3 flex gap-1.5">
+            <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></div>
+            <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+            <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
           </div>
         </div>
       )}
 
       {displayedOutput.length > 0 && !isLoading && (
-        <div className="flex items-center accent-blue mt-4 py-2 border-t border-gray-800">
-          <span className="mr-3">$</span>
+        <div className="flex items-center text-blue-400 mt-6 py-3 border-t border-gray-800">
+          <span className="mr-3 font-bold">$</span>
           <span className="terminal-cursor">&nbsp;</span>
-          <span className="text-gray-600 text-xs ml-2">Ready for next verification</span>
+          <span className="text-gray-600 text-xs ml-3">Ready for next verification</span>
         </div>
       )}
     </div>
