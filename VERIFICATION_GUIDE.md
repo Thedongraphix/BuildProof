@@ -1,388 +1,421 @@
-# Smart Contract Verification Guide
+# Smart Contract Verification Guide - Manual CLI Method
 
-This guide provides step-by-step instructions for manually verifying the ContractRegistry smart contract in the BuildProof project.
-
-## Table of Contents
-
-1. [Prerequisites](#prerequisites)
-2. [Local Verification](#local-verification)
-3. [On-Chain Verification](#on-chain-verification)
-4. [Security Audit Checklist](#security-audit-checklist)
-5. [Testing](#testing)
-
----
+This guide provides step-by-step instructions for manually verifying smart contracts on various blockchain explorers using the command line interface (CLI).
 
 ## Prerequisites
 
-Before starting the verification process, ensure you have:
+Before you begin, ensure you have:
 
-- **Foundry** installed (`forge`, `cast`, `anvil`)
-- **Node.js** (v18+) and npm installed
-- **Git** installed
-- Access to a testnet RPC endpoint (e.g., Celo Sepolia, Base Sepolia)
-- Testnet tokens for gas fees
-- API keys for block explorers (optional, for on-chain verification)
+1. **Foundry installed** - Run `forge --version` to verify
+2. **API Keys** for the block explorers you want to verify on:
+   - Etherscan API key (for Ethereum, Sepolia, Base, etc.)
+   - Celoscan API key (for Celo networks)
+   - BaseScan API key (for Base network)
+3. **Deployed contract address** - The address where your contract is deployed
+4. **Environment variables set** in your `.env` file:
+   ```bash
+   PRIVATE_KEY=your_private_key_here
+   ETHERSCAN_API_KEY=your_etherscan_api_key
+   BASESCAN_API_KEY=your_basescan_api_key
+   CELOSCAN_API_KEY=your_celoscan_api_key
+   ```
 
+## BuildProof Smart Contracts
+
+The project includes the following contracts ready for deployment and verification:
+
+### 1. BuilderBounty
+A decentralized bounty system where builders can post rewards for completed work.
+
+**Key Features:**
+- Create bounties with ETH rewards
+- Claim and submit work with IPFS proofs
+- Platform fee system (2.5% default)
+- Automatic payment distribution
+
+### 2. BuilderReputation
+An on-chain reputation system for tracking builder credentials and achievements.
+
+**Key Features:**
+- Builder profiles with reputation scores
+- Skill endorsements from peers
+- Achievement tracking system
+- Authorized issuer management
+
+## Deployment & Verification Process
+
+### Method 1: Deploy and Verify in One Command (Recommended)
+
+This is the fastest method - it deploys and verifies your contract in a single command.
+
+#### For BuilderBounty Contract:
+
+**On Sepolia Testnet:**
 ```bash
-# Verify installations
-forge --version
-node --version
-npm --version
+forge script script/DeployBounty.s.sol \
+  --rpc-url sepolia \
+  --broadcast \
+  --verify \
+  --etherscan-api-key $ETHERSCAN_API_KEY
 ```
 
----
-
-## Local Verification
-
-### Step 1: Clone and Setup
-
+**On Base Sepolia:**
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd BuildProof
-
-# Install frontend dependencies
-npm install
-
-# Install Foundry dependencies
-forge install
-```
-
-### Step 2: Compile Contracts
-
-```bash
-# Compile all contracts
-forge build
-
-# Expected output: "Compiler run successful!"
-```
-
-### Step 3: Run Tests
-
-```bash
-# Run all tests with verbose output
-forge test -vv
-
-# Run tests with gas reporting
-forge test --gas-report
-
-# Run specific test contract
-forge test --match-contract ContractRegistryTest -vvv
-
-# Run coverage analysis
-forge coverage
-```
-
-### Step 4: Code Quality Checks
-
-```bash
-# Format code according to project standards
-forge fmt
-
-# Check formatting without making changes
-forge fmt --check
-
-# Run static analysis (if Slither is installed)
-slither contracts/ContractRegistry.sol
-```
-
----
-
-## On-Chain Verification
-
-### Step 1: Deploy to Local Network
-
-```bash
-# Start local Anvil node in a separate terminal
-anvil
-
-# Deploy to local network
-forge script script/Deploy.s.sol --rpc-url http://localhost:8545 --broadcast
-
-# Note the deployed contract address
-```
-
-### Step 2: Interact with Local Contract
-
-```bash
-# Set environment variables
-export CONTRACT_ADDRESS="<deployed-address>"
-export RPC_URL="http://localhost:8545"
-
-# Check owner
-cast call $CONTRACT_ADDRESS "owner()(address)" --rpc-url $RPC_URL
-
-# Register a test contract
-cast send $CONTRACT_ADDRESS \
-  "registerContract(address,string,string,uint256,string)" \
-  "0x1234567890123456789012345678901234567890" \
-  "TestContract" \
-  "1.0.0" \
-  85 \
-  "QmTest123" \
-  --rpc-url $RPC_URL \
-  --private-key <your-private-key>
-
-# Verify registration
-cast call $CONTRACT_ADDRESS \
-  "isContractRegistered(address)(bool)" \
-  "0x1234567890123456789012345678901234567890" \
-  --rpc-url $RPC_URL
-```
-
-### Step 3: Deploy to Testnet
-
-#### Celo Sepolia Deployment
-
-```bash
-# Set environment variables
-export PRIVATE_KEY="your_private_key_here"
-export CELO_RPC_URL="https://alfajores-forno.celo-testnet.org"
-
-# Deploy to Celo Sepolia
-forge script script/DeployCelo.s.sol \
-  --rpc-url $CELO_RPC_URL \
-  --private-key $PRIVATE_KEY \
-  --broadcast
-
-# Save the deployed contract address
-export CONTRACT_ADDRESS="<deployed-address>"
-```
-
-#### Base Sepolia Deployment
-
-```bash
-# Set environment variables
-export BASE_RPC_URL="https://sepolia.base.org"
-export BASESCAN_API_KEY="your_basescan_api_key"
-
-# Deploy to Base Sepolia with verification
-forge script script/DeployBase.s.sol \
-  --rpc-url $BASE_RPC_URL \
-  --private-key $PRIVATE_KEY \
+forge script script/DeployBounty.s.sol \
+  --rpc-url base-sepolia \
   --broadcast \
   --verify \
   --etherscan-api-key $BASESCAN_API_KEY
 ```
 
-### Step 4: Verify Contract on Block Explorer
-
-#### Manual Verification on Etherscan/Basescan
-
-1. Go to the block explorer (e.g., https://sepolia.basescan.org)
-2. Navigate to your contract address
-3. Click "Contract" tab → "Verify and Publish"
-4. Fill in the details:
-   - **Compiler Type**: Solidity (Single file)5JEW27EDW968I5FTM8SMBH9Z854S3PKW4N
-   - **Compiler Version**: v0.8.26
-   - **License**: MIT
-5. Paste the flattened contract source:
-
+**On Celo Sepolia:**
 ```bash
-# Generate flattened source
-forge flatten contracts/ContractRegistry.sol > ContractRegistry.flat.sol
+forge script script/DeployBounty.s.sol \
+  --rpc-url https://alfajores-forno.celo-testnet.org \
+  --broadcast \
+  --verify \
+  --verifier blockscout \
+  --verifier-url https://celo-sepolia.blockscout.com/api
 ```
 
-6. Submit for verification
+#### For BuilderReputation Contract:
 
-#### Automated Verification
-
+**On Sepolia Testnet:**
 ```bash
-# Verify using Forge
-forge verify-contract \
-  $CONTRACT_ADDRESS \
-  contracts/ContractRegistry.sol:ContractRegistry \
-  --chain-id 84532 \
-  --compiler-version v0.8.26 \
+forge script script/DeployReputation.s.sol \
+  --rpc-url sepolia \
+  --broadcast \
+  --verify \
+  --etherscan-api-key $ETHERSCAN_API_KEY
+```
+
+**On Base Sepolia:**
+```bash
+forge script script/DeployReputation.s.sol \
+  --rpc-url base-sepolia \
+  --broadcast \
+  --verify \
   --etherscan-api-key $BASESCAN_API_KEY
 ```
 
+**On Celo Sepolia:**
+```bash
+forge script script/DeployReputation.s.sol \
+  --rpc-url https://alfajores-forno.celo-testnet.org \
+  --broadcast \
+  --verify \
+  --verifier blockscout \
+  --verifier-url https://celo-sepolia.blockscout.com/api
+```
+
 ---
 
-## Security Audit Checklist
+### Method 2: Deploy First, Verify Later
 
-### Manual Review Checklist
+If you've already deployed your contract and need to verify it separately:
 
-#### ✅ Access Control
-- [x] `onlyOwner` modifier properly restricts ownership functions
-- [x] `onlyVerifier` modifier allows both verifiers and owner
-- [x] Owner cannot be removed as verifier
-- [x] Ownership transfer requires valid address
+#### Step 1: Deploy the Contract
 
-#### ✅ Input Validation
-- [x] Contract address validated (not zero address)
-- [x] Security scores validated (≤ 100)
-- [x] Contract names cannot be empty
-- [x] Score ranges validated in query functions
+**For BuilderBounty:**
+```bash
+forge script script/DeployBounty.s.sol \
+  --rpc-url <network_rpc_url> \
+  --broadcast
+```
 
-#### ✅ State Management
-- [x] Contract registration updates totalContracts counter
-- [x] Re-registration doesn't duplicate count
-- [x] Verification properly updates isVerified flag
-- [x] Events emitted for all state changes
+**For BuilderReputation:**
+```bash
+forge script script/DeployReputation.s.sol \
+  --rpc-url <network_rpc_url> \
+  --broadcast
+```
 
-#### ✅ Reentrancy Protection
-- [x] No external calls made (no reentrancy risk)
-- [x] All state changes follow checks-effects pattern
+After deployment, note the contract address from the console output.
 
-#### ✅ Integer Overflow/Underflow
-- [x] Using Solidity 0.8.26 (built-in protection)
-- [x] No unchecked blocks used
+#### Step 2: Verify the Deployed Contract
 
-#### ✅ Gas Optimization
-- [x] Using memory for function parameters
-- [x] Efficient storage patterns
-- [ ] `getContractsBySecurityScore` needs optimization (TODO noted in code)
+**On Etherscan-based explorers (Ethereum, Sepolia, Base):**
 
-### Automated Security Analysis
+For BuilderBounty:
+```bash
+forge verify-contract \
+  <CONTRACT_ADDRESS> \
+  contracts/BuilderBounty.sol:BuilderBounty \
+  --chain <chain_id> \
+  --etherscan-api-key $ETHERSCAN_API_KEY \
+  --watch
+```
+
+For BuilderReputation:
+```bash
+forge verify-contract \
+  <CONTRACT_ADDRESS> \
+  contracts/BuilderReputation.sol:BuilderReputation \
+  --chain <chain_id> \
+  --etherscan-api-key $ETHERSCAN_API_KEY \
+  --watch
+```
+
+**On Blockscout-based explorers (Celo):**
+
+For BuilderBounty:
+```bash
+forge verify-contract \
+  <CONTRACT_ADDRESS> \
+  contracts/BuilderBounty.sol:BuilderBounty \
+  --verifier blockscout \
+  --verifier-url https://celo-sepolia.blockscout.com/api \
+  --watch
+```
+
+For BuilderReputation:
+```bash
+forge verify-contract \
+  <CONTRACT_ADDRESS> \
+  contracts/BuilderReputation.sol:BuilderReputation \
+  --verifier blockscout \
+  --verifier-url https://celo-sepolia.blockscout.com/api \
+  --watch
+```
+
+---
+
+### Method 3: Manual Verification with Constructor Arguments
+
+If your contract has constructor arguments (like ContractRegistry), you need to encode them:
+
+#### Step 1: Encode Constructor Arguments (if applicable)
+
+For contracts without constructor arguments (BuilderBounty, BuilderReputation), skip this step.
+
+For contracts with constructor arguments:
+```bash
+cast abi-encode "constructor(uint256,address)" <arg1> <arg2>
+```
+
+#### Step 2: Verify with Encoded Arguments
 
 ```bash
-# Run Slither (if installed)
-slither contracts/ContractRegistry.sol --print human-summary
-
-# Check for common vulnerabilities
-slither contracts/ContractRegistry.sol --detect reentrancy-eth,arbitrary-send
-
-# Run Mythril analysis (if installed)
-myth analyze contracts/ContractRegistry.sol
+forge verify-contract \
+  <CONTRACT_ADDRESS> \
+  contracts/YourContract.sol:YourContract \
+  --chain <chain_id> \
+  --constructor-args <encoded_args> \
+  --etherscan-api-key $ETHERSCAN_API_KEY \
+  --watch
 ```
 
 ---
 
-## Testing
+## Network-Specific Parameters
 
-### Unit Tests Coverage
+### Chain IDs:
+- **Ethereum Mainnet:** `1`
+- **Sepolia Testnet:** `11155111`
+- **Base Mainnet:** `8453`
+- **Base Sepolia:** `84532`
+- **Celo Mainnet:** `42220`
+- **Celo Sepolia (Alfajores):** `44787`
 
-Run the comprehensive test suite:
+### RPC URLs:
+Add these to your `foundry.toml` or use directly:
+
+```toml
+[rpc_endpoints]
+sepolia = "https://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
+base = "https://mainnet.base.org"
+base-sepolia = "https://sepolia.base.org"
+celo = "https://forno.celo.org"
+celo-sepolia = "https://alfajores-forno.celo-testnet.org"
+```
+
+### Explorer URLs:
+- **Etherscan (Sepolia):** https://sepolia.etherscan.io/
+- **BaseScan (Base Sepolia):** https://sepolia.basescan.org/
+- **Celo Explorer (Alfajores):** https://celo-sepolia.blockscout.com/
+
+---
+
+## Verification Flags Explained
+
+| Flag | Description |
+|------|-------------|
+| `--verify` | Automatically verify after deployment |
+| `--etherscan-api-key` | Your Etherscan API key (required for Etherscan-based explorers) |
+| `--verifier` | Specify verifier type (`etherscan` or `blockscout`) |
+| `--verifier-url` | Custom verifier API URL (for Blockscout) |
+| `--chain` | Chain ID of the network |
+| `--constructor-args` | Encoded constructor arguments |
+| `--watch` | Wait for verification to complete |
+| `--broadcast` | Broadcast the transaction on-chain |
+
+---
+
+## Troubleshooting
+
+### Issue 1: "Contract source code already verified"
+This means the contract is already verified. Check the explorer directly.
+
+### Issue 2: "Invalid API Key"
+- Verify your API key is correct in `.env`
+- Ensure you're using the right API key for the network (Etherscan vs BaseScan vs Celoscan)
+- Check API key has verification permissions enabled
+
+### Issue 3: "Unable to locate ContractName"
+- Ensure the contract path is correct: `contracts/ContractName.sol:ContractName`
+- Run `forge build` to compile contracts first
+- Check for typos in contract name
+
+### Issue 4: "Constructor arguments mismatch"
+- For contracts without constructors (BuilderBounty, BuilderReputation), don't include `--constructor-args`
+- If contract has constructors, encode them with `cast abi-encode`
+- Verify argument types match contract constructor exactly
+
+### Issue 5: Verification Timeout
+- Add `--watch` flag to wait for completion
+- Check explorer manually after 2-3 minutes
+- Network congestion may delay verification
+
+---
+
+## Verification Checklist
+
+Before verifying, ensure:
+
+- [ ] Contract is deployed and you have the address
+- [ ] You have the correct API key for the target network
+- [ ] Your `.env` file is properly configured
+- [ ] You're using the correct chain ID
+- [ ] Contract source code matches deployed bytecode
+- [ ] All dependencies are properly installed (`forge build` succeeds)
+
+---
+
+## Example: Complete Workflow
+
+### Deploy and Verify BuilderBounty on Sepolia:
+
+1. **Set up environment:**
+   ```bash
+   source .env
+   ```
+
+2. **Deploy with verification:**
+   ```bash
+   forge script script/DeployBounty.s.sol \
+     --rpc-url sepolia \
+     --broadcast \
+     --verify \
+     --etherscan-api-key $ETHERSCAN_API_KEY
+   ```
+
+3. **Note the contract address from output**
+
+4. **Visit Sepolia Etherscan to confirm:**
+   ```
+   https://sepolia.etherscan.io/address/<CONTRACT_ADDRESS>
+   ```
+
+### If Verification Fails, Retry Manually:
 
 ```bash
-# Run all tests
-forge test --match-contract ContractRegistryTest
-
-# Run specific test categories
-forge test --match-test "test_Constructor"
-forge test --match-test "test_RegisterContract"
-forge test --match-test "test_VerifyContract"
-forge test --match-test "test_AddVerifier"
-forge test --match-test "testFuzz"
-```
-
-### Test Categories Covered
-
-1. **Constructor Tests** (3 tests)
-   - Owner initialization
-   - Initial verifier status
-   - Initial contract count
-
-2. **Registration Tests** (6 tests)
-   - Successful registration
-   - Validation errors
-   - Re-registration behavior
-   - Multiple contracts
-
-3. **Verification Tests** (4 tests)
-   - Successful verification
-   - Access control
-   - Validation errors
-
-4. **Verifier Management Tests** (6 tests)
-   - Adding verifiers
-   - Removing verifiers
-   - Owner protection
-   - Access control
-
-5. **Query Tests** (3 tests)
-   - Contract registration check
-   - Contract info retrieval
-   - Score-based queries
-
-6. **Ownership Tests** (4 tests)
-   - Ownership transfer
-   - New owner permissions
-   - Validation
-
-7. **Fuzz Tests** (2 tests)
-   - Random score validation
-   - Edge case testing
-
-8. **Integration Tests** (1 test)
-   - Full workflow simulation
-
-### Expected Test Results
-
-```
-Ran 34 tests for test/ContractRegistry.t.sol:ContractRegistryTest
-✓ All core functionality tests pass
-✓ Access control properly enforced
-✓ Input validation working correctly
-✓ Fuzz tests cover edge cases
+forge verify-contract \
+  <CONTRACT_ADDRESS> \
+  contracts/BuilderBounty.sol:BuilderBounty \
+  --chain 11155111 \
+  --etherscan-api-key $ETHERSCAN_API_KEY \
+  --watch
 ```
 
 ---
 
-## Verification Results
+## Advanced: Verify with Foundry.toml Configuration
 
-### ContractRegistry.sol Security Analysis
+You can streamline verification by adding default settings to `foundry.toml`:
 
-**Overall Assessment**: ✅ **SECURE** - Production Ready
-
-#### Strengths
-- Comprehensive access control with two-tier system
-- Robust input validation on all public functions
-- Proper event emission for transparency
-- Well-documented with NatSpec comments
-- Using latest Solidity with overflow protection
-- No external calls (eliminates reentrancy risk)
-
-#### Areas for Improvement
-- `getContractsBySecurityScore` function incomplete (marked as TODO)
-- Consider adding pause functionality for emergency situations
-- Consider implementing ReentrancyGuard for defense in depth
-- Add maximum limit for totalContracts to prevent DOS
-
-#### Recommendations for Production
-1. Complete the `getContractsBySecurityScore` implementation with pagination
-2. Add circuit breaker/pause functionality
-3. Implement maximum contract limit
-4. Consider using OpenZeppelin's Ownable2Step for safer ownership transfers
-5. Add comprehensive logging for off-chain monitoring
-
----
-
-## Continuous Verification
-
-### GitHub Actions CI/CD
-
-The project includes automated testing on every push:
-
-```yaml
-# .github/workflows/test.yml ensures:
-- Smart contract compilation
-- All tests pass
-- Code formatting compliance
-- Gas usage reporting
+```toml
+[etherscan]
+sepolia = { key = "${ETHERSCAN_API_KEY}" }
+base-sepolia = { key = "${BASESCAN_API_KEY}" }
+celo-sepolia = { key = "${CELOSCAN_API_KEY}", url = "https://celo-sepolia.blockscout.com/api" }
 ```
 
-### Pre-deployment Checklist
-
-Before deploying to production:
-
-- [ ] All tests passing locally
-- [ ] Code formatted with `forge fmt`
-- [ ] Gas optimization reviewed
-- [ ] Security audit completed
-- [ ] Testnet deployment successful
-- [ ] Contract verified on block explorer
-- [ ] Frontend integration tested
-- [ ] Documentation updated
+Then verify with:
+```bash
+forge verify-contract <CONTRACT_ADDRESS> <CONTRACT_PATH> --chain <chain_id>
+```
 
 ---
 
-## Support and Resources
+## Resources
 
-- **Foundry Book**: https://book.getfoundry.sh/
-- **Solidity Docs**: https://docs.soliditylang.org/
-- **OpenZeppelin**: https://docs.openzeppelin.com/
-- **Smart Contract Security Best Practices**: https://consensys.github.io/smart-contract-best-practices/
+- **Foundry Book:** https://book.getfoundry.sh/reference/forge/forge-verify-contract
+- **Etherscan API:** https://docs.etherscan.io/
+- **BaseScan:** https://docs.basescan.org/
+- **Celo Blockscout:** https://docs.blockscout.com/
 
-For questions or issues, please open an issue in the GitHub repository.
+---
+
+## Contract-Specific Verification Examples
+
+### BuilderBounty:
+```bash
+forge verify-contract \
+  <CONTRACT_ADDRESS> \
+  contracts/BuilderBounty.sol:BuilderBounty \
+  --chain 11155111 \
+  --etherscan-api-key $ETHERSCAN_API_KEY
+```
+
+### BuilderReputation:
+```bash
+forge verify-contract \
+  <CONTRACT_ADDRESS> \
+  contracts/BuilderReputation.sol:BuilderReputation \
+  --chain 11155111 \
+  --etherscan-api-key $ETHERSCAN_API_KEY
+```
+
+### ContractRegistry (Already in Project):
+```bash
+forge verify-contract \
+  <CONTRACT_ADDRESS> \
+  contracts/ContractRegistry.sol:ContractRegistry \
+  --chain 11155111 \
+  --etherscan-api-key $ETHERSCAN_API_KEY
+```
+
+### Counter (Simple Example):
+```bash
+forge verify-contract \
+  <CONTRACT_ADDRESS> \
+  contracts/Counter.sol:Counter \
+  --chain 11155111 \
+  --etherscan-api-key $ETHERSCAN_API_KEY
+```
+
+---
+
+## Summary
+
+For the **fastest verification** of BuilderBounty and BuilderReputation:
+
+**Sepolia:**
+```bash
+forge script script/DeployBounty.s.sol --rpc-url sepolia --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY
+forge script script/DeployReputation.s.sol --rpc-url sepolia --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY
+```
+
+**Base Sepolia:**
+```bash
+forge script script/DeployBounty.s.sol --rpc-url base-sepolia --broadcast --verify --etherscan-api-key $BASESCAN_API_KEY
+forge script script/DeployReputation.s.sol --rpc-url base-sepolia --broadcast --verify --etherscan-api-key $BASESCAN_API_KEY
+```
+
+**Celo Sepolia:**
+```bash
+forge script script/DeployBounty.s.sol --rpc-url https://alfajores-forno.celo-testnet.org --broadcast --verify --verifier blockscout --verifier-url https://celo-sepolia.blockscout.com/api
+forge script script/DeployReputation.s.sol --rpc-url https://alfajores-forno.celo-testnet.org --broadcast --verify --verifier blockscout --verifier-url https://celo-sepolia.blockscout.com/api
+```
+
+Happy building! 🚀
