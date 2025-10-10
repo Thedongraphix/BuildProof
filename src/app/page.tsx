@@ -72,6 +72,24 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-4 md:gap-6 slide-in-right">
+            <a
+              href="/"
+              className="text-blue-400 font-medium text-sm"
+            >
+              Verify
+            </a>
+            <a
+              href="/bounties"
+              className="text-gray-400 hover:text-white transition-colors text-sm font-medium"
+            >
+              Bounties
+            </a>
+            <a
+              href="/reputation"
+              className="text-gray-400 hover:text-white transition-colors text-sm font-medium"
+            >
+              Reputation
+            </a>
             <appkit-button />
             <a
               href="https://github.com/Thedongraphix/BuildProof"
