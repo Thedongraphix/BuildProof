@@ -1,7 +1,6 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Award, Star, Briefcase, TrendingUp, User } from "lucide-react"
 import { formatEther } from "viem"
 

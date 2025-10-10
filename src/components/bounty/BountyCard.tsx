@@ -29,7 +29,6 @@ const statusColors = [
 ]
 
 export function BountyCard({
-  bountyId,
   title,
   description,
   reward,

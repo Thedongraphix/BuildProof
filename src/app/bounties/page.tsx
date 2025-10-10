@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { BountyCard } from "@/components/bounty/BountyCard"
 import { CreateBountyForm } from "@/components/bounty/CreateBountyForm"
 import { Github, Plus, Filter } from "lucide-react"
@@ -43,7 +44,7 @@ export default function BountiesPage() {
     },
   ]
 
-  const handleCreateBounty = async (data: any) => {
+  const handleCreateBounty = async (data: { title: string; description: string; reward: string; deadline: number }) => {
     console.log("Creating bounty:", data)
     // TODO: Integrate with smart contract
     setShowCreateForm(false)
@@ -58,9 +59,9 @@ export default function BountiesPage() {
       {/* Header */}
       <header className="flex items-center justify-between px-4 md:px-8 py-6 nav-border slide-in-left">
         <div className="flex items-center space-x-4">
-          <a href="/" className="w-10 h-10 bg-black border border-gray-800 flex items-center justify-center hover-lift">
+          <Link href="/" className="w-10 h-10 bg-black border border-gray-800 flex items-center justify-center hover-lift">
             <span className="text-white font-bold text-base tracking-wider">BP</span>
-          </a>
+          </Link>
           <div className="flex flex-col">
             <span className="text-white font-semibold text-lg md:text-xl tracking-tight">BuildProof</span>
             <span className="text-gray-500 text-xs font-medium">Bounty Platform</span>
@@ -68,24 +69,24 @@ export default function BountiesPage() {
         </div>
 
         <div className="flex items-center gap-4 md:gap-6 slide-in-right">
-          <a
+          <Link
             href="/"
             className="text-gray-400 hover:text-white transition-colors text-sm font-medium"
           >
             Verify
-          </a>
-          <a
+          </Link>
+          <Link
             href="/bounties"
             className="text-blue-400 font-medium text-sm"
           >
             Bounties
-          </a>
-          <a
+          </Link>
+          <Link
             href="/reputation"
             className="text-gray-400 hover:text-white transition-colors text-sm font-medium"
           >
             Reputation
-          </a>
+          </Link>
           <appkit-button />
           <a
             href="https://github.com/Thedongraphix/BuildProof"

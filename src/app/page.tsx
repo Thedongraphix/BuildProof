@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { Terminal } from "@/components/ui/terminal"
 import { VerificationResults } from "@/components/ui/verification-results"
 import { Search, Github, Copy } from "lucide-react"
@@ -72,24 +73,24 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-4 md:gap-6 slide-in-right">
-            <a
+            <Link
               href="/"
               className="text-blue-400 font-medium text-sm"
             >
               Verify
-            </a>
-            <a
+            </Link>
+            <Link
               href="/bounties"
               className="text-gray-400 hover:text-white transition-colors text-sm font-medium"
             >
               Bounties
-            </a>
-            <a
+            </Link>
+            <Link
               href="/reputation"
               className="text-gray-400 hover:text-white transition-colors text-sm font-medium"
             >
               Reputation
-            </a>
+            </Link>
             <appkit-button />
             <a
               href="https://github.com/Thedongraphix/BuildProof"

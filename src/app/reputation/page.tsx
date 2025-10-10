@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { BuilderProfile } from "@/components/reputation/BuilderProfile"
 import { Github, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export default function ReputationPage() {
   const [searchAddress, setSearchAddress] = useState("")
-  const [currentProfile, setCurrentProfile] = useState<string | null>(null)
 
   // Sample profile data - in production, fetch from contract
   const sampleProfile = {
@@ -40,8 +40,8 @@ export default function ReputationPage() {
 
   const handleSearch = () => {
     if (searchAddress) {
-      setCurrentProfile(searchAddress)
       // TODO: Fetch profile from contract
+      console.log("Searching for:", searchAddress)
     }
   }
 
@@ -54,9 +54,9 @@ export default function ReputationPage() {
       {/* Header */}
       <header className="flex items-center justify-between px-4 md:px-8 py-6 nav-border slide-in-left">
         <div className="flex items-center space-x-4">
-          <a href="/" className="w-10 h-10 bg-black border border-gray-800 flex items-center justify-center hover-lift">
+          <Link href="/" className="w-10 h-10 bg-black border border-gray-800 flex items-center justify-center hover-lift">
             <span className="text-white font-bold text-base tracking-wider">BP</span>
-          </a>
+          </Link>
           <div className="flex flex-col">
             <span className="text-white font-semibold text-lg md:text-xl tracking-tight">BuildProof</span>
             <span className="text-gray-500 text-xs font-medium">Builder Reputation</span>
@@ -64,24 +64,24 @@ export default function ReputationPage() {
         </div>
 
         <div className="flex items-center gap-4 md:gap-6 slide-in-right">
-          <a
+          <Link
             href="/"
             className="text-gray-400 hover:text-white transition-colors text-sm font-medium"
           >
             Verify
-          </a>
-          <a
+          </Link>
+          <Link
             href="/bounties"
             className="text-gray-400 hover:text-white transition-colors text-sm font-medium"
           >
             Bounties
-          </a>
-          <a
+          </Link>
+          <Link
             href="/reputation"
             className="text-blue-400 font-medium text-sm"
           >
             Reputation
-          </a>
+          </Link>
           <appkit-button />
           <a
             href="https://github.com/Thedongraphix/BuildProof"
