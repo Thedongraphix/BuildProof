@@ -118,8 +118,46 @@ export default function Home() {
                   Professional smart contract security analysis with institutional-grade verification protocols
                 </p>
               </div>
+            </div>
 
-              
+            {/* Features Section */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto fade-in">
+              <Link href="/" className="card p-6 hover:border-blue-500/30 transition-all group">
+                <div className="flex flex-col items-center text-center space-y-3">
+                  <Search className="text-blue-400 group-hover:scale-110 transition-transform" size={32} />
+                  <h3 className="text-xl font-semibold text-white">Verify Contracts</h3>
+                  <p className="text-gray-400 text-sm">
+                    Analyze and verify smart contracts across multiple networks
+                  </p>
+                </div>
+              </Link>
+
+              <Link href="/bounties" className="card p-6 hover:border-blue-500/30 transition-all group">
+                <div className="flex flex-col items-center text-center space-y-3">
+                  <svg className="text-blue-400 group-hover:scale-110 transition-transform" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6v6l4 2"/>
+                  </svg>
+                  <h3 className="text-xl font-semibold text-white">Bounties</h3>
+                  <p className="text-gray-400 text-sm">
+                    Post and claim bounties for development tasks
+                  </p>
+                </div>
+              </Link>
+
+              <Link href="/reputation" className="card p-6 hover:border-blue-500/30 transition-all group">
+                <div className="flex flex-col items-center text-center space-y-3">
+                  <svg className="text-blue-400 group-hover:scale-110 transition-transform" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <polyline points="16 11 18 13 22 9"/>
+                  </svg>
+                  <h3 className="text-xl font-semibold text-white">Reputation</h3>
+                  <p className="text-gray-400 text-sm">
+                    Track builder credentials and on-chain achievements
+                  </p>
+                </div>
+              </Link>
             </div>
 
             {/* Input section */}
