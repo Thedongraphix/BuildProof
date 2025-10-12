@@ -80,14 +80,18 @@ export default function ReputationPage() {
   }
 
   const displayAddress = lookupAddress || address
-  const displayProfile = profile && profile[0] !== '0x0000000000000000000000000000000000000000' ? {
-    address: profile[0] as string,
-    username: profile[1] as string,
-    reputationScore: Number(profile[2]),
-    completedProjects: Number(profile[3]),
-    totalEarnings: profile[4] as bigint,
-    joinedAt: Number(profile[5]),
-    isActive: profile[6] as boolean,
+
+  // Type guard to check if profile is valid array-like structure
+  const profileData = profile as readonly [string, string, bigint, bigint, bigint, bigint, boolean] | undefined
+
+  const displayProfile = profileData && Array.isArray(profileData) && profileData[0] !== '0x0000000000000000000000000000000000000000' ? {
+    address: profileData[0] as string,
+    username: profileData[1] as string,
+    reputationScore: Number(profileData[2]),
+    completedProjects: Number(profileData[3]),
+    totalEarnings: profileData[4] as bigint,
+    joinedAt: Number(profileData[5]),
+    isActive: profileData[6] as boolean,
     skills: skills || [],
     achievements: achievements as Array<{title: string; description: string; earnedAt: number}> || [],
   } : null
