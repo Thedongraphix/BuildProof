@@ -2,12 +2,25 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useAccount } from "wagmi"
 import { BuilderProfile } from "@/components/reputation/BuilderProfile"
-import { Github, Search } from "lucide-react"
+import { Github, Search, Wallet, UserPlus } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useReputationContract, useBuilderProfile, useBuilderSkills, useBuilderAchievements } from "@/hooks/useReputationContract"
 
 export default function ReputationPage() {
   const [searchAddress, setSearchAddress] = useState("")
+  const [lookupAddress, setLookupAddress] = useState<`0x${string}` | undefined>(undefined)
+  const [showRegisterForm, setShowRegisterForm] = useState(false)
+  const [username, setUsername] = useState("")
+
+  const { address, isConnected } = useAccount()
+  const { registerBuilder, isPending, isConfirming, isSuccess } = useReputationContract()
+
+  // Fetch profile data for lookup address
+  const { profile, isLoading: profileLoading, refetch } = useBuilderProfile(lookupAddress)
+  const { skills, isLoading: skillsLoading } = useBuilderSkills(lookupAddress)
+  const { achievements, isLoading: achievementsLoading } = useBuilderAchievements(lookupAddress)
 
   // Sample profile data - in production, fetch from contract
   const sampleProfile = {
@@ -39,11 +52,45 @@ export default function ReputationPage() {
   }
 
   const handleSearch = () => {
-    if (searchAddress) {
-      // TODO: Fetch profile from contract
-      console.log("Searching for:", searchAddress)
+    if (searchAddress && isValidAddress(searchAddress)) {
+      setLookupAddress(searchAddress as `0x${string}`)
     }
   }
+
+  const handleRegisterBuilder = async () => {
+    if (!isConnected) {
+      alert("Please connect your wallet first")
+      return
+    }
+    if (!username.trim()) {
+      alert("Please enter a username")
+      return
+    }
+    try {
+      await registerBuilder(username)
+      setShowRegisterForm(false)
+      setUsername("")
+      // Refresh profile data
+      if (address) {
+        setLookupAddress(address)
+      }
+    } catch (error) {
+      console.error("Error registering builder:", error)
+    }
+  }
+
+  const displayAddress = lookupAddress || address
+  const displayProfile = profile && profile[0] !== '0x0000000000000000000000000000000000000000' ? {
+    address: profile[0] as string,
+    username: profile[1] as string,
+    reputationScore: Number(profile[2]),
+    completedProjects: Number(profile[3]),
+    totalEarnings: profile[4] as bigint,
+    joinedAt: Number(profile[5]),
+    isActive: profile[6] as boolean,
+    skills: skills || [],
+    achievements: achievements as Array<{title: string; description: string; earnedAt: number}> || [],
+  } : null
 
   const isValidAddress = (address: string) => {
     return /^0x[a-fA-F0-9]{40}$/.test(address)
@@ -142,30 +189,116 @@ export default function ReputationPage() {
             </div>
           </div>
 
-          {/* Sample Profile Display */}
-          <div className="fade-in">
-            <div className="mb-6 text-center">
-              <p className="text-gray-500 text-sm">
-                Sample Profile - Connect wallet to view your profile
-              </p>
+          {/* Wallet Connection Alert */}
+          {!isConnected && (
+            <div className="card p-4 border-blue-500/30 bg-blue-500/5">
+              <div className="flex items-center gap-3 text-blue-400">
+                <Wallet size={20} />
+                <p className="text-sm">
+                  Connect your wallet to view and register your builder profile
+                </p>
+              </div>
             </div>
-            <BuilderProfile {...sampleProfile} />
-          </div>
+          )}
 
-          {/* Call to Action */}
-          <div className="max-w-3xl mx-auto text-center space-y-4 py-8">
-            <div className="card p-8">
-              <h3 className="text-2xl font-bold text-white mb-4">
-                Not Registered Yet?
-              </h3>
-              <p className="text-gray-400 mb-6">
-                Register as a builder to start earning reputation, showcasing your skills, and receiving achievements for your contributions.
+          {/* Success Message */}
+          {isSuccess && (
+            <div className="card p-4 border-green-500/30 bg-green-500/5">
+              <p className="text-green-400 text-sm">
+                ✓ Registration successful! Your builder profile has been created.
               </p>
-              <Button size="lg" className="gap-2">
-                Register as Builder
-              </Button>
             </div>
-          </div>
+          )}
+
+          {/* Profile Display */}
+          {(profileLoading || skillsLoading || achievementsLoading) && (
+            <div className="text-center py-8">
+              <p className="text-gray-400">Loading profile...</p>
+            </div>
+          )}
+
+          {displayProfile && !profileLoading && (
+            <div className="fade-in">
+              <BuilderProfile {...displayProfile} />
+            </div>
+          )}
+
+          {!displayProfile && !profileLoading && displayAddress && (
+            <div className="text-center py-8">
+              <p className="text-gray-400 mb-4">No profile found for this address</p>
+            </div>
+          )}
+
+          {/* Registration Form */}
+          {!displayProfile && isConnected && !showRegisterForm && (
+            <div className="max-w-3xl mx-auto text-center space-y-4 py-8">
+              <div className="card p-8">
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  Not Registered Yet?
+                </h3>
+                <p className="text-gray-400 mb-6">
+                  Register as a builder to start earning reputation, showcasing your skills, and receiving achievements for your contributions.
+                </p>
+                <Button
+                  size="lg"
+                  className="gap-2"
+                  onClick={() => setShowRegisterForm(true)}
+                >
+                  <UserPlus size={18} />
+                  Register as Builder
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Register Form */}
+          {showRegisterForm && (
+            <div className="max-w-md mx-auto card p-6 fade-in">
+              <h3 className="text-xl font-bold text-white mb-4">Register Builder Profile</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-2">
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="e.g., alice_builder"
+                    maxLength={32}
+                    className="contract-input w-full px-4 py-3 text-white text-base border-gray-800 rounded-lg"
+                  />
+                </div>
+                <div className="flex gap-3">
+                  <Button
+                    onClick={handleRegisterBuilder}
+                    disabled={isPending || isConfirming || !username.trim()}
+                    className="flex-1"
+                  >
+                    {isPending || isConfirming ? "Registering..." : "Register"}
+                  </Button>
+                  <Button
+                    onClick={() => setShowRegisterForm(false)}
+                    variant="outline"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Sample Profile for Demo */}
+          {!isConnected && !displayProfile && (
+            <div className="fade-in">
+              <div className="mb-6 text-center">
+                <p className="text-gray-500 text-sm">
+                  Sample Profile - Connect wallet to view your profile
+                </p>
+              </div>
+              <BuilderProfile {...sampleProfile} />
+            </div>
+          )}
         </div>
       </main>
 

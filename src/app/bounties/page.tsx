@@ -2,14 +2,20 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useAccount } from "wagmi"
 import { BountyCard } from "@/components/bounty/BountyCard"
 import { CreateBountyForm } from "@/components/bounty/CreateBountyForm"
-import { Github, Plus, Filter } from "lucide-react"
+import { Github, Plus, Filter, Wallet } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useBountyContract, useTotalBounties } from "@/hooks/useBountyContract"
 
 export default function BountiesPage() {
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [statusFilter, setStatusFilter] = useState<number | null>(null)
+
+  const { address, isConnected } = useAccount()
+  const { createBounty, claimBounty, submitWork, approveBounty, isPending, isConfirming, isSuccess } = useBountyContract()
+  const { totalBounties } = useTotalBounties()
 
   // Sample bounties - in production, fetch from contract
   const sampleBounties = [
@@ -45,9 +51,56 @@ export default function BountiesPage() {
   ]
 
   const handleCreateBounty = async (data: { title: string; description: string; reward: string; deadline: number }) => {
-    console.log("Creating bounty:", data)
-    // TODO: Integrate with smart contract
-    setShowCreateForm(false)
+    if (!isConnected) {
+      alert("Please connect your wallet first")
+      return
+    }
+
+    try {
+      await createBounty(data.title, data.description, data.deadline, data.reward)
+      setShowCreateForm(false)
+    } catch (error) {
+      console.error("Error creating bounty:", error)
+    }
+  }
+
+  const handleClaimBounty = async (bountyId: number) => {
+    if (!isConnected) {
+      alert("Please connect your wallet first")
+      return
+    }
+    try {
+      await claimBounty(bountyId)
+    } catch (error) {
+      console.error("Error claiming bounty:", error)
+    }
+  }
+
+  const handleSubmitWork = async (bountyId: number) => {
+    if (!isConnected) {
+      alert("Please connect your wallet first")
+      return
+    }
+    const ipfsHash = prompt("Enter IPFS hash of your submission:")
+    if (ipfsHash) {
+      try {
+        await submitWork(bountyId, ipfsHash)
+      } catch (error) {
+        console.error("Error submitting work:", error)
+      }
+    }
+  }
+
+  const handleApproveBounty = async (bountyId: number) => {
+    if (!isConnected) {
+      alert("Please connect your wallet first")
+      return
+    }
+    try {
+      await approveBounty(bountyId)
+    } catch (error) {
+      console.error("Error approving bounty:", error)
+    }
   }
 
   const filteredBounties = statusFilter !== null
@@ -114,6 +167,36 @@ export default function BountiesPage() {
             </p>
           </div>
 
+          {/* Wallet Connection Alert */}
+          {!isConnected && (
+            <div className="card p-4 border-blue-500/30 bg-blue-500/5">
+              <div className="flex items-center gap-3 text-blue-400">
+                <Wallet size={20} />
+                <p className="text-sm">
+                  Connect your wallet to create, claim, and manage bounties
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Success Message */}
+          {isSuccess && (
+            <div className="card p-4 border-green-500/30 bg-green-500/5">
+              <p className="text-green-400 text-sm">
+                ✓ Transaction successful! Your bounty action has been completed.
+              </p>
+            </div>
+          )}
+
+          {/* Total Bounties Counter */}
+          {totalBounties > 0 && (
+            <div className="text-center">
+              <p className="text-gray-400 text-sm">
+                Total Bounties: <span className="text-blue-400 font-semibold">{totalBounties}</span>
+              </p>
+            </div>
+          )}
+
           {/* Actions Bar */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
@@ -145,7 +228,7 @@ export default function BountiesPage() {
             <div className="fade-in">
               <CreateBountyForm
                 onSubmit={handleCreateBounty}
-                isLoading={false}
+                isLoading={isPending || isConfirming}
               />
             </div>
           )}
@@ -156,9 +239,9 @@ export default function BountiesPage() {
               <BountyCard
                 key={bounty.bountyId}
                 {...bounty}
-                onClaim={() => console.log("Claim bounty", bounty.bountyId)}
-                onSubmit={() => console.log("Submit work", bounty.bountyId)}
-                onApprove={() => console.log("Approve bounty", bounty.bountyId)}
+                onClaim={() => handleClaimBounty(bounty.bountyId)}
+                onSubmit={() => handleSubmitWork(bounty.bountyId)}
+                onApprove={() => handleApproveBounty(bounty.bountyId)}
               />
             ))}
           </div>
