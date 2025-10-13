@@ -1,5 +1,6 @@
 import BuilderBountyABI from './abis/BuilderBounty.json'
 import BuilderReputationABI from './abis/BuilderReputation.json'
+import BuilderTeamsABI from './abis/BuilderTeams.json'
 
 export const contracts = {
   builderBounty: {
@@ -10,6 +11,11 @@ export const contracts = {
   builderReputation: {
     address: '0x812daccF0691E7116ecF536E46426baf3Ce90177' as `0x${string}`,
     abi: BuilderReputationABI,
+    chainId: 84532, // Base Sepolia
+  },
+  builderTeams: {
+    address: '0x5b73C5498c1E3b4dbA84de0F1833c4a029d90519' as `0x${string}`,
+    abi: BuilderTeamsABI,
     chainId: 84532, // Base Sepolia
   },
 } as const

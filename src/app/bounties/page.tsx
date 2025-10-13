@@ -140,6 +140,12 @@ export default function BountiesPage() {
           >
             Reputation
           </Link>
+          <Link
+            href="/teams"
+            className="text-gray-400 hover:text-white transition-colors text-sm font-medium"
+          >
+            Teams
+          </Link>
           <appkit-button />
           <a
             href="https://github.com/Thedongraphix/BuildProof"
