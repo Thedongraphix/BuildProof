@@ -16,19 +16,39 @@
 
 ## ✨ What BuildProof Does
 
-BuildProof is a **smart contract security verifier** that helps you check if blockchain contracts are safe to interact with. Think of it as a security scanner for crypto contracts.
+BuildProof is a **comprehensive builder platform** that combines smart contract verification with collaborative tools for blockchain developers. It provides a complete ecosystem for builders to work together, earn reputation, and manage projects securely.
 
-### 🔍 **How It Works**
-1. **Paste Any Contract Address**: Copy any Ethereum contract address (those long 0x... addresses)
-2. **Instant Verification**: Our system analyzes the contract's code and security
-3. **Get Results**: See a detailed security report in real-time
+### 🔍 **Core Features**
 
-### 🛡️ **What We Check**
-- **Security Vulnerabilities**: Common attack patterns like reentrancy, overflow, etc.
-- **Access Controls**: Who can control the contract and how
-- **Code Quality**: How well the contract is written and optimized
-- **Gas Efficiency**: How much it costs to use the contract
-- **Compliance**: Whether it follows industry standards
+#### 1. **Smart Contract Verification**
+- Paste any contract address for instant security analysis
+- Real-time vulnerability detection
+- Gas efficiency analysis
+- Industry compliance checks
+
+#### 2. **Builder Bounties**
+- Create and manage blockchain development bounties
+- Submit work with IPFS proof verification
+- Automatic payment distribution
+- 2.5% platform fee
+
+#### 3. **Builder Reputation**
+- On-chain reputation tracking system
+- Skill endorsements from peers
+- Achievement badges and credentials
+- Authorized issuer management
+
+#### 4. **Builder Teams**
+- Form collaborative teams for projects
+- Custom reward share distribution
+- Automatic payment splitting
+- Track team statistics and earnings
+
+#### 5. **Builder Escrow**
+- Milestone-based payment security
+- Client approval workflow
+- Dispute resolution system
+- Protection for both parties
 
 ### 💡 **Why Use BuildProof?**
 - **Stay Safe**: Avoid scam contracts and malicious code
@@ -80,6 +100,11 @@ Go to `http://localhost:3000` and start verifying contracts!
 ```
 BuildProof/
 ├── contracts/              # Smart contracts (Solidity)
+│   ├── BuilderBounty.sol   # Bounty management system
+│   ├── BuilderReputation.sol # Reputation tracking
+│   ├── BuilderTeams.sol    # Team collaboration
+│   ├── BuilderEscrow.sol   # Milestone escrow
+│   ├── ContractRegistry.sol # Contract registry
 │   └── Counter.sol         # Example contract
 ├── src/                    # Next.js frontend application
 │   ├── app/               # App Router pages and layouts
