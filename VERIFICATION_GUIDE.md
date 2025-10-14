@@ -42,6 +42,27 @@ An on-chain reputation system for tracking builder credentials and achievements.
 - Achievement tracking system
 - Authorized issuer management
 
+### 3. BuilderTeams
+A collaborative team management system with automatic reward splitting.
+
+**Key Features:**
+- Create teams with multiple members
+- Define custom share distribution (basis points)
+- Automatic reward distribution based on shares
+- Track team statistics and earnings
+- Dynamic member management
+
+### 4. BuilderEscrow
+A secure milestone-based escrow system for builder payments.
+
+**Key Features:**
+- Create escrow with multiple milestones
+- Builder marks milestones as completed
+- Client approves and releases payments
+- Dispute resolution with arbitration
+- Platform fee handling (2.5%)
+- Cancel escrow before approvals
+
 ## Deployment & Verification Process
 
 ### Method 1: Deploy and Verify in One Command (Recommended)
@@ -108,6 +129,66 @@ forge script script/DeployReputation.s.sol \
   --verifier-url https://celo-sepolia.blockscout.com/api
 ```
 
+#### For BuilderTeams Contract:
+
+**On Sepolia Testnet:**
+```bash
+forge script script/DeployBuilderTeams.s.sol \
+  --rpc-url sepolia \
+  --broadcast \
+  --verify \
+  --etherscan-api-key $ETHERSCAN_API_KEY
+```
+
+**On Base Sepolia:**
+```bash
+forge script script/DeployBuilderTeams.s.sol \
+  --rpc-url base-sepolia \
+  --broadcast \
+  --verify \
+  --etherscan-api-key $BASESCAN_API_KEY
+```
+
+**On Celo Sepolia:**
+```bash
+forge script script/DeployBuilderTeams.s.sol \
+  --rpc-url https://alfajores-forno.celo-testnet.org \
+  --broadcast \
+  --verify \
+  --verifier blockscout \
+  --verifier-url https://celo-sepolia.blockscout.com/api
+```
+
+#### For BuilderEscrow Contract:
+
+**On Sepolia Testnet:**
+```bash
+forge script script/DeployBuilderEscrow.s.sol \
+  --rpc-url sepolia \
+  --broadcast \
+  --verify \
+  --etherscan-api-key $ETHERSCAN_API_KEY
+```
+
+**On Base Sepolia:**
+```bash
+forge script script/DeployBuilderEscrow.s.sol \
+  --rpc-url base-sepolia \
+  --broadcast \
+  --verify \
+  --etherscan-api-key $BASESCAN_API_KEY
+```
+
+**On Celo Sepolia:**
+```bash
+forge script script/DeployBuilderEscrow.s.sol \
+  --rpc-url https://alfajores-forno.celo-testnet.org \
+  --broadcast \
+  --verify \
+  --verifier blockscout \
+  --verifier-url https://celo-sepolia.blockscout.com/api
+```
+
 ---
 
 ### Method 2: Deploy First, Verify Later
@@ -126,6 +207,20 @@ forge script script/DeployBounty.s.sol \
 **For BuilderReputation:**
 ```bash
 forge script script/DeployReputation.s.sol \
+  --rpc-url <network_rpc_url> \
+  --broadcast
+```
+
+**For BuilderTeams:**
+```bash
+forge script script/DeployBuilderTeams.s.sol \
+  --rpc-url <network_rpc_url> \
+  --broadcast
+```
+
+**For BuilderEscrow:**
+```bash
+forge script script/DeployBuilderEscrow.s.sol \
   --rpc-url <network_rpc_url> \
   --broadcast
 ```
@@ -156,6 +251,26 @@ forge verify-contract \
   --watch
 ```
 
+For BuilderTeams:
+```bash
+forge verify-contract \
+  <CONTRACT_ADDRESS> \
+  contracts/BuilderTeams.sol:BuilderTeams \
+  --chain <chain_id> \
+  --etherscan-api-key $ETHERSCAN_API_KEY \
+  --watch
+```
+
+For BuilderEscrow:
+```bash
+forge verify-contract \
+  <CONTRACT_ADDRESS> \
+  contracts/BuilderEscrow.sol:BuilderEscrow \
+  --chain <chain_id> \
+  --etherscan-api-key $ETHERSCAN_API_KEY \
+  --watch
+```
+
 **On Blockscout-based explorers (Celo):**
 
 For BuilderBounty:
@@ -173,6 +288,26 @@ For BuilderReputation:
 forge verify-contract \
   <CONTRACT_ADDRESS> \
   contracts/BuilderReputation.sol:BuilderReputation \
+  --verifier blockscout \
+  --verifier-url https://celo-sepolia.blockscout.com/api \
+  --watch
+```
+
+For BuilderTeams:
+```bash
+forge verify-contract \
+  <CONTRACT_ADDRESS> \
+  contracts/BuilderTeams.sol:BuilderTeams \
+  --verifier blockscout \
+  --verifier-url https://celo-sepolia.blockscout.com/api \
+  --watch
+```
+
+For BuilderEscrow:
+```bash
+forge verify-contract \
+  <CONTRACT_ADDRESS> \
+  contracts/BuilderEscrow.sol:BuilderEscrow \
   --verifier blockscout \
   --verifier-url https://celo-sepolia.blockscout.com/api \
   --watch
