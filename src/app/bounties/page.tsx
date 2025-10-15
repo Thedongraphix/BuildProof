@@ -108,7 +108,7 @@ export default function BountiesPage() {
     : sampleBounties
 
   return (
-    <div className="min-h-screen bg-black clean-bg fade-in">
+    <div className="min-h-screen bg-black gradient-bg fade-in">
       {/* Header */}
       <header className="flex items-center justify-between px-4 md:px-8 py-6 nav-border slide-in-left">
         <div className="flex items-center space-x-4">
@@ -163,22 +163,43 @@ export default function BountiesPage() {
       <main className="px-4 md:px-8 py-12 md:py-16">
         <div className="w-full max-w-7xl mx-auto space-y-8">
           {/* Hero Section */}
-          <div className="text-center space-y-4 fade-in">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-              Builder
-              <span className="accent-blue ml-4">Bounties</span>
+          <div className="text-center space-y-6 fade-in">
+            <div className="inline-block px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-2">
+              <span className="text-blue-400 text-sm font-medium">Decentralized Bounty Marketplace</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              <span className="text-white">Builder</span>
+              <span className="gradient-text ml-4">Bounties</span>
             </h1>
-            <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">
-              Post bounties and reward talented builders for completing your tasks
+            <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+              Post bounties, reward talented builders, and accelerate your project development with the best Web3 talent
             </p>
+            <div className="flex items-center justify-center gap-6 pt-2 text-sm text-gray-500">
+              <div className="stat-item flex flex-col items-center">
+                <span className="text-2xl font-bold text-blue-400">{sampleBounties.length}</span>
+                <span>Active Bounties</span>
+              </div>
+              <div className="w-px h-8 bg-gray-700"></div>
+              <div className="stat-item flex flex-col items-center">
+                <span className="text-2xl font-bold text-green-400">2.5 ETH</span>
+                <span>Total Rewards</span>
+              </div>
+              <div className="w-px h-8 bg-gray-700"></div>
+              <div className="stat-item flex flex-col items-center">
+                <span className="text-2xl font-bold text-purple-400">24h</span>
+                <span>Avg Response</span>
+              </div>
+            </div>
           </div>
 
           {/* Wallet Connection Alert */}
           {!isConnected && (
-            <div className="card p-4 border-blue-500/30 bg-blue-500/5">
+            <div className="glass-card p-5 border-blue-500/30 bg-blue-500/5 rounded-xl">
               <div className="flex items-center gap-3 text-blue-400">
-                <Wallet size={20} />
-                <p className="text-sm">
+                <div className="p-2 bg-blue-500/10 rounded-lg">
+                  <Wallet size={20} />
+                </div>
+                <p className="text-sm font-medium">
                   Connect your wallet to create, claim, and manage bounties
                 </p>
               </div>
@@ -187,9 +208,9 @@ export default function BountiesPage() {
 
           {/* Success Message */}
           {isSuccess && (
-            <div className="card p-4 border-green-500/30 bg-green-500/5">
-              <p className="text-green-400 text-sm">
-                ✓ Transaction successful! Your bounty action has been completed.
+            <div className="glass-card p-5 border-green-500/30 bg-green-500/5 rounded-xl">
+              <p className="text-green-400 text-sm font-medium flex items-center gap-2">
+                <span className="text-lg">✓</span> Transaction successful! Your bounty action has been completed.
               </p>
             </div>
           )}
@@ -204,13 +225,15 @@ export default function BountiesPage() {
           )}
 
           {/* Actions Bar */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <Filter size={18} className="text-gray-400" />
+          <div className="glass-card p-4 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gray-800/50 rounded-lg">
+                <Filter size={18} className="text-gray-400" />
+              </div>
               <select
                 value={statusFilter === null ? "all" : statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value === "all" ? null : parseInt(e.target.value))}
-                className="contract-input px-4 py-2 text-sm border-gray-800 rounded-lg bg-black cursor-pointer"
+                className="contract-input px-4 py-2.5 text-sm border-gray-700 rounded-lg bg-black/50 cursor-pointer focus:ring-2 focus:ring-blue-500/50"
               >
                 <option value="all">All Bounties</option>
                 <option value="0">Open</option>
@@ -222,7 +245,7 @@ export default function BountiesPage() {
 
             <Button
               onClick={() => setShowCreateForm(!showCreateForm)}
-              className="gap-2"
+              className="gap-2 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40"
             >
               <Plus size={18} />
               {showCreateForm ? "Close Form" : "Create Bounty"}
