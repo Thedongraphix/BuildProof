@@ -98,7 +98,7 @@ export default function TeamsPage() {
   } : null
 
   return (
-    <div className="min-h-screen bg-black clean-bg fade-in">
+    <div className="min-h-screen bg-black gradient-bg fade-in">
       {/* Header */}
       <header className="flex items-center justify-between px-4 md:px-8 py-6 nav-border slide-in-left">
         <div className="flex items-center space-x-4">
@@ -153,22 +153,27 @@ export default function TeamsPage() {
       <main className="px-4 md:px-8 py-12 md:py-16">
         <div className="w-full max-w-5xl mx-auto space-y-8">
           {/* Hero Section */}
-          <div className="text-center space-y-4 fade-in">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-              Builder
-              <span className="accent-blue ml-4">Teams</span>
+          <div className="text-center space-y-6 fade-in">
+            <div className="inline-block px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-2">
+              <span className="text-blue-400 text-sm font-medium">Collaborative Development</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              <span className="text-white">Builder</span>
+              <span className="gradient-text ml-4">Teams</span>
             </h1>
-            <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">
-              Form collaborative teams, split rewards, and track collective achievements
+            <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+              Form collaborative teams, split rewards automatically, and track collective achievements on-chain
             </p>
           </div>
 
           {/* Wallet Connection Alert */}
           {!isConnected && (
-            <div className="card p-4 border-blue-500/30 bg-blue-500/5">
+            <div className="glass-card p-5 border-blue-500/30 bg-blue-500/5 rounded-xl">
               <div className="flex items-center gap-3 text-blue-400">
-                <Wallet size={20} />
-                <p className="text-sm">
+                <div className="p-2 bg-blue-500/10 rounded-lg">
+                  <Wallet size={20} />
+                </div>
+                <p className="text-sm font-medium">
                   Connect your wallet to create and manage teams
                 </p>
               </div>
@@ -177,9 +182,9 @@ export default function TeamsPage() {
 
           {/* Success Message */}
           {isSuccess && (
-            <div className="card p-4 border-green-500/30 bg-green-500/5">
-              <p className="text-green-400 text-sm">
-                ✓ Team created successfully!
+            <div className="glass-card p-5 border-green-500/30 bg-green-500/5 rounded-xl">
+              <p className="text-green-400 text-sm font-medium flex items-center gap-2">
+                <span className="text-lg">✓</span> Team created successfully!
               </p>
             </div>
           )}
@@ -200,13 +205,13 @@ export default function TeamsPage() {
 
           {/* Create Team Form */}
           {showCreateForm && (
-            <div className="max-w-3xl mx-auto card p-6 fade-in">
-              <h3 className="text-xl font-bold text-white mb-6">Create New Team</h3>
+            <div className="max-w-3xl mx-auto glass-card p-8 rounded-2xl fade-in">
+              <h3 className="text-2xl font-bold text-white mb-6">Create New Team</h3>
 
               <div className="space-y-6">
                 {/* Team Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">
                     Team Name
                   </label>
                   <input
@@ -214,7 +219,7 @@ export default function TeamsPage() {
                     value={teamName}
                     onChange={(e) => setTeamName(e.target.value)}
                     placeholder="e.g., DevSquad"
-                    className="contract-input w-full px-4 py-3 text-white text-base border-gray-800 rounded-lg"
+                    className="contract-input w-full px-4 py-3 text-white text-base border-gray-700 rounded-xl bg-black/50 focus:ring-2 focus:ring-blue-500/50"
                   />
                 </div>
 
