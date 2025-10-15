@@ -45,47 +45,48 @@ export function BountyCard({
   const rewardInEth = formatEther(reward)
 
   return (
-    <Card className="hover:border-blue-500/30 transition-all duration-300">
+    <Card className="feature-card hover:border-blue-500/30 transition-all duration-300 bg-black/40 backdrop-blur-sm">
       <CardHeader>
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
-            <CardTitle className="text-xl text-white mb-2">{title}</CardTitle>
-            <span className={`inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium ${statusColors[status]}`}>
+            <CardTitle className="text-xl text-white mb-3 font-bold">{title}</CardTitle>
+            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${statusColors[status]}`}>
               {statusLabels[status]}
             </span>
           </div>
           <div className="text-right">
-            <div className="flex items-center gap-1 text-blue-400 font-bold text-xl">
-              <DollarSign size={20} />
-              {rewardInEth} ETH
+            <div className="flex flex-col items-end gap-1 p-3 bg-blue-500/10 rounded-xl border border-blue-500/20">
+              <DollarSign size={20} className="text-blue-400" />
+              <span className="text-blue-400 font-bold text-xl">{rewardInEth}</span>
+              <span className="text-gray-400 text-xs font-medium">ETH</span>
             </div>
           </div>
         </div>
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <p className="text-gray-400 text-sm line-clamp-2">{description}</p>
+        <p className="text-gray-400 text-sm leading-relaxed line-clamp-3">{description}</p>
 
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div className="flex items-center gap-2 text-gray-400">
-            <User size={16} />
-            <span className="truncate">
-              Creator: {creator.slice(0, 6)}...{creator.slice(-4)}
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 p-2 bg-gray-900/30 rounded-lg">
+            <User size={16} className="text-gray-500" />
+            <span className="text-gray-400 text-xs font-medium">
+              {creator.slice(0, 6)}...{creator.slice(-4)}
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-gray-400">
-            <Clock size={16} className={isExpired ? "text-red-400" : ""} />
-            <span className={isExpired ? "text-red-400" : ""}>
+          <div className="flex items-center gap-2 p-2 bg-gray-900/30 rounded-lg">
+            <Clock size={16} className={isExpired ? "text-red-400" : "text-gray-500"} />
+            <span className={`text-xs font-medium ${isExpired ? "text-red-400" : "text-gray-400"}`}>
               {isExpired ? "Expired" : deadlineDate.toLocaleDateString()}
             </span>
           </div>
 
           {claimer && (
-            <div className="flex items-center gap-2 text-gray-400 col-span-2">
-              <FileText size={16} />
-              <span className="truncate">
-                Claimer: {claimer.slice(0, 6)}...{claimer.slice(-4)}
+            <div className="flex items-center gap-2 p-2 bg-gray-900/30 rounded-lg">
+              <FileText size={16} className="text-gray-500" />
+              <span className="text-gray-400 text-xs font-medium">
+                {claimer.slice(0, 6)}...{claimer.slice(-4)}
               </span>
             </div>
           )}
