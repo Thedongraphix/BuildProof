@@ -101,7 +101,7 @@ export default function ReputationPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black clean-bg fade-in">
+    <div className="min-h-screen bg-black gradient-bg fade-in">
       {/* Header */}
       <header className="flex items-center justify-between px-4 md:px-8 py-6 nav-border slide-in-left">
         <div className="flex items-center space-x-4">
@@ -156,55 +156,62 @@ export default function ReputationPage() {
       <main className="px-4 md:px-8 py-12 md:py-16">
         <div className="w-full max-w-5xl mx-auto space-y-8">
           {/* Hero Section */}
-          <div className="text-center space-y-4 fade-in">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-              Builder
-              <span className="accent-blue ml-4">Reputation</span>
+          <div className="text-center space-y-6 fade-in">
+            <div className="inline-block px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-2">
+              <span className="text-blue-400 text-sm font-medium">On-Chain Reputation System</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              <span className="text-white">Builder</span>
+              <span className="gradient-text ml-4">Reputation</span>
             </h1>
-            <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">
-              Track on-chain reputation, skills, and achievements for builders
+            <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+              Track verified on-chain reputation, showcase skills, and earn achievements that demonstrate your expertise
             </p>
           </div>
 
           {/* Search Section */}
           <div className="max-w-3xl mx-auto">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1 relative">
-                <label className="block text-sm font-medium text-gray-400 mb-3">
-                  Search Builder Address
-                </label>
-                <input
-                  type="text"
-                  value={searchAddress}
-                  onChange={(e) => setSearchAddress(e.target.value)}
-                  placeholder="0x742d35c6d46ad0c8f121d0c0e98f5e6e9d8b9c7a"
-                  className="contract-input w-full px-6 py-4 text-white text-base border-gray-800 rounded-lg"
-                />
-                {!isValidAddress(searchAddress) && searchAddress && (
-                  <div className="absolute top-full mt-2 text-red-400 text-sm">
-                    Invalid address format
-                  </div>
-                )}
-              </div>
-              <div className="flex flex-col justify-end">
-                <Button
-                  onClick={handleSearch}
-                  disabled={!searchAddress || !isValidAddress(searchAddress)}
-                  className="px-8 py-4"
-                >
-                  <Search className="inline mr-2" size={18} />
-                  Search
-                </Button>
+            <div className="glass-card p-6 rounded-2xl">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1 relative">
+                  <label className="block text-sm font-semibold text-gray-300 mb-3">
+                    Search Builder Address
+                  </label>
+                  <input
+                    type="text"
+                    value={searchAddress}
+                    onChange={(e) => setSearchAddress(e.target.value)}
+                    placeholder="0x742d35c6d46ad0c8f121d0c0e98f5e6e9d8b9c7a"
+                    className="contract-input w-full px-6 py-4 text-white text-base border-gray-700 rounded-xl bg-black/50 focus:ring-2 focus:ring-blue-500/50"
+                  />
+                  {!isValidAddress(searchAddress) && searchAddress && (
+                    <div className="absolute top-full mt-2 text-red-400 text-sm flex items-center gap-1">
+                      <span>⚠</span> Invalid address format
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-col justify-end">
+                  <Button
+                    onClick={handleSearch}
+                    disabled={!searchAddress || !isValidAddress(searchAddress)}
+                    className="px-8 py-4 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40"
+                  >
+                    <Search className="inline mr-2" size={18} />
+                    Search
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Wallet Connection Alert */}
           {!isConnected && (
-            <div className="card p-4 border-blue-500/30 bg-blue-500/5">
+            <div className="glass-card p-5 border-blue-500/30 bg-blue-500/5 rounded-xl">
               <div className="flex items-center gap-3 text-blue-400">
-                <Wallet size={20} />
-                <p className="text-sm">
+                <div className="p-2 bg-blue-500/10 rounded-lg">
+                  <Wallet size={20} />
+                </div>
+                <p className="text-sm font-medium">
                   Connect your wallet to view and register your builder profile
                 </p>
               </div>
@@ -213,9 +220,9 @@ export default function ReputationPage() {
 
           {/* Success Message */}
           {isSuccess && (
-            <div className="card p-4 border-green-500/30 bg-green-500/5">
-              <p className="text-green-400 text-sm">
-                ✓ Registration successful! Your builder profile has been created.
+            <div className="glass-card p-5 border-green-500/30 bg-green-500/5 rounded-xl">
+              <p className="text-green-400 text-sm font-medium flex items-center gap-2">
+                <span className="text-lg">✓</span> Registration successful! Your builder profile has been created.
               </p>
             </div>
           )}
