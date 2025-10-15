@@ -139,6 +139,12 @@ export default function ReputationPage() {
           >
             Teams
           </Link>
+          <Link
+            href="/dashboard"
+            className="text-gray-400 hover:text-white transition-colors text-sm font-medium"
+          >
+            Dashboard
+          </Link>
           <appkit-button />
           <a
             href="https://github.com/Thedongraphix/BuildProof"
