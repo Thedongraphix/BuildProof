@@ -122,39 +122,21 @@ export default function Home() {
             {/* Hero section */}
             <div className="text-center space-y-8 fade-in">
               <div className="space-y-6">
-                <div className="inline-block px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-4">
-                  <span className="text-blue-400 text-sm font-medium">Enterprise-Grade Security Platform</span>
-                </div>
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight stagger-1">
                   <span className="text-white">Smart Contract</span>
                   <br />
-                  <span className="gradient-text stagger-2">Verification Platform</span>
+                  <span className="text-blue-500 stagger-2">Verification</span>
                 </h1>
                 <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed stagger-3">
-                  Institutional-grade security analysis powered by advanced verification protocols.
-                  Trusted by leading DeFi projects for comprehensive smart contract auditing.
+                  Professional security analysis for smart contracts. Verify code integrity and security vulnerabilities across multiple blockchain networks.
                 </p>
-                <div className="flex items-center justify-center gap-8 pt-4 text-sm text-gray-500">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    <span>Real-time Analysis</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                    <span>Multi-Chain Support</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                    <span>99.9% Uptime</span>
-                  </div>
-                </div>
               </div>
             </div>
 
             {/* Input section */}
             <div className="space-y-8">
               <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
-                <div className="glass-card p-8 rounded-2xl space-y-6">
+                <div className="card p-8 space-y-6">
                   <div className="flex flex-col md:flex-row gap-4">
                     <div className="flex-1 relative">
                       <label className="block text-sm font-semibold text-gray-300 mb-3">
@@ -165,7 +147,7 @@ export default function Home() {
                         value={contractAddress}
                         onChange={handleInputChange}
                         placeholder="0x742d35c6d46ad0c8f121d0c0e98f5e6e9d8b9c7a"
-                        className="contract-input w-full px-6 py-4 text-white text-base border-gray-700 rounded-xl bg-black/50 focus:ring-2 focus:ring-blue-500/50"
+                        className="contract-input w-full px-6 py-4 text-white text-base border-gray-700 bg-black"
                       />
                       {!isValidAddress(contractAddress) && contractAddress && (
                         <div className="absolute top-full mt-2 text-red-400 text-sm flex items-center gap-1">
@@ -182,10 +164,10 @@ export default function Home() {
                       <select
                         value={selectedNetwork}
                         onChange={(e) => setSelectedNetwork(e.target.value)}
-                        className="contract-input w-full px-6 py-4 text-white text-base border-gray-700 rounded-xl bg-black/50 cursor-pointer focus:ring-2 focus:ring-blue-500/50"
+                        className="contract-input w-full px-6 py-4 text-white text-base border-gray-700 bg-black cursor-pointer"
                       >
                         {networks.map((network) => (
-                          <option key={network.id} value={network.id} className="bg-gray-900">
+                          <option key={network.id} value={network.id} className="bg-black">
                             {network.name}
                           </option>
                         ))}
@@ -195,7 +177,7 @@ export default function Home() {
                       <button
                         type="submit"
                         disabled={!contractAddress || !isValidAddress(contractAddress) || isLoading}
-                        className="btn-primary px-8 py-4 font-semibold rounded-xl disabled:cursor-not-allowed shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all"
+                        className="btn-primary px-8 py-4 font-semibold disabled:cursor-not-allowed"
                       >
                         <Search className="inline mr-2" size={18} />
                         {isLoading ? 'Analyzing...' : 'Verify Contract'}
@@ -213,7 +195,7 @@ export default function Home() {
                   Try Sample Contracts
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="feature-card card p-5 hover:bg-gray-900/30 transition-all cursor-pointer rounded-xl" onClick={() => handleSampleClick(TEST_CONTRACTS.BASE_SEPOLIA_USDC, 'baseTestnet')}>
+                  <div className="card p-5 cursor-pointer" onClick={() => handleSampleClick(TEST_CONTRACTS.BASE_SEPOLIA_USDC, 'baseTestnet')}>
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="font-medium text-white">Base USDC</h4>
@@ -226,7 +208,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="feature-card card p-5 hover:bg-gray-900/30 transition-all cursor-pointer rounded-xl" onClick={() => handleSampleClick(TEST_CONTRACTS.BASE_SEPOLIA_WETH, 'baseTestnet')}>
+                  <div className="card p-5 cursor-pointer" onClick={() => handleSampleClick(TEST_CONTRACTS.BASE_SEPOLIA_WETH, 'baseTestnet')}>
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="font-medium text-white">Base WETH</h4>
@@ -239,7 +221,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="feature-card card p-5 hover:bg-gray-900/30 transition-all cursor-pointer rounded-xl" onClick={() => handleSampleClick(TEST_CONTRACTS.USDC, 'ethereum')}>
+                  <div className="card p-5 cursor-pointer" onClick={() => handleSampleClick(TEST_CONTRACTS.USDC, 'ethereum')}>
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="font-medium text-white">ETH USDC</h4>
