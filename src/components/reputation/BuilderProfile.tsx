@@ -37,12 +37,11 @@ export function BuilderProfile({
   return (
     <div className="space-y-6">
       {/* Main Profile Card */}
-      <Card className="glass-card overflow-hidden">
-        <CardHeader className="relative">
-          <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-blue-500/20"></div>
-          <div className="relative flex items-start justify-between pt-8">
+      <Card>
+        <CardHeader>
+          <div className="flex items-start justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 ring-4 ring-black">
+              <div className="w-20 h-20 bg-blue-500 flex items-center justify-center border border-blue-500">
                 <User size={40} className="text-white" />
               </div>
               <div>
@@ -51,12 +50,12 @@ export function BuilderProfile({
                   {address.slice(0, 6)}...{address.slice(-4)}
                 </p>
                 <div className="flex items-center gap-2 mt-3">
-                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                    isActive ? "text-green-400 bg-green-400/10 border border-green-400/30" : "text-gray-400 bg-gray-400/10 border border-gray-400/30"
+                  <span className={`inline-flex items-center px-3 py-1 text-xs font-semibold ${
+                    isActive ? "text-blue-400 border border-blue-500" : "text-gray-400 border border-gray-400"
                   }`}>
-                    {isActive ? "● Active" : "○ Inactive"}
+                    {isActive ? "Active" : "Inactive"}
                   </span>
-                  <span className="text-xs text-gray-500 bg-gray-900/50 px-3 py-1 rounded-full">
+                  <span className="text-xs text-gray-500 border border-gray-800 px-3 py-1">
                     Joined {joinedDate.toLocaleDateString()}
                   </span>
                 </div>
@@ -67,28 +66,28 @@ export function BuilderProfile({
 
         <CardContent className="pt-6">
           <div className="grid grid-cols-3 gap-4">
-            <div className="stat-item text-center p-4 bg-blue-500/5 border border-blue-500/20 rounded-xl hover:bg-blue-500/10 transition-all">
+            <div className="stat-item text-center p-4 border border-blue-500">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Star size={24} className="text-blue-400" />
               </div>
               <div className="text-3xl font-bold text-blue-400 mb-1">{reputationScore}</div>
-              <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Reputation</p>
+              <p className="text-xs text-gray-400 font-medium uppercase">Reputation</p>
             </div>
 
-            <div className="stat-item text-center p-4 bg-green-500/5 border border-green-500/20 rounded-xl hover:bg-green-500/10 transition-all">
+            <div className="stat-item text-center p-4 border border-blue-500">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <Briefcase size={24} className="text-green-400" />
+                <Briefcase size={24} className="text-blue-400" />
               </div>
-              <div className="text-3xl font-bold text-green-400 mb-1">{completedProjects}</div>
-              <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Projects</p>
+              <div className="text-3xl font-bold text-blue-400 mb-1">{completedProjects}</div>
+              <p className="text-xs text-gray-400 font-medium uppercase">Projects</p>
             </div>
 
-            <div className="stat-item text-center p-4 bg-yellow-500/5 border border-yellow-500/20 rounded-xl hover:bg-yellow-500/10 transition-all">
+            <div className="stat-item text-center p-4 border border-blue-500">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <TrendingUp size={24} className="text-yellow-400" />
+                <TrendingUp size={24} className="text-blue-400" />
               </div>
-              <div className="text-3xl font-bold text-yellow-400 mb-1">{earningsInEth}</div>
-              <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">ETH Earned</p>
+              <div className="text-3xl font-bold text-blue-400 mb-1">{earningsInEth}</div>
+              <p className="text-xs text-gray-400 font-medium uppercase">ETH Earned</p>
             </div>
           </div>
         </CardContent>
@@ -96,16 +95,16 @@ export function BuilderProfile({
 
       {/* Skills Section */}
       {skills.length > 0 && (
-        <Card className="glass-card">
+        <Card>
           <CardHeader>
-            <CardTitle className="text-xl text-white font-bold">Skills & Expertise</CardTitle>
+            <CardTitle className="text-xl text-white font-bold">Skills</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-3">
               {skills.map((skill, index) => (
                 <span
                   key={index}
-                  className="px-4 py-2 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-xl text-sm font-semibold hover:bg-blue-500/20 hover:border-blue-500/50 transition-all cursor-default"
+                  className="px-4 py-2 border border-blue-500 text-blue-400 text-sm font-semibold"
                 >
                   {skill}
                 </span>
@@ -117,11 +116,11 @@ export function BuilderProfile({
 
       {/* Achievements Section */}
       {achievements.length > 0 && (
-        <Card className="glass-card">
+        <Card>
           <CardHeader>
             <CardTitle className="text-xl text-white font-bold flex items-center gap-2">
-              <Award className="text-yellow-400" size={24} />
-              Achievements & Milestones
+              <Award className="text-blue-400" size={24} />
+              Achievements
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -129,15 +128,15 @@ export function BuilderProfile({
               {achievements.map((achievement, index) => (
                 <div
                   key={index}
-                  className="feature-card flex items-start gap-4 p-4 bg-gradient-to-r from-yellow-500/5 to-transparent border border-yellow-500/20 rounded-xl hover:border-yellow-500/40 transition-all"
+                  className="flex items-start gap-4 p-4 border border-blue-500"
                 >
-                  <div className="p-3 bg-yellow-500/10 rounded-xl">
-                    <Award className="text-yellow-400" size={24} />
+                  <div className="p-3 border border-blue-500">
+                    <Award className="text-blue-400" size={24} />
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-white text-lg mb-1">{achievement.title}</h4>
                     <p className="text-sm text-gray-400 leading-relaxed mb-2">{achievement.description}</p>
-                    <p className="text-xs text-gray-500 bg-gray-900/50 inline-block px-3 py-1 rounded-full">
+                    <p className="text-xs text-gray-500 border border-gray-800 inline-block px-3 py-1">
                       Earned {new Date(achievement.earnedAt * 1000).toLocaleDateString()}
                     </p>
                   </div>

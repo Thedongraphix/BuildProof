@@ -45,17 +45,17 @@ export function BountyCard({
   const rewardInEth = formatEther(reward)
 
   return (
-    <Card className="feature-card hover:border-blue-500/30 transition-all duration-300 bg-black/40 backdrop-blur-sm">
+    <Card className="hover:border-blue-500 transition-all duration-300">
       <CardHeader>
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <CardTitle className="text-xl text-white mb-3 font-bold">{title}</CardTitle>
-            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${statusColors[status]}`}>
+            <span className={`inline-flex items-center px-3 py-1 text-xs font-semibold ${statusColors[status]}`}>
               {statusLabels[status]}
             </span>
           </div>
           <div className="text-right">
-            <div className="flex flex-col items-end gap-1 p-3 bg-blue-500/10 rounded-xl border border-blue-500/20">
+            <div className="flex flex-col items-end gap-1 p-3 border border-blue-500">
               <DollarSign size={20} className="text-blue-400" />
               <span className="text-blue-400 font-bold text-xl">{rewardInEth}</span>
               <span className="text-gray-400 text-xs font-medium">ETH</span>
@@ -68,14 +68,14 @@ export function BountyCard({
         <p className="text-gray-400 text-sm leading-relaxed line-clamp-3">{description}</p>
 
         <div className="space-y-2">
-          <div className="flex items-center gap-2 p-2 bg-gray-900/30 rounded-lg">
+          <div className="flex items-center gap-2 p-2 border border-gray-800">
             <User size={16} className="text-gray-500" />
             <span className="text-gray-400 text-xs font-medium">
               {creator.slice(0, 6)}...{creator.slice(-4)}
             </span>
           </div>
 
-          <div className="flex items-center gap-2 p-2 bg-gray-900/30 rounded-lg">
+          <div className="flex items-center gap-2 p-2 border border-gray-800">
             <Clock size={16} className={isExpired ? "text-red-400" : "text-gray-500"} />
             <span className={`text-xs font-medium ${isExpired ? "text-red-400" : "text-gray-400"}`}>
               {isExpired ? "Expired" : deadlineDate.toLocaleDateString()}
@@ -83,7 +83,7 @@ export function BountyCard({
           </div>
 
           {claimer && (
-            <div className="flex items-center gap-2 p-2 bg-gray-900/30 rounded-lg">
+            <div className="flex items-center gap-2 p-2 border border-gray-800">
               <FileText size={16} className="text-gray-500" />
               <span className="text-gray-400 text-xs font-medium">
                 {claimer.slice(0, 6)}...{claimer.slice(-4)}
