@@ -11,10 +11,8 @@ import {
   Users,
   Gift,
   TrendingUp,
-  Check,
-  ExternalLink
+  Check
 } from "lucide-react"
-import { Button } from "@/components/ui/button"
 
 interface LeaderboardEntry {
   rank: number
@@ -41,7 +39,7 @@ export default function ReferralsPage() {
   })
 
   // Leaderboard data
-  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([
+  const [leaderboard] = useState<LeaderboardEntry[]>([
     {
       rank: 1,
       address: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0',

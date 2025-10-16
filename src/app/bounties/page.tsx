@@ -13,7 +13,7 @@ export default function BountiesPage() {
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [statusFilter, setStatusFilter] = useState<number | null>(null)
 
-  const { address, isConnected } = useAccount()
+  const { isConnected } = useAccount()
   const { createBounty, claimBounty, submitWork, approveBounty, isPending, isConfirming, isSuccess } = useBountyContract()
   const { totalBounties } = useTotalBounties()
 

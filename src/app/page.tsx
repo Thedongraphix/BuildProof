@@ -68,7 +68,7 @@ export default function Home() {
       address: contractAddress,
       network: selectedNetwork,
       timestamp: Date.now(),
-      status: 'success'
+      status: 'success' as const
     }, ...prev].slice(0, 10))
   }
 

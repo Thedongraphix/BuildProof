@@ -18,7 +18,7 @@ export default function ReputationPage() {
   const { registerBuilder, isPending, isConfirming, isSuccess } = useReputationContract()
 
   // Fetch profile data for lookup address
-  const { profile, isLoading: profileLoading, refetch } = useBuilderProfile(lookupAddress)
+  const { profile, isLoading: profileLoading } = useBuilderProfile(lookupAddress)
   const { skills, isLoading: skillsLoading } = useBuilderSkills(lookupAddress)
   const { achievements, isLoading: achievementsLoading } = useBuilderAchievements(lookupAddress)
 
