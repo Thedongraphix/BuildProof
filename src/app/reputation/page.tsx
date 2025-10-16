@@ -163,12 +163,12 @@ export default function ReputationPage() {
         <div className="w-full max-w-5xl mx-auto space-y-8">
           {/* Hero Section */}
           <div className="text-center space-y-6 fade-in">
-            <div className="inline-block px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-2">
+            <div className="inline-block px-4 py-2 bg-blue-500/10 border border-blue-500/20 mb-2">
               <span className="text-blue-400 text-sm font-medium">On-Chain Reputation System</span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
               <span className="text-white">Builder</span>
-              <span className="gradient-text ml-4">Reputation</span>
+              <span className="text-blue-500 ml-4">Reputation</span>
             </h1>
             <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
               Track verified on-chain reputation, showcase skills, and earn achievements that demonstrate your expertise
@@ -177,7 +177,7 @@ export default function ReputationPage() {
 
           {/* Search Section */}
           <div className="max-w-3xl mx-auto">
-            <div className="glass-card p-6 rounded-2xl">
+            <div className="card p-6">
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1 relative">
                   <label className="block text-sm font-semibold text-gray-300 mb-3">
@@ -188,7 +188,7 @@ export default function ReputationPage() {
                     value={searchAddress}
                     onChange={(e) => setSearchAddress(e.target.value)}
                     placeholder="0x742d35c6d46ad0c8f121d0c0e98f5e6e9d8b9c7a"
-                    className="contract-input w-full px-6 py-4 text-white text-base border-gray-700 rounded-xl bg-black/50 focus:ring-2 focus:ring-blue-500/50"
+                    className="contract-input w-full px-6 py-4 text-white text-base border-gray-700 bg-black"
                   />
                   {!isValidAddress(searchAddress) && searchAddress && (
                     <div className="absolute top-full mt-2 text-red-400 text-sm flex items-center gap-1">
@@ -200,7 +200,7 @@ export default function ReputationPage() {
                   <Button
                     onClick={handleSearch}
                     disabled={!searchAddress || !isValidAddress(searchAddress)}
-                    className="px-8 py-4 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40"
+                    className="px-8 py-4"
                   >
                     <Search className="inline mr-2" size={18} />
                     Search
@@ -212,7 +212,7 @@ export default function ReputationPage() {
 
           {/* Wallet Connection Alert */}
           {!isConnected && (
-            <div className="glass-card p-5 border-blue-500/30 bg-blue-500/5 rounded-xl">
+            <div className="card p-5 border-blue-500/30 bg-blue-500/5">
               <div className="flex items-center gap-3 text-blue-400">
                 <div className="p-2 bg-blue-500/10 rounded-lg">
                   <Wallet size={20} />
@@ -226,7 +226,7 @@ export default function ReputationPage() {
 
           {/* Success Message */}
           {isSuccess && (
-            <div className="glass-card p-5 border-green-500/30 bg-green-500/5 rounded-xl">
+            <div className="card p-5 border-green-500/30 bg-green-500/5">
               <p className="text-green-400 text-sm font-medium flex items-center gap-2">
                 <span className="text-lg">✓</span> Registration successful! Your builder profile has been created.
               </p>
@@ -333,7 +333,7 @@ export default function ReputationPage() {
           </div>
           <div className="flex items-center gap-4 md:gap-6 text-sm text-gray-500">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-green-500 animate-pulse"></div>
               <span>Base Sepolia</span>
             </div>
           </div>
