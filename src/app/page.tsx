@@ -146,6 +146,12 @@ export default function Home() {
               Teams
             </Link>
             <Link
+              href="/referrals"
+              className="text-gray-400 hover:text-white transition-colors text-sm font-medium"
+            >
+              Referrals
+            </Link>
+            <Link
               href="/dashboard"
               className="text-gray-400 hover:text-white transition-colors text-sm font-medium"
             >
