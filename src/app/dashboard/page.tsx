@@ -191,12 +191,12 @@ export default function DashboardPage() {
           <div className="space-y-6 fade-in">
             <div className="flex items-center justify-between">
               <div>
-                <div className="inline-block px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-3">
+                <div className="inline-block px-4 py-2 bg-blue-500/10 border border-blue-500/20 mb-3">
                   <span className="text-blue-400 text-sm font-medium">Builder Overview</span>
                 </div>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
                   <span className="text-white">Your</span>
-                  <span className="gradient-text ml-4">Dashboard</span>
+                  <span className="text-blue-500 ml-4">Dashboard</span>
                 </h1>
                 <p className="text-gray-400 text-lg mt-3">
                   {isConnected ? `Welcome back, ${address?.slice(0, 6)}...${address?.slice(-4)}` : "Connect your wallet to view your stats"}
@@ -213,9 +213,9 @@ export default function DashboardPage() {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="glass-card p-6 rounded-xl stat-item hover:border-blue-500/30 transition-all">
+            <div className="card p-6 stat-item hover:border-blue-500/30 transition-all">
               <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-blue-500/10 rounded-xl">
+                <div className="p-3 bg-blue-500/10">
                   <Briefcase className="text-blue-400" size={24} />
                 </div>
                 <TrendingUp className="text-green-400" size={20} />
@@ -227,9 +227,9 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="glass-card p-6 rounded-xl stat-item hover:border-green-500/30 transition-all">
+            <div className="card p-6 stat-item hover:border-green-500/30 transition-all">
               <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-green-500/10 rounded-xl">
+                <div className="p-3 bg-green-500/10">
                   <DollarSign className="text-green-400" size={24} />
                 </div>
                 <Zap className="text-yellow-400" size={20} />
@@ -241,9 +241,9 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="glass-card p-6 rounded-xl stat-item hover:border-purple-500/30 transition-all">
+            <div className="card p-6 stat-item hover:border-purple-500/30 transition-all">
               <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-purple-500/10 rounded-xl">
+                <div className="p-3 bg-purple-500/10">
                   <Award className="text-purple-400" size={24} />
                 </div>
                 <TrendingUp className="text-green-400" size={20} />
@@ -255,9 +255,9 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="glass-card p-6 rounded-xl stat-item hover:border-yellow-500/30 transition-all">
+            <div className="card p-6 stat-item hover:border-yellow-500/30 transition-all">
               <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-yellow-500/10 rounded-xl">
+                <div className="p-3 bg-yellow-500/10">
                   <Users className="text-yellow-400" size={24} />
                 </div>
                 <CheckCircle className="text-green-400" size={20} />
@@ -276,8 +276,8 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {quickActions.map((action, index) => (
                 <Link key={index} href={action.link}>
-                  <div className="feature-card glass-card p-6 rounded-xl hover:border-blue-500/30 transition-all cursor-pointer group">
-                    <div className={`p-3 bg-${action.color}-500/10 rounded-xl w-fit mb-4 group-hover:scale-110 transition-transform`}>
+                  <div className="feature-card card p-6 hover:border-blue-500/30 transition-all cursor-pointer group">
+                    <div className={`p-3 bg-${action.color}-500/10 w-fit mb-4 group-hover:scale-110 transition-transform`}>
                       <action.icon className={`text-${action.color}-400`} size={24} />
                     </div>
                     <h3 className="text-lg font-semibold text-white mb-1">{action.title}</h3>
@@ -296,7 +296,7 @@ export default function DashboardPage() {
                 <select
                   value={timeRange}
                   onChange={(e) => setTimeRange(e.target.value as "week" | "month" | "all")}
-                  className="contract-input px-3 py-2 text-sm border-gray-700 rounded-lg bg-black/50 cursor-pointer focus:ring-2 focus:ring-blue-500/50"
+                  className="contract-input px-3 py-2 text-sm border-gray-700 rounded-lg bg-black cursor-pointer"
                 >
                   <option value="week">This Week</option>
                   <option value="month">This Month</option>
@@ -308,7 +308,7 @@ export default function DashboardPage() {
                 {recentActivity.map((activity) => (
                   <div
                     key={activity.id}
-                    className={`glass-card p-4 rounded-xl ${getStatusColor(activity.status)} hover:border-blue-500/30 transition-all`}
+                    className={`card p-4 ${getStatusColor(activity.status)} hover:border-blue-500/30 transition-all`}
                   >
                     <div className="flex items-start gap-4">
                       <div className="p-2 bg-gray-900/50 rounded-lg">
@@ -337,15 +337,15 @@ export default function DashboardPage() {
             <div className="space-y-4">
               <h2 className="text-2xl font-bold text-white">Performance</h2>
 
-              <div className="glass-card p-6 rounded-xl space-y-6">
+              <div className="card p-6 space-y-6">
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm text-gray-400 font-medium">Completion Rate</span>
                     <span className="text-sm text-green-400 font-semibold">{stats.successRate}%</span>
                   </div>
-                  <div className="w-full bg-gray-800 rounded-full h-2">
+                  <div className="w-full bg-gray-800 h-2">
                     <div
-                      className="bg-gradient-to-r from-green-500 to-green-400 h-2 rounded-full"
+                      className="bg-blue-500 h-2"
                       style={{ width: `${stats.successRate}%` }}
                     ></div>
                   </div>
@@ -356,18 +356,18 @@ export default function DashboardPage() {
                     <span className="text-sm text-gray-400 font-medium">Response Time</span>
                     <span className="text-sm text-blue-400 font-semibold">Excellent</span>
                   </div>
-                  <div className="w-full bg-gray-800 rounded-full h-2">
-                    <div className="bg-gradient-to-r from-blue-500 to-blue-400 h-2 rounded-full" style={{ width: "88%" }}></div>
+                  <div className="w-full bg-gray-800 h-2">
+                    <div className="bg-blue-500 h-2" style={{ width: "88%" }}></div>
                   </div>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm text-gray-400 font-medium">Quality Score</span>
-                    <span className="text-sm text-purple-400 font-semibold">4.8/5.0</span>
+                    <span className="text-sm text-blue-400 font-semibold">4.8/5.0</span>
                   </div>
-                  <div className="w-full bg-gray-800 rounded-full h-2">
-                    <div className="bg-gradient-to-r from-purple-500 to-purple-400 h-2 rounded-full" style={{ width: "96%" }}></div>
+                  <div className="w-full bg-gray-800 h-2">
+                    <div className="bg-blue-500 h-2" style={{ width: "96%" }}></div>
                   </div>
                 </div>
 
@@ -380,7 +380,7 @@ export default function DashboardPage() {
               </div>
 
               <Link href="/reputation">
-                <Button className="w-full shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40">
+                <Button className="w-full">
                   View Full Profile
                 </Button>
               </Link>
@@ -397,7 +397,7 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center gap-4 md:gap-6 text-sm text-gray-500">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-green-500 animate-pulse"></div>
               <span>Base Sepolia</span>
             </div>
           </div>
