@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Premium professional dark theme */
+/* Simple professional dark theme - Blue & Black */
 * {
   box-sizing: border-box;
 }
@@ -16,10 +16,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Subtle gradient background */
+/* Simple background - no gradients */
 .gradient-bg {
-  background: radial-gradient(ellipse at top, rgba(59, 130, 246, 0.05) 0%, transparent 60%),
-              radial-gradient(ellipse at bottom, rgba(59, 130, 246, 0.03) 0%, transparent 60%);
+  background: #000000;
 }
 
 /* Sophisticated animations */
@@ -65,13 +64,18 @@ body {
   animation: typing 2s steps(40, end), blink 1s infinite;
 }
 
-/* Subtle blue accent - no glowing effects */
+/* Simple blue accent */
 .accent-blue {
   color: #3b82f6;
 }
 
 .border-accent {
   border-color: #3b82f6;
+}
+
+/* Simple blue text - no gradients */
+.gradient-text {
+  color: #3b82f6;
 }
 
 /* Clean terminal styling */
@@ -123,24 +127,22 @@ body {
   background: #000000;
 }
 
-/* Professional button styling */
+/* Simple button styling */
 .btn-primary {
   background: #3b82f6;
-  color: #000000;
+  color: #ffffff;
   border: none;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease;
   font-weight: 600;
 }
 
 .btn-primary:hover {
   background: #2563eb;
-  transform: translateY(-1px);
 }
 
 .btn-primary:disabled {
   background: #1a1a1a;
   color: #666666;
-  transform: none;
 }
 
 /* Status colors - blue-themed */
@@ -149,26 +151,21 @@ body {
 .status-warning { color: #f59e0b; }
 .status-info { color: #9ca3af; }
 
-/* Card styling */
+/* Simple card styling */
 .card {
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(55, 65, 81, 0.3);
-  transition: all 0.3s ease;
+  background: #000000;
+  border: 1px solid #1a1a1a;
+  transition: border-color 0.2s ease;
 }
 
 .card:hover {
-  border-color: rgba(59, 130, 246, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
 }
 
-/* Glass morphism effect */
+/* Simple glass card - minimal effect */
 .glass-card {
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  background: #000000;
+  border: 1px solid #1a1a1a;
 }
 
 /* Navigation styling */
@@ -204,15 +201,10 @@ input:focus-visible {
   outline-offset: 2px;
 }
 
-/* Hover states with hardware acceleration */
+/* Simple hover states */
 .hover-lift:hover {
-  transform: translateY(-2px);
-  transition: transform 0.2s ease;
-  will-change: transform;
-}
-
-.hover-lift {
-  transform: translateZ(0); /* Force hardware acceleration */
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
 }
 
 /* Professional borders */
@@ -226,33 +218,15 @@ input:focus-visible {
   color: #000000;
 }
 
-/* Premium gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Feature highlight */
+/* Simple feature card - no animations */
 .feature-card {
-  position: relative;
-  overflow: hidden;
+  background: #000000;
+  border: 1px solid #1a1a1a;
+  transition: border-color 0.2s ease;
 }
 
-.feature-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
-  transition: left 0.5s ease;
-}
-
-.feature-card:hover::before {
-  left: 100%;
+.feature-card:hover {
+  border-color: #3b82f6;
 }
 
 /* Stats counter animation */
