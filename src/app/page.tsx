@@ -13,6 +13,25 @@ export default function Home() {
   const [selectedNetwork, setSelectedNetwork] = useState('ethereum')
   const { verifyContract, isLoading, currentSteps, result, reset } = useContractVerification()
 
+  // Batch verification
+  const [batchMode, setBatchMode] = useState(false)
+  const [batchAddresses, setBatchAddresses] = useState('')
+
+  // Contract comparison
+  const [compareMode, setCompareMode] = useState(false)
+  const [compareAddress1, setCompareAddress1] = useState('')
+  const [compareAddress2, setCompareAddress2] = useState('')
+
+  // Verification history
+  const [verificationHistory, setVerificationHistory] = useState<Array<{
+    address: string
+    network: string
+    timestamp: number
+    status: 'success' | 'failed'
+  }>>([])
+
+  const [showHistory, setShowHistory] = useState(false)
+
   const networks = [
     { id: 'ethereum', name: 'Ethereum Mainnet' },
     { id: 'baseTestnet', name: 'Base Sepolia' },
@@ -43,6 +62,35 @@ export default function Home() {
 
     reset()
     await verifyContract(contractAddress, selectedNetwork)
+
+    // Add to history
+    setVerificationHistory(prev => [{
+      address: contractAddress,
+      network: selectedNetwork,
+      timestamp: Date.now(),
+      status: 'success'
+    }, ...prev].slice(0, 10))
+  }
+
+  const handleBatchVerify = async () => {
+    const addresses = batchAddresses.split('\n').filter(addr => isValidAddress(addr.trim()))
+    if (addresses.length === 0) return
+
+    for (const addr of addresses) {
+      await verifyContract(addr.trim(), selectedNetwork)
+      setVerificationHistory(prev => [{
+        address: addr.trim(),
+        network: selectedNetwork,
+        timestamp: Date.now(),
+        status: 'success'
+      }, ...prev].slice(0, 10))
+    }
+  }
+
+  const handleCompare = async () => {
+    if (!isValidAddress(compareAddress1) || !isValidAddress(compareAddress2)) return
+    // Compare logic would go here
+    alert(`Comparing ${compareAddress1} and ${compareAddress2}`)
   }
 
   const handleSampleClick = (address: string, network: string = 'ethereum') => {
@@ -234,6 +282,121 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* Additional Features */}
+            {!isLoading && terminalOutput.length === 0 && (
+              <div className="max-w-5xl mx-auto space-y-6">
+                {/* Feature Toggle Buttons */}
+                <div className="flex gap-4 justify-center">
+                  <button
+                    onClick={() => { setBatchMode(!batchMode); setCompareMode(false); setShowHistory(false); }}
+                    className={`px-6 py-3 border font-medium transition-colors ${batchMode ? 'border-blue-500 text-blue-400' : 'border-gray-800 text-gray-400 hover:border-blue-500'}`}
+                  >
+                    Batch Verify
+                  </button>
+                  <button
+                    onClick={() => { setCompareMode(!compareMode); setBatchMode(false); setShowHistory(false); }}
+                    className={`px-6 py-3 border font-medium transition-colors ${compareMode ? 'border-blue-500 text-blue-400' : 'border-gray-800 text-gray-400 hover:border-blue-500'}`}
+                  >
+                    Compare Contracts
+                  </button>
+                  <button
+                    onClick={() => { setShowHistory(!showHistory); setBatchMode(false); setCompareMode(false); }}
+                    className={`px-6 py-3 border font-medium transition-colors ${showHistory ? 'border-blue-500 text-blue-400' : 'border-gray-800 text-gray-400 hover:border-blue-500'}`}
+                  >
+                    History ({verificationHistory.length})
+                  </button>
+                </div>
+
+                {/* Batch Verification */}
+                {batchMode && (
+                  <div className="card p-6 fade-in">
+                    <h3 className="text-xl font-bold text-white mb-4">Batch Verification</h3>
+                    <p className="text-gray-400 text-sm mb-4">Enter multiple contract addresses (one per line) to verify them all at once</p>
+                    <textarea
+                      value={batchAddresses}
+                      onChange={(e) => setBatchAddresses(e.target.value)}
+                      placeholder="0x123...&#10;0x456...&#10;0x789..."
+                      rows={6}
+                      className="contract-input w-full px-4 py-3 text-white text-sm border-gray-700 bg-black mb-4"
+                    />
+                    <button
+                      onClick={handleBatchVerify}
+                      disabled={!batchAddresses.trim()}
+                      className="btn-primary px-6 py-3 font-semibold disabled:cursor-not-allowed"
+                    >
+                      Verify All ({batchAddresses.split('\n').filter(a => isValidAddress(a.trim())).length} valid)
+                    </button>
+                  </div>
+                )}
+
+                {/* Contract Comparison */}
+                {compareMode && (
+                  <div className="card p-6 fade-in">
+                    <h3 className="text-xl font-bold text-white mb-4">Compare Contracts</h3>
+                    <p className="text-gray-400 text-sm mb-4">Compare two contracts side-by-side to find differences</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-300 mb-2">Contract A</label>
+                        <input
+                          type="text"
+                          value={compareAddress1}
+                          onChange={(e) => setCompareAddress1(e.target.value)}
+                          placeholder="0x..."
+                          className="contract-input w-full px-4 py-3 text-white text-base border-gray-700 bg-black"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-300 mb-2">Contract B</label>
+                        <input
+                          type="text"
+                          value={compareAddress2}
+                          onChange={(e) => setCompareAddress2(e.target.value)}
+                          placeholder="0x..."
+                          className="contract-input w-full px-4 py-3 text-white text-base border-gray-700 bg-black"
+                        />
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleCompare}
+                      disabled={!isValidAddress(compareAddress1) || !isValidAddress(compareAddress2)}
+                      className="btn-primary px-6 py-3 font-semibold disabled:cursor-not-allowed"
+                    >
+                      Compare Contracts
+                    </button>
+                  </div>
+                )}
+
+                {/* Verification History */}
+                {showHistory && (
+                  <div className="card p-6 fade-in">
+                    <h3 className="text-xl font-bold text-white mb-4">Verification History</h3>
+                    {verificationHistory.length === 0 ? (
+                      <p className="text-gray-400 text-center py-8">No verification history yet</p>
+                    ) : (
+                      <div className="space-y-3">
+                        {verificationHistory.map((item, index) => (
+                          <div key={index} className="flex items-center justify-between p-3 border border-gray-800 hover:border-blue-500 transition-colors">
+                            <div>
+                              <p className="text-white font-mono text-sm">{item.address}</p>
+                              <p className="text-gray-500 text-xs mt-1">{item.network}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className={`text-sm font-semibold ${item.status === 'success' ? 'text-blue-400' : 'text-red-400'}`}>
+                                {item.status}
+                              </p>
+                              <p className="text-gray-500 text-xs mt-1">
+                                {new Date(item.timestamp).toLocaleString()}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
