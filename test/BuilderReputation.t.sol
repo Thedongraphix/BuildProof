@@ -153,7 +153,7 @@ contract BuilderReputationTest is Test {
     function test_RevertWhen_RegisterTwice() public {
         vm.startPrank(builder1);
         reputation.registerBuilder("alice_dev");
-        vm.expectRevert(bytes("Builder already registered"));
+        vm.expectRevert("Builder already registered");
         reputation.registerBuilder("alice_dev2");
         vm.stopPrank();
     }
@@ -162,7 +162,7 @@ contract BuilderReputationTest is Test {
         vm.startPrank(builder1);
         reputation.registerBuilder("alice_dev");
         reputation.addSkill("Solidity");
-        vm.expectRevert(bytes("Cannot endorse own skills"));
+        vm.expectRevert("Cannot endorse own skills");
         reputation.endorseSkill(builder1, "Solidity");
         vm.stopPrank();
     }
@@ -172,7 +172,65 @@ contract BuilderReputationTest is Test {
         reputation.registerBuilder("alice_dev");
 
         vm.prank(builder2);
-        vm.expectRevert(bytes("Not authorized to issue achievements"));
+        vm.expectRevert("Not authorized to issue achievements");
         reputation.awardAchievement(builder1, "Fake Achievement", "This should fail");
+    }
+
+    function test_GetNonExistentProfile() public {
+        address nonexistent = makeAddr("nonexistent");
+        BuilderReputation.BuilderProfile memory profile = reputation.getBuilderProfile(nonexistent);
+        assertEq(profile.builder, address(0));
+        assertEq(profile.username, "");
+        assertEq(profile.reputationScore, 0);
+    }
+
+    function test_MultipleBuildersRegistration() public {
+        address builder3 = makeAddr("builder3");
+
+        vm.prank(builder1);
+        reputation.registerBuilder("alice");
+
+        vm.prank(builder2);
+        reputation.registerBuilder("bob");
+
+        vm.prank(builder3);
+        reputation.registerBuilder("charlie");
+
+        assertEq(reputation.totalBuilders(), 3);
+    }
+
+    function test_UpdateUsernameAfterRegistration() public {
+        vm.startPrank(builder1);
+        reputation.registerBuilder("alice_old");
+
+        BuilderReputation.BuilderProfile memory profile1 = reputation.getBuilderProfile(builder1);
+        assertEq(profile1.username, "alice_old");
+
+        reputation.updateUsername("alice_new");
+
+        BuilderReputation.BuilderProfile memory profile2 = reputation.getBuilderProfile(builder1);
+        assertEq(profile2.username, "alice_new");
+
+        vm.stopPrank();
+    }
+
+    function test_MultipleProjectCompletions() public {
+        vm.prank(builder1);
+        reputation.registerBuilder("alice");
+
+        uint256 initialScore = reputation.getBuilderProfile(builder1).reputationScore;
+
+        vm.startPrank(owner);
+        reputation.recordProjectCompletion(builder1, 1 ether, 50);
+        reputation.recordProjectCompletion(builder1, 2 ether, 75);
+        reputation.recordProjectCompletion(builder1, 1.5 ether, 60);
+        vm.stopPrank();
+
+        uint256 finalScore = reputation.getBuilderProfile(builder1).reputationScore;
+        assertGt(finalScore, initialScore);
+
+        BuilderReputation.BuilderProfile memory profile = reputation.getBuilderProfile(builder1);
+        assertEq(profile.completedProjects, 3);
+        assertEq(profile.totalEarnings, 4.5 ether);
     }
 }
