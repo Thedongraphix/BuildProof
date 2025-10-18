@@ -2,8 +2,9 @@
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Clock, DollarSign, User, FileText } from "lucide-react"
+import { Clock, DollarSign, User, FileText, QrCode } from "lucide-react"
 import { formatEther } from "viem"
+import { QRCodeButton } from "@/components/ui/qr-code"
 
 interface BountyCardProps {
   bountyId: number
@@ -29,6 +30,7 @@ const statusColors = [
 ]
 
 export function BountyCard({
+  bountyId,
   title,
   description,
   reward,
@@ -43,6 +45,11 @@ export function BountyCard({
   const deadlineDate = new Date(deadline * 1000)
   const isExpired = Date.now() > deadline * 1000
   const rewardInEth = formatEther(reward)
+
+  // Generate bounty URL for QR code
+  const bountyUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/bounties?id=${bountyId}`
+    : ''
 
   return (
     <Card className="hover:border-blue-500 transition-all duration-300">
@@ -93,29 +100,39 @@ export function BountyCard({
         </div>
       </CardContent>
 
-      <CardFooter className="gap-2">
-        {status === 0 && !isExpired && onClaim && (
-          <Button onClick={onClaim} className="flex-1">
-            Claim Bounty
-          </Button>
-        )}
+      <CardFooter className="gap-2 flex-wrap">
+        <div className="flex-1 flex gap-2">
+          {status === 0 && !isExpired && onClaim && (
+            <Button onClick={onClaim} className="flex-1">
+              Claim Bounty
+            </Button>
+          )}
 
-        {status === 1 && onSubmit && (
-          <Button onClick={onSubmit} variant="outline" className="flex-1">
-            Submit Work
-          </Button>
-        )}
+          {status === 1 && onSubmit && (
+            <Button onClick={onSubmit} variant="outline" className="flex-1">
+              Submit Work
+            </Button>
+          )}
 
-        {status === 2 && onApprove && (
-          <Button onClick={onApprove} className="flex-1">
-            Approve & Pay
-          </Button>
-        )}
+          {status === 2 && onApprove && (
+            <Button onClick={onApprove} className="flex-1">
+              Approve & Pay
+            </Button>
+          )}
 
-        {status === 3 && (
-          <div className="flex-1 text-center text-sm text-gray-400">
-            Bounty Completed
-          </div>
+          {status === 3 && (
+            <div className="flex-1 text-center text-sm text-gray-400">
+              Bounty Completed
+            </div>
+          )}
+        </div>
+
+        {bountyUrl && (
+          <QRCodeButton
+            value={bountyUrl}
+            label="Share Bounty"
+            size={200}
+          />
         )}
       </CardFooter>
     </Card>
