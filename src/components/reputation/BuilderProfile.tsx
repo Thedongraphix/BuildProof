@@ -1,8 +1,9 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Award, Star, Briefcase, TrendingUp, User } from "lucide-react"
+import { Award, Star, Briefcase, TrendingUp, User, QrCode } from "lucide-react"
 import { formatEther } from "viem"
+import { QRCode } from "@/components/ui/qr-code"
 
 interface BuilderProfileProps {
   address: string
@@ -34,6 +35,11 @@ export function BuilderProfile({
   const joinedDate = new Date(joinedAt * 1000)
   const earningsInEth = formatEther(totalEarnings)
 
+  // Generate profile URL for QR code
+  const profileUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/reputation?address=${address}`
+    : ''
+
   return (
     <div className="space-y-6">
       {/* Main Profile Card */}
@@ -61,6 +67,18 @@ export function BuilderProfile({
                 </div>
               </div>
             </div>
+
+            {/* Profile QR Code */}
+            {profileUrl && (
+              <div>
+                <QRCode
+                  value={profileUrl}
+                  size={120}
+                  title={`${username}'s Profile`}
+                  description="Scan to view this builder's profile"
+                />
+              </div>
+            )}
           </div>
         </CardHeader>
 
