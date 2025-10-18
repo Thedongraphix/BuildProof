@@ -3,8 +3,9 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useAccount } from "wagmi"
-import { Github, Users, Plus, Wallet } from "lucide-react"
+import { Github, Users, Plus, Wallet, QrCode } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { QRCodeButton } from "@/components/ui/qr-code"
 import { useTeamsContract, useCreatedTeams, useMemberTeams, useTeamInfo } from "@/hooks/useTeamsContract"
 
 interface TeamMember {
@@ -316,19 +317,28 @@ export default function TeamsPage() {
                   <h3 className="text-lg font-semibold text-gray-300 mb-4">Created by You</h3>
                   <div className="grid gap-4">
                     {createdTeams.map((teamId) => (
-                      <button
+                      <div
                         key={teamId.toString()}
-                        onClick={() => setSelectedTeamId(Number(teamId))}
-                        className="card p-4 hover:border-blue-500/50 transition-colors text-left"
+                        className="card p-4 hover:border-blue-500/50 transition-colors"
                       >
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => setSelectedTeamId(Number(teamId))}
+                            className="flex items-center gap-3 flex-1 text-left"
+                          >
                             <Users size={20} className="text-blue-400" />
                             <span className="text-white font-medium">Team #{teamId.toString()}</span>
+                          </button>
+                          <div className="flex items-center gap-3">
+                            <span className="text-gray-400 text-sm">Click to view</span>
+                            <QRCodeButton
+                              value={typeof window !== 'undefined' ? `${window.location.origin}/teams?id=${teamId}` : ''}
+                              label="QR"
+                              size={150}
+                            />
                           </div>
-                          <span className="text-gray-400 text-sm">Click to view details</span>
                         </div>
-                      </button>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -340,19 +350,28 @@ export default function TeamsPage() {
                   <h3 className="text-lg font-semibold text-gray-300 mb-4">Member Of</h3>
                   <div className="grid gap-4">
                     {memberTeams.map((teamId) => (
-                      <button
+                      <div
                         key={teamId.toString()}
-                        onClick={() => setSelectedTeamId(Number(teamId))}
-                        className="card p-4 hover:border-blue-500/50 transition-colors text-left"
+                        className="card p-4 hover:border-blue-500/50 transition-colors"
                       >
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => setSelectedTeamId(Number(teamId))}
+                            className="flex items-center gap-3 flex-1 text-left"
+                          >
                             <Users size={20} className="text-gray-400" />
                             <span className="text-white font-medium">Team #{teamId.toString()}</span>
+                          </button>
+                          <div className="flex items-center gap-3">
+                            <span className="text-gray-400 text-sm">Click to view</span>
+                            <QRCodeButton
+                              value={typeof window !== 'undefined' ? `${window.location.origin}/teams?id=${teamId}` : ''}
+                              label="QR"
+                              size={150}
+                            />
                           </div>
-                          <span className="text-gray-400 text-sm">Click to view details</span>
                         </div>
-                      </button>
+                      </div>
                     ))}
                   </div>
                 </div>
