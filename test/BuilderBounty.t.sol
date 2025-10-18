@@ -142,7 +142,7 @@ contract BuilderBountyTest is Test {
 
     function test_RevertWhen_CreateBountyWithZeroReward() public {
         vm.prank(creator);
-        vm.expectRevert(bytes("Reward must be greater than 0"));
+        vm.expectRevert("Reward must be greater than 0");
         bounty.createBounty{ value: 0 }(
             "Build DApp", "Create a decentralized application", block.timestamp + 7 days
         );
@@ -153,8 +153,85 @@ contract BuilderBountyTest is Test {
         bounty.createBounty{ value: 1 ether }(
             "Build DApp", "Create a decentralized application", block.timestamp + 7 days
         );
-        vm.expectRevert(bytes("Creator cannot claim own bounty"));
+        vm.expectRevert("Creator cannot claim own bounty");
         bounty.claimBounty(0);
         vm.stopPrank();
+    }
+
+    function test_RevertWhen_DeadlineInPast() public {
+        vm.prank(creator);
+        vm.expectRevert("Deadline must be in the future");
+        bounty.createBounty{ value: 1 ether }(
+            "Build DApp",
+            "Create a decentralized application",
+            block.timestamp - 1 days
+        );
+    }
+
+    function test_RevertWhen_ClaimExpiredBounty() public {
+        vm.prank(creator);
+        bounty.createBounty{ value: 1 ether }(
+            "Build DApp",
+            "Create a decentralized application",
+            block.timestamp + 1 days
+        );
+
+        vm.warp(block.timestamp + 2 days);
+
+        vm.prank(claimer);
+        vm.expectRevert("Bounty deadline has passed");
+        bounty.claimBounty(0);
+    }
+
+    function test_MultipleBounties() public {
+        vm.startPrank(creator);
+
+        bounty.createBounty{ value: 1 ether }(
+            "Bounty 1",
+            "Description 1",
+            block.timestamp + 7 days
+        );
+
+        bounty.createBounty{ value: 2 ether }(
+            "Bounty 2",
+            "Description 2",
+            block.timestamp + 14 days
+        );
+
+        vm.stopPrank();
+
+        assertEq(bounty.totalBounties(), 2);
+
+        BuilderBounty.Bounty memory b1 = bounty.getBounty(0);
+        BuilderBounty.Bounty memory b2 = bounty.getBounty(1);
+
+        assertEq(b1.reward, 1 ether);
+        assertEq(b2.reward, 2 ether);
+    }
+
+    function test_WithdrawFees() public {
+        vm.prank(creator);
+        bounty.createBounty{ value: 1 ether }(
+            "Build DApp",
+            "Create a decentralized application",
+            block.timestamp + 7 days
+        );
+
+        vm.prank(claimer);
+        bounty.claimBounty(0);
+
+        vm.prank(claimer);
+        bounty.submitWork(0, "QmHash123");
+
+        vm.prank(creator);
+        bounty.approveBounty(0);
+
+        uint256 expectedFees = (1 ether * 25) / 10_000;
+        assertEq(bounty.collectedFees(), expectedFees);
+
+        uint256 ownerBalanceBefore = owner.balance;
+        bounty.withdrawFees();
+        assertEq(owner.balance, ownerBalanceBefore + expectedFees);
+        assertEq(bounty.collectedFees(), 0);
     }
 }
