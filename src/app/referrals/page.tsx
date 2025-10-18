@@ -11,8 +11,10 @@ import {
   Users,
   Gift,
   TrendingUp,
-  Check
+  Check,
+  QrCode
 } from "lucide-react"
+import { QRCode } from "@/components/ui/qr-code"
 
 interface LeaderboardEntry {
   rank: number
@@ -280,6 +282,43 @@ export default function ReferralsPage() {
                           >
                             <Share2 className="text-gray-400" size={20} />
                           </button>
+                        </div>
+                      </div>
+
+                      {/* QR Code Section */}
+                      <div className="mt-8 pt-8 border-t border-gray-800">
+                        <div className="flex items-center gap-3 mb-6">
+                          <QrCode className="text-blue-400" size={24} />
+                          <h3 className="text-lg font-bold text-white">QR Code</h3>
+                        </div>
+                        <div className="flex flex-col md:flex-row gap-6 items-center">
+                          <div>
+                            <QRCode
+                              value={referralLink}
+                              size={180}
+                              title="Referral QR Code"
+                              description="Share this QR code to refer builders to BuildProof"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-gray-400 text-sm mb-4">
+                              Share this QR code with other builders! They can scan it to instantly access BuildProof with your referral code applied.
+                            </p>
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-2 text-sm text-gray-400">
+                                <div className="w-2 h-2 bg-blue-500"></div>
+                                <span>Instant referral tracking</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-sm text-gray-400">
+                                <div className="w-2 h-2 bg-blue-500"></div>
+                                <span>Download and print</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-sm text-gray-400">
+                                <div className="w-2 h-2 bg-blue-500"></div>
+                                <span>Share on social media</span>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
