@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Award, Star, Briefcase, TrendingUp, User, QrCode } from "lucide-react"
+import { Award, Star, Briefcase, TrendingUp, User, QrCode, Share2 } from "lucide-react"
 import { formatEther } from "viem"
 import { QRCode } from "@/components/ui/qr-code"
 
@@ -70,13 +70,22 @@ export function BuilderProfile({
 
             {/* Profile QR Code */}
             {profileUrl && (
-              <div>
-                <QRCode
-                  value={profileUrl}
-                  size={120}
-                  title={`${username}'s Profile`}
-                  description="Scan to view this builder's profile"
-                />
+              <div className="flex flex-col items-center gap-2">
+                <div className="flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500">
+                  <Share2 className="text-blue-400" size={14} />
+                  <span className="text-blue-400 text-xs font-semibold">SHARE PROFILE</span>
+                </div>
+                <div className="relative">
+                  <div className="absolute -top-2 -right-2 bg-blue-500 text-white rounded-full p-1">
+                    <QrCode size={14} />
+                  </div>
+                  <QRCode
+                    value={profileUrl}
+                    size={120}
+                    title={`${username}'s Profile`}
+                    description="Scan to view this builder's profile"
+                  />
+                </div>
               </div>
             )}
           </div>
