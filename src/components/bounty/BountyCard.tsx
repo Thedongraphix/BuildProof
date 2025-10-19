@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Clock, DollarSign, User, FileText, QrCode } from "lucide-react"
+import { Clock, DollarSign, User, FileText, QrCode, Share2 } from "lucide-react"
 import { formatEther } from "viem"
 import { QRCodeButton } from "@/components/ui/qr-code"
 
@@ -128,11 +128,16 @@ export function BountyCard({
         </div>
 
         {bountyUrl && (
-          <QRCodeButton
-            value={bountyUrl}
-            label="Share Bounty"
-            size={200}
-          />
+          <div className="relative">
+            <div className="absolute -top-1 -right-1 bg-blue-500 text-white rounded-full p-1">
+              <Share2 size={12} />
+            </div>
+            <QRCodeButton
+              value={bountyUrl}
+              label="Share Bounty"
+              size={200}
+            />
+          </div>
         )}
       </CardFooter>
     </Card>
