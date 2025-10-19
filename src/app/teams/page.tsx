@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useAccount } from "wagmi"
-import { Github, Users, Plus, Wallet, QrCode } from "lucide-react"
+import { Github, Users, Plus, Wallet, QrCode, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { QRCodeButton } from "@/components/ui/qr-code"
 import { useTeamsContract, useCreatedTeams, useMemberTeams, useTeamInfo } from "@/hooks/useTeamsContract"
@@ -331,11 +331,16 @@ export default function TeamsPage() {
                           </button>
                           <div className="flex items-center gap-3">
                             <span className="text-gray-400 text-sm">Click to view</span>
-                            <QRCodeButton
-                              value={typeof window !== 'undefined' ? `${window.location.origin}/teams?id=${teamId}` : ''}
-                              label="QR"
-                              size={150}
-                            />
+                            <div className="relative">
+                              <div className="absolute -top-1 -right-1 bg-blue-500 text-white rounded-full p-1">
+                                <Share2 size={10} />
+                              </div>
+                              <QRCodeButton
+                                value={typeof window !== 'undefined' ? `${window.location.origin}/teams?id=${teamId}` : ''}
+                                label="QR"
+                                size={150}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -364,11 +369,16 @@ export default function TeamsPage() {
                           </button>
                           <div className="flex items-center gap-3">
                             <span className="text-gray-400 text-sm">Click to view</span>
-                            <QRCodeButton
-                              value={typeof window !== 'undefined' ? `${window.location.origin}/teams?id=${teamId}` : ''}
-                              label="QR"
-                              size={150}
-                            />
+                            <div className="relative">
+                              <div className="absolute -top-1 -right-1 bg-blue-500 text-white rounded-full p-1">
+                                <Share2 size={10} />
+                              </div>
+                              <QRCodeButton
+                                value={typeof window !== 'undefined' ? `${window.location.origin}/teams?id=${teamId}` : ''}
+                                label="QR"
+                                size={150}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
