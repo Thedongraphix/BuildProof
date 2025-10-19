@@ -287,12 +287,23 @@ export default function ReferralsPage() {
 
                       {/* QR Code Section */}
                       <div className="mt-8 pt-8 border-t border-gray-800">
-                        <div className="flex items-center gap-3 mb-6">
-                          <QrCode className="text-blue-400" size={24} />
-                          <h3 className="text-lg font-bold text-white">QR Code</h3>
+                        <div className="flex items-center justify-between mb-6">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-blue-500/10 border border-blue-500">
+                              <Share2 className="text-blue-400" size={24} />
+                            </div>
+                            <h3 className="text-lg font-bold text-white">Share Your Referral</h3>
+                          </div>
+                          <div className="flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500">
+                            <QrCode className="text-blue-400" size={16} />
+                            <span className="text-blue-400 text-xs font-semibold">SCAN TO SHARE</span>
+                          </div>
                         </div>
                         <div className="flex flex-col md:flex-row gap-6 items-center">
-                          <div>
+                          <div className="relative">
+                            <div className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 animate-pulse">
+                              SHARE
+                            </div>
                             <QRCode
                               value={referralLink}
                               size={180}
