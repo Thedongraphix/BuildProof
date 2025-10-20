@@ -36,7 +36,7 @@ polygon = "${POLYGON_RPC_URL}"
 arbitrum = "${ARBITRUM_RPC_URL}"
 base_sepolia = "https://sepolia.base.org"
 celo = "https://forno.celo.org"
-celo-sepolia = "https://forno.celo-sepolia.celo-testnet.org/"
+celo-sepolia = "${CELO_SEPOLIA_RPC_URL}"
 
 [etherscan]
 mainnet = { key = "${ETHERSCAN_API_KEY}" }
