@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Terminal } from "@/components/ui/terminal"
 import { VerificationResults } from "@/components/ui/verification-results"
 import { NetworkStatus } from "@/components/ui/network-status"
+import { GasTracker } from "@/components/ui/gas-tracker"
 import { Search, Github, Copy } from "lucide-react"
 import { useContractVerification } from "@/hooks/useContractVerification"
 import { TEST_CONTRACTS } from "@/lib/test-contracts"
@@ -243,10 +244,11 @@ export default function Home() {
               </form>
             </div>
 
-            {/* Network Status */}
+            {/* Network Status & Gas Tracker */}
             {!isLoading && terminalOutput.length === 0 && (
-              <div className="max-w-4xl mx-auto mb-8">
+              <div className="max-w-5xl mx-auto mb-8 space-y-6">
                 <NetworkStatus />
+                <GasTracker />
               </div>
             )}
 
