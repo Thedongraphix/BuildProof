@@ -7,6 +7,7 @@ import { VerificationResults } from "@/components/ui/verification-results"
 import { NetworkStatus } from "@/components/ui/network-status"
 import { GasTracker } from "@/components/ui/gas-tracker"
 import { RecentVerifications } from "@/components/ui/recent-verifications"
+import { ContractTemplates } from "@/components/ui/contract-templates"
 import { Search, Github, Copy } from "lucide-react"
 import { useContractVerification } from "@/hooks/useContractVerification"
 import { TEST_CONTRACTS } from "@/lib/test-contracts"
@@ -304,6 +305,13 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* Contract Templates */}
+            {!isLoading && terminalOutput.length === 0 && (
+              <div className="max-w-5xl mx-auto mb-8">
+                <ContractTemplates />
               </div>
             )}
 
