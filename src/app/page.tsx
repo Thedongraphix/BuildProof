@@ -8,6 +8,11 @@ import { NetworkStatus } from "@/components/ui/network-status"
 import { GasTracker } from "@/components/ui/gas-tracker"
 import { RecentVerifications } from "@/components/ui/recent-verifications"
 import { ContractTemplates } from "@/components/ui/contract-templates"
+import { AnalyticsPanel } from "@/components/ui/analytics-panel"
+import { Bookmarks } from "@/components/ui/bookmarks"
+import { AIInsights } from "@/components/ui/ai-insights"
+import { ExportPanel } from "@/components/ui/export-panel"
+import { NotificationsCenter } from "@/components/ui/notifications-center"
 import { Search, Github, Copy } from "lucide-react"
 import { useContractVerification } from "@/hooks/useContractVerification"
 import { TEST_CONTRACTS } from "@/lib/test-contracts"
@@ -161,6 +166,7 @@ export default function Home() {
             >
               Dashboard
             </Link>
+            <NotificationsCenter />
             <appkit-button />
             <a
               href="https://github.com/Thedongraphix/BuildProof"
@@ -312,6 +318,20 @@ export default function Home() {
             {!isLoading && terminalOutput.length === 0 && (
               <div className="max-w-5xl mx-auto mb-8">
                 <ContractTemplates />
+              </div>
+            )}
+
+            {/* Analytics, Bookmarks, AI Insights & Export */}
+            {!isLoading && terminalOutput.length === 0 && (
+              <div className="max-w-5xl mx-auto mb-8 space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <AnalyticsPanel />
+                  <div className="space-y-6">
+                    <Bookmarks />
+                    <ExportPanel />
+                  </div>
+                </div>
+                <AIInsights />
               </div>
             )}
 
