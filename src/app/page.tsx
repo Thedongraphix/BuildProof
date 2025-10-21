@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Terminal } from "@/components/ui/terminal"
 import { VerificationResults } from "@/components/ui/verification-results"
+import { NetworkStatus } from "@/components/ui/network-status"
 import { Search, Github, Copy } from "lucide-react"
 import { useContractVerification } from "@/hooks/useContractVerification"
 import { TEST_CONTRACTS } from "@/lib/test-contracts"
@@ -241,6 +242,13 @@ export default function Home() {
                 </div>
               </form>
             </div>
+
+            {/* Network Status */}
+            {!isLoading && terminalOutput.length === 0 && (
+              <div className="max-w-4xl mx-auto mb-8">
+                <NetworkStatus />
+              </div>
+            )}
 
             {/* Sample Contracts */}
             {!isLoading && terminalOutput.length === 0 && (
