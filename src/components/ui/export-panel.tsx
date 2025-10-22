@@ -138,7 +138,7 @@ export function ExportPanel() {
           Verification Badge
         </h4>
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/30 rounded-full">
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" className="text-green-400">
+          <svg className="w-4 h-4 text-green-400" viewBox="0 0 24 24" fill="currentColor">
             <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
           </svg>
           <span className="text-sm font-semibold text-white">Verified by BuildProof</span>

@@ -170,7 +170,7 @@ export function GasTracker() {
 
       {/* Gas Prices Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {['slow', 'standard', 'fast', 'instant'].map((speed) => (
+        {(['slow', 'standard', 'fast', 'instant'] as const).map((speed) => (
           <div key={speed} className={`card p-4 border ${getSpeedColor(speed)}`}>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -179,7 +179,7 @@ export function GasTracker() {
               </div>
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl font-bold text-white">
-                  {current[speed as keyof typeof current]?.toFixed(1)}
+                  {(current[speed] as number).toFixed(1)}
                 </span>
                 <span className="text-xs text-gray-500">Gwei</span>
               </div>

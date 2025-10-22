@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useAccount } from "wagmi"
-import { Github, Users, Plus, Wallet, QrCode, Share2 } from "lucide-react"
+import { Github, Users, Plus, Wallet, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { QRCodeButton } from "@/components/ui/qr-code"
 import { useTeamsContract, useCreatedTeams, useMemberTeams, useTeamInfo } from "@/hooks/useTeamsContract"

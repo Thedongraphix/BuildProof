@@ -18,7 +18,7 @@ import {
 } from "lucide-react"
 
 export default function StakingPage() {
-  const { address, isConnected } = useAccount()
+  const { isConnected } = useAccount()
   const [stakeAmount, setStakeAmount] = useState("")
   const [withdrawAmount, setWithdrawAmount] = useState("")
   const [selectedPeriod, setSelectedPeriod] = useState<30 | 90 | 180 | 365>(90)
@@ -232,7 +232,7 @@ export default function StakingPage() {
                     {[30, 90, 180, 365].map((days) => (
                       <button
                         key={days}
-                        onClick={() => setSelectedPeriod(days as any)}
+                        onClick={() => setSelectedPeriod(days as 30 | 90 | 180 | 365)}
                         className={`p-4 rounded border transition-all ${
                           selectedPeriod === days
                             ? 'border-blue-500 bg-blue-500/10'

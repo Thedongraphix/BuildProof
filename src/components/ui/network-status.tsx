@@ -79,8 +79,7 @@ export function NetworkStatus() {
     return 'bg-red-500'
   }
 
-  const getGasTrend = (gasPrice: string) => {
-    const price = parseFloat(gasPrice)
+  const getGasTrend = () => {
     // Simulate trend (in production, compare with historical data)
     const trend = Math.random() > 0.5 ? 'up' : 'down'
     return trend === 'up' ? (
@@ -168,7 +167,7 @@ export function NetworkStatus() {
                       <div className="flex items-center gap-1">
                         <p className="text-sm text-white font-semibold">{network.gasPrice}</p>
                         <span className="text-xs text-gray-500">Gwei</span>
-                        {getGasTrend(network.gasPrice)}
+                        {getGasTrend()}
                       </div>
                     </div>
                   </div>

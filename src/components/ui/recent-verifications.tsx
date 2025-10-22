@@ -67,12 +67,13 @@ export function RecentVerifications() {
   useEffect(() => {
     // Simulate new verifications arriving
     const interval = setInterval(() => {
+      const statuses: Array<'success' | 'failed' | 'pending'> = ['success', 'failed', 'pending']
       const newVerification: Verification = {
         id: Date.now().toString(),
         address: `0x${Math.random().toString(16).slice(2, 42)}`,
         network: ['Ethereum', 'Base Sepolia', 'Celo Sepolia'][Math.floor(Math.random() * 3)],
         chainId: [1, 84532, 11142220][Math.floor(Math.random() * 3)],
-        status: ['success', 'failed', 'pending'][Math.floor(Math.random() * 3)] as any,
+        status: statuses[Math.floor(Math.random() * 3)],
         timestamp: Date.now(),
         contractType: ['ERC20', 'ERC721', 'Custom', 'MultiSig'][Math.floor(Math.random() * 4)],
         securityScore: Math.random() > 0.3 ? Math.floor(Math.random() * 30) + 70 : undefined,

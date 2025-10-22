@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Bell, CheckCircle, AlertTriangle, Info, X } from 'lucide-react'
 
 interface Notification {

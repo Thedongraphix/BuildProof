@@ -8,7 +8,7 @@ interface Template {
   name: string
   description: string
   category: 'token' | 'nft' | 'defi' | 'governance' | 'security'
-  icon: any
+  icon: React.ComponentType<{ className?: string; size?: number }>
   verified: boolean
   deployments: number
   features: string[]

@@ -43,7 +43,7 @@ export function AnalyticsPanel() {
         </div>
         <select
           value={timeRange}
-          onChange={(e) => setTimeRange(e.target.value as any)}
+          onChange={(e) => setTimeRange(e.target.value as '24h' | '7d' | '30d' | 'all')}
           className="contract-input px-3 py-2 text-sm border-gray-700 rounded bg-black cursor-pointer"
         >
           <option value="24h">Last 24 Hours</option>
