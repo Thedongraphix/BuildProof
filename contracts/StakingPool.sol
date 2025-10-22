@@ -23,7 +23,7 @@ contract StakingPool is Ownable, ReentrancyGuard {
     }
 
     struct LockPeriodConfig {
-        uint256 days;
+        uint256 duration; // in days
         uint256 apy; // basis points
         bool enabled;
     }
@@ -40,7 +40,7 @@ contract StakingPool is Ownable, ReentrancyGuard {
     event Staked(address indexed user, uint256 amount, uint256 lockPeriod, uint256 apy, uint256 stakeId);
     event Withdrawn(address indexed user, uint256 amount, uint256 penalty, uint256 stakeId);
     event RewardsClaimed(address indexed user, uint256 amount);
-    event LockPeriodConfigured(uint256 days, uint256 apy, bool enabled);
+    event LockPeriodConfigured(uint256 lockDays, uint256 apy, bool enabled);
     event EmergencyWithdraw(address indexed user, uint256 amount);
 
     constructor(address _stakingToken) Ownable(msg.sender) {
@@ -240,7 +240,7 @@ contract StakingPool is Ownable, ReentrancyGuard {
             availableLockPeriods.push(lockDays);
         }
 
-        lockPeriods[lockDays] = LockPeriodConfig({days: lockDays, apy: apy, enabled: enabled});
+        lockPeriods[lockDays] = LockPeriodConfig({duration: lockDays, apy: apy, enabled: enabled});
 
         emit LockPeriodConfigured(lockDays, apy, enabled);
     }
