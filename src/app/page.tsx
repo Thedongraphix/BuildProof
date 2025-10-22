@@ -161,6 +161,12 @@ export default function Home() {
               Referrals
             </Link>
             <Link
+              href="/staking"
+              className="text-gray-400 hover:text-white transition-colors text-sm font-medium"
+            >
+              Staking
+            </Link>
+            <Link
               href="/dashboard"
               className="text-gray-400 hover:text-white transition-colors text-sm font-medium"
             >
