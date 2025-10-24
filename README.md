@@ -9,7 +9,7 @@
 
 <div align="center">
   <h3>🔍 Smart Contract Security Verifier</h3>
-  <p>Instantly verify and analyze the security of any smart contract on the blockchain with our advanced verification engine.</p>
+  <p>Instantly verify and analyze the security of any smart contract on the blockchain with our advanced verification engines.</p>
 </div>
 
 ---
