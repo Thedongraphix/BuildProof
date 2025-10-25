@@ -57,7 +57,7 @@ const TOKEN_ABI = [
 ] as const
 
 export function SwapInterface() {
-  const { address, isConnected } = useAccount()
+  const { isConnected } = useAccount()
   const [fromToken, setFromToken] = useState<'ETH' | 'BPROOF'>('ETH')
   const [inputAmount, setInputAmount] = useState('')
   const [outputAmount, setOutputAmount] = useState('')
@@ -115,7 +115,7 @@ export function SwapInterface() {
     if (!inputAmount || !outputAmount) return
 
     try {
-      const minOutput = parseEther(outputAmount) * BigInt(10000 - parseFloat(slippage) * 100) / 10000n
+      const minOutput = parseEther(outputAmount) * BigInt(10000 - parseFloat(slippage) * 100) / BigInt(10000)
 
       if (fromToken === 'ETH') {
         await swap({

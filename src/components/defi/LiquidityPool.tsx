@@ -139,7 +139,7 @@ export function LiquidityPool() {
         address: LIQUIDITY_POOL_ADDRESS,
         abi: POOL_ABI,
         functionName: 'addLiquidity',
-        args: [parseEther(bproofAmount), 0n],
+        args: [parseEther(bproofAmount), BigInt(0)],
         value: parseEther(ethAmount)
       })
       setBproofAmount('')
@@ -158,7 +158,7 @@ export function LiquidityPool() {
         address: LIQUIDITY_POOL_ADDRESS,
         abi: POOL_ABI,
         functionName: 'removeLiquidity',
-        args: [parseEther(liquidityAmount), 0n, 0n]
+        args: [parseEther(liquidityAmount), BigInt(0), BigInt(0)]
       })
       setLiquidityAmount('')
     } catch (error) {

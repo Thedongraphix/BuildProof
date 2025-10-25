@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useAccount } from 'wagmi'
 import { Vote, Users, TrendingUp, Clock } from 'lucide-react'
 import { useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
-import { formatEther, parseEther } from 'viem'
+import { formatEther } from 'viem'
 
 const BPROOF_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_BPROOF_TOKEN_ADDRESS as `0x${string}` || '0x0d9c6536BcF92932558E6bFF19151bb41d336e55'
 const TIMELOCK_ADDRESS = process.env.NEXT_PUBLIC_TIMELOCK_ADDRESS as `0x${string}` || '0xdAc134B725be453A9Ef2de4383066ea7CDc50DaD'
