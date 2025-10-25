@@ -33,8 +33,9 @@ contract BuilderEscrowTest is Test {
         deadlines[1] = block.timestamp + 14 days;
 
         vm.prank(client);
-        uint256 escrowId =
-            escrow.createEscrow{ value: 3 ether }(builder, "Web App Project", descriptions, amounts, deadlines);
+        uint256 escrowId = escrow.createEscrow{ value: 3 ether }(
+            builder, "Web App Project", descriptions, amounts, deadlines
+        );
 
         assertEq(escrowId, 0);
         assertEq(escrow.totalEscrows(), 1);
@@ -59,7 +60,9 @@ contract BuilderEscrowTest is Test {
 
         vm.prank(client);
         vm.expectRevert();
-        escrow.createEscrow{ value: 1 ether }(address(0), "Project", descriptions, amounts, deadlines);
+        escrow.createEscrow{ value: 1 ether }(
+            address(0), "Project", descriptions, amounts, deadlines
+        );
     }
 
     function test_RevertWhen_CreateEscrowWithSelfAsBuilder() public {
@@ -89,7 +92,9 @@ contract BuilderEscrowTest is Test {
 
         vm.prank(client);
         vm.expectRevert();
-        escrow.createEscrow{ value: 0.5 ether }(builder, "Project", descriptions, amounts, deadlines);
+        escrow.createEscrow{ value: 0.5 ether }(
+            builder, "Project", descriptions, amounts, deadlines
+        );
     }
 
     function test_CompleteMilestone() public {
@@ -104,8 +109,9 @@ contract BuilderEscrowTest is Test {
         deadlines[0] = block.timestamp + 7 days;
 
         vm.prank(client);
-        uint256 escrowId =
-            escrow.createEscrow{ value: 1 ether }(builder, "Project", descriptions, amounts, deadlines);
+        uint256 escrowId = escrow.createEscrow{ value: 1 ether }(
+            builder, "Project", descriptions, amounts, deadlines
+        );
 
         // Complete milestone
         vm.prank(builder);
@@ -127,8 +133,9 @@ contract BuilderEscrowTest is Test {
         deadlines[0] = block.timestamp + 7 days;
 
         vm.prank(client);
-        uint256 escrowId =
-            escrow.createEscrow{ value: 1 ether }(builder, "Project", descriptions, amounts, deadlines);
+        uint256 escrowId = escrow.createEscrow{ value: 1 ether }(
+            builder, "Project", descriptions, amounts, deadlines
+        );
 
         vm.prank(client);
         vm.expectRevert();
@@ -147,8 +154,9 @@ contract BuilderEscrowTest is Test {
         deadlines[0] = block.timestamp + 7 days;
 
         vm.prank(client);
-        uint256 escrowId =
-            escrow.createEscrow{ value: 1 ether }(builder, "Project", descriptions, amounts, deadlines);
+        uint256 escrowId = escrow.createEscrow{ value: 1 ether }(
+            builder, "Project", descriptions, amounts, deadlines
+        );
 
         // Complete milestone
         vm.prank(builder);
@@ -181,8 +189,9 @@ contract BuilderEscrowTest is Test {
         deadlines[0] = block.timestamp + 7 days;
 
         vm.prank(client);
-        uint256 escrowId =
-            escrow.createEscrow{ value: 1 ether }(builder, "Project", descriptions, amounts, deadlines);
+        uint256 escrowId = escrow.createEscrow{ value: 1 ether }(
+            builder, "Project", descriptions, amounts, deadlines
+        );
 
         vm.prank(client);
         vm.expectRevert();
@@ -203,8 +212,9 @@ contract BuilderEscrowTest is Test {
         deadlines[1] = block.timestamp + 14 days;
 
         vm.prank(client);
-        uint256 escrowId =
-            escrow.createEscrow{ value: 2 ether }(builder, "Project", descriptions, amounts, deadlines);
+        uint256 escrowId = escrow.createEscrow{ value: 2 ether }(
+            builder, "Project", descriptions, amounts, deadlines
+        );
 
         // Complete and approve first milestone
         vm.prank(builder);
@@ -238,8 +248,9 @@ contract BuilderEscrowTest is Test {
         deadlines[0] = block.timestamp + 7 days;
 
         vm.prank(client);
-        uint256 escrowId =
-            escrow.createEscrow{ value: 1 ether }(builder, "Project", descriptions, amounts, deadlines);
+        uint256 escrowId = escrow.createEscrow{ value: 1 ether }(
+            builder, "Project", descriptions, amounts, deadlines
+        );
 
         // Complete milestone
         vm.prank(builder);
@@ -267,8 +278,9 @@ contract BuilderEscrowTest is Test {
         deadlines[0] = block.timestamp + 7 days;
 
         vm.prank(client);
-        uint256 escrowId =
-            escrow.createEscrow{ value: 1 ether }(builder, "Project", descriptions, amounts, deadlines);
+        uint256 escrowId = escrow.createEscrow{ value: 1 ether }(
+            builder, "Project", descriptions, amounts, deadlines
+        );
 
         // Complete and dispute milestone
         vm.prank(builder);
@@ -304,8 +316,9 @@ contract BuilderEscrowTest is Test {
         deadlines[0] = block.timestamp + 7 days;
 
         vm.prank(client);
-        uint256 escrowId =
-            escrow.createEscrow{ value: 1 ether }(builder, "Project", descriptions, amounts, deadlines);
+        uint256 escrowId = escrow.createEscrow{ value: 1 ether }(
+            builder, "Project", descriptions, amounts, deadlines
+        );
 
         // Complete and dispute milestone
         vm.prank(builder);
@@ -335,8 +348,9 @@ contract BuilderEscrowTest is Test {
         deadlines[0] = block.timestamp + 7 days;
 
         vm.prank(client);
-        uint256 escrowId =
-            escrow.createEscrow{ value: 1 ether }(builder, "Project", descriptions, amounts, deadlines);
+        uint256 escrowId = escrow.createEscrow{ value: 1 ether }(
+            builder, "Project", descriptions, amounts, deadlines
+        );
 
         uint256 clientBalanceBefore = client.balance;
 
@@ -362,8 +376,9 @@ contract BuilderEscrowTest is Test {
         deadlines[0] = block.timestamp + 7 days;
 
         vm.prank(client);
-        uint256 escrowId =
-            escrow.createEscrow{ value: 1 ether }(builder, "Project", descriptions, amounts, deadlines);
+        uint256 escrowId = escrow.createEscrow{ value: 1 ether }(
+            builder, "Project", descriptions, amounts, deadlines
+        );
 
         // Complete and approve milestone
         vm.prank(builder);
@@ -395,8 +410,9 @@ contract BuilderEscrowTest is Test {
         deadlines[2] = block.timestamp + 21 days;
 
         vm.prank(client);
-        uint256 escrowId =
-            escrow.createEscrow{ value: 6 ether }(builder, "Project", descriptions, amounts, deadlines);
+        uint256 escrowId = escrow.createEscrow{ value: 6 ether }(
+            builder, "Project", descriptions, amounts, deadlines
+        );
 
         BuilderEscrow.MilestoneInfo[] memory milestones = escrow.getAllMilestones(escrowId);
 
@@ -420,12 +436,14 @@ contract BuilderEscrowTest is Test {
         deadlines[0] = block.timestamp + 7 days;
 
         vm.prank(client);
-        uint256 escrowId1 =
-            escrow.createEscrow{ value: 1 ether }(builder, "Project 1", descriptions, amounts, deadlines);
+        uint256 escrowId1 = escrow.createEscrow{ value: 1 ether }(
+            builder, "Project 1", descriptions, amounts, deadlines
+        );
 
         vm.prank(client);
-        uint256 escrowId2 =
-            escrow.createEscrow{ value: 1 ether }(builder, "Project 2", descriptions, amounts, deadlines);
+        uint256 escrowId2 = escrow.createEscrow{ value: 1 ether }(
+            builder, "Project 2", descriptions, amounts, deadlines
+        );
 
         uint256[] memory clientEscrows = escrow.getClientEscrows(client);
         uint256[] memory builderEscrows = escrow.getBuilderEscrows(builder);

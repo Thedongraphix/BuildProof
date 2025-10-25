@@ -19,12 +19,7 @@ contract BuilderGovernanceTest is Test {
         uint256 endTime
     );
 
-    event VoteCast(
-        uint256 indexed proposalId,
-        address indexed voter,
-        bool support,
-        uint256 weight
-    );
+    event VoteCast(uint256 indexed proposalId, address indexed voter, bool support, uint256 weight);
 
     function setUp() public {
         owner = address(this);
@@ -51,10 +46,8 @@ contract BuilderGovernanceTest is Test {
         vm.expectEmit(true, true, false, false);
         emit ProposalCreated(1, voter1, "Test Proposal", block.timestamp, 0);
 
-        uint256 proposalId = governance.createProposal(
-            "Test Proposal",
-            "This is a test proposal description"
-        );
+        uint256 proposalId =
+            governance.createProposal("Test Proposal", "This is a test proposal description");
 
         assertEq(proposalId, 1);
         assertEq(governance.totalProposals(), 1);

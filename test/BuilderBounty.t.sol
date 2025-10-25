@@ -162,18 +162,14 @@ contract BuilderBountyTest is Test {
         vm.prank(creator);
         vm.expectRevert("Deadline must be in the future");
         bounty.createBounty{ value: 1 ether }(
-            "Build DApp",
-            "Create a decentralized application",
-            block.timestamp - 1 days
+            "Build DApp", "Create a decentralized application", block.timestamp - 1 days
         );
     }
 
     function test_RevertWhen_ClaimExpiredBounty() public {
         vm.prank(creator);
         bounty.createBounty{ value: 1 ether }(
-            "Build DApp",
-            "Create a decentralized application",
-            block.timestamp + 1 days
+            "Build DApp", "Create a decentralized application", block.timestamp + 1 days
         );
 
         vm.warp(block.timestamp + 2 days);
@@ -186,16 +182,10 @@ contract BuilderBountyTest is Test {
     function test_MultipleBounties() public {
         vm.startPrank(creator);
 
-        bounty.createBounty{ value: 1 ether }(
-            "Bounty 1",
-            "Description 1",
-            block.timestamp + 7 days
-        );
+        bounty.createBounty{ value: 1 ether }("Bounty 1", "Description 1", block.timestamp + 7 days);
 
         bounty.createBounty{ value: 2 ether }(
-            "Bounty 2",
-            "Description 2",
-            block.timestamp + 14 days
+            "Bounty 2", "Description 2", block.timestamp + 14 days
         );
 
         vm.stopPrank();
@@ -212,9 +202,7 @@ contract BuilderBountyTest is Test {
     function test_WithdrawFees() public {
         vm.prank(creator);
         bounty.createBounty{ value: 1 ether }(
-            "Build DApp",
-            "Create a decentralized application",
-            block.timestamp + 7 days
+            "Build DApp", "Create a decentralized application", block.timestamp + 7 days
         );
 
         vm.prank(claimer);

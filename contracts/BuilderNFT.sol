@@ -30,9 +30,7 @@ contract BuilderNFT is ERC721, ERC721URIStorage, Ownable, Pausable, ReentrancyGu
 
     /// @notice Emitted when a new achievement NFT is minted
     event AchievementMinted(
-        address indexed builder,
-        uint256 indexed tokenId,
-        string achievementType
+        address indexed builder, uint256 indexed tokenId, string achievementType
     );
 
     /// @notice Emitted when base URI is updated
@@ -61,7 +59,12 @@ contract BuilderNFT is ERC721, ERC721URIStorage, Ownable, Pausable, ReentrancyGu
         address builder,
         string calldata achievementType,
         string calldata tokenURI
-    ) external onlyOwner whenNotPaused nonReentrant {
+    )
+        external
+        onlyOwner
+        whenNotPaused
+        nonReentrant
+    {
         if (builder == address(0)) revert InvalidAddress();
         if (bytes(achievementType).length == 0) revert InvalidAchievementType();
         if (_tokenIdCounter > MAX_SUPPLY) revert MaxSupplyReached();
@@ -92,18 +95,21 @@ contract BuilderNFT is ERC721, ERC721URIStorage, Ownable, Pausable, ReentrancyGu
         address[] calldata builders,
         string[] calldata achievementTypes,
         string[] calldata tokenURIs
-    ) external onlyOwner whenNotPaused nonReentrant {
+    )
+        external
+        onlyOwner
+        whenNotPaused
+        nonReentrant
+    {
         uint256 length = builders.length;
         require(
-            length == achievementTypes.length && length == tokenURIs.length,
-            "Array length mismatch"
+            length == achievementTypes.length && length == tokenURIs.length, "Array length mismatch"
         );
 
         for (uint256 i = 0; i < length; i++) {
             if (
-                builders[i] != address(0) &&
-                !builderAchievements[builders[i]][achievementTypes[i]] &&
-                _tokenIdCounter <= MAX_SUPPLY
+                builders[i] != address(0) && !builderAchievements[builders[i]][achievementTypes[i]]
+                    && _tokenIdCounter <= MAX_SUPPLY
             ) {
                 uint256 tokenId = _tokenIdCounter;
                 _tokenIdCounter++;
@@ -129,7 +135,11 @@ contract BuilderNFT is ERC721, ERC721URIStorage, Ownable, Pausable, ReentrancyGu
     function hasAchievement(
         address builder,
         string calldata achievementType
-    ) external view returns (bool) {
+    )
+        external
+        view
+        returns (bool)
+    {
         return builderAchievements[builder][achievementType];
     }
 
@@ -158,18 +168,24 @@ contract BuilderNFT is ERC721, ERC721URIStorage, Ownable, Pausable, ReentrancyGu
     /**
      * @dev Override required by Solidity for ERC721URIStorage
      */
-    function tokenURI(
-        uint256 tokenId
-    ) public view override(ERC721, ERC721URIStorage) returns (string memory) {
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
         return super.tokenURI(tokenId);
     }
 
     /**
      * @dev Override required by Solidity for ERC721URIStorage
      */
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view override(ERC721, ERC721URIStorage) returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (bool)
+    {
         return super.supportsInterface(interfaceId);
     }
 }

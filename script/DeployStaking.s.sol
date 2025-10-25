@@ -71,10 +71,18 @@ contract DeployStaking is Script {
         // Log verification commands
         console.log("=== Verification Commands ===");
         console.log("Verify RewardToken:");
-        console.log("forge verify-contract", address(rewardToken), "contracts/RewardToken.sol:RewardToken --chain base-sepolia --watch");
+        console.log(
+            "forge verify-contract",
+            address(rewardToken),
+            "contracts/RewardToken.sol:RewardToken --chain base-sepolia --watch"
+        );
         console.log("");
         console.log("Verify StakingPool:");
-        console.log("forge verify-contract", address(stakingPool), "contracts/StakingPool.sol:StakingPool --chain base-sepolia --watch");
+        console.log(
+            "forge verify-contract",
+            address(stakingPool),
+            "contracts/StakingPool.sol:StakingPool --chain base-sepolia --watch"
+        );
         console.log("Constructor args:", address(rewardToken));
         console.log("");
 

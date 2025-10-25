@@ -44,7 +44,9 @@ contract BuilderTeams {
 
     uint256 public totalTeams;
 
-    event TeamCreated(uint256 indexed teamId, string name, address indexed creator, uint256 timestamp);
+    event TeamCreated(
+        uint256 indexed teamId, string name, address indexed creator, uint256 timestamp
+    );
 
     event MemberAdded(uint256 indexed teamId, address indexed member, uint256 share);
 
@@ -94,7 +96,9 @@ contract BuilderTeams {
     {
         require(bytes(_name).length > 0, "Team name cannot be empty");
         require(_initialMembers.length > 0, "Must have at least one member");
-        require(_initialMembers.length == _initialShares.length, "Members and shares length mismatch");
+        require(
+            _initialMembers.length == _initialShares.length, "Members and shares length mismatch"
+        );
 
         uint256 teamId = totalTeams++;
         Team storage team = teams[teamId];
@@ -269,7 +273,10 @@ contract BuilderTeams {
      * @param _teamId Team ID
      * @param _earnings Amount earned
      */
-    function recordBountyCompletion(uint256 _teamId, uint256 _earnings)
+    function recordBountyCompletion(
+        uint256 _teamId,
+        uint256 _earnings
+    )
         external
         teamExists(_teamId)
         teamIsActive(_teamId)
@@ -366,7 +373,10 @@ contract BuilderTeams {
      * @param _member Address to check
      * @return Boolean indicating membership
      */
-    function isMember(uint256 _teamId, address _member)
+    function isMember(
+        uint256 _teamId,
+        address _member
+    )
         external
         view
         teamExists(_teamId)
@@ -381,7 +391,10 @@ contract BuilderTeams {
      * @param _member Address of the member
      * @return Share percentage in basis points
      */
-    function getMemberShare(uint256 _teamId, address _member)
+    function getMemberShare(
+        uint256 _teamId,
+        address _member
+    )
         external
         view
         teamExists(_teamId)

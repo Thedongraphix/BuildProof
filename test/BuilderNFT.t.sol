@@ -11,9 +11,7 @@ contract BuilderNFTTest is Test {
     address public builder2;
 
     event AchievementMinted(
-        address indexed builder,
-        uint256 indexed tokenId,
-        string achievementType
+        address indexed builder, uint256 indexed tokenId, string achievementType
     );
 
     function setUp() public {

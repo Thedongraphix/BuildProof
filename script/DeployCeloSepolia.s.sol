@@ -68,14 +68,32 @@ contract DeployCeloSepolia is Script {
         console.log("View contracts on Celo Sepolia Block Explorer:");
         console.log("https://celo-sepolia.blockscout.com/");
         console.log("");
-        console.log("BuilderNFT:", string.concat("https://celo-sepolia.blockscout.com/address/", _addressToString(address(nft))));
-        console.log("BuilderStaking:", string.concat("https://celo-sepolia.blockscout.com/address/", _addressToString(address(staking))));
-        console.log("BuilderGovernance:", string.concat("https://celo-sepolia.blockscout.com/address/", _addressToString(address(governance))));
+        console.log(
+            "BuilderNFT:",
+            string.concat(
+                "https://celo-sepolia.blockscout.com/address/", _addressToString(address(nft))
+            )
+        );
+        console.log(
+            "BuilderStaking:",
+            string.concat(
+                "https://celo-sepolia.blockscout.com/address/", _addressToString(address(staking))
+            )
+        );
+        console.log(
+            "BuilderGovernance:",
+            string.concat(
+                "https://celo-sepolia.blockscout.com/address/",
+                _addressToString(address(governance))
+            )
+        );
         console.log("");
 
         // Log faucet information
         console.log("=== Get Testnet Funds ===");
-        console.log("Google Cloud Web3 Faucet: https://cloud.google.com/application/web3/faucet/celo/sepolia");
+        console.log(
+            "Google Cloud Web3 Faucet: https://cloud.google.com/application/web3/faucet/celo/sepolia"
+        );
         console.log("Celo Sepolia Self-Serve Faucet: https://faucet.celo.org/celo-sepolia");
     }
 
@@ -84,11 +102,11 @@ contract DeployCeloSepolia is Script {
         bytes32 value = bytes32(uint256(uint160(_addr)));
         bytes memory alphabet = "0123456789abcdef";
         bytes memory str = new bytes(42);
-        str[0] = '0';
-        str[1] = 'x';
+        str[0] = "0";
+        str[1] = "x";
         for (uint256 i = 0; i < 20; i++) {
-            str[2+i*2] = alphabet[uint8(value[i + 12] >> 4)];
-            str[3+i*2] = alphabet[uint8(value[i + 12] & 0x0f)];
+            str[2 + i * 2] = alphabet[uint8(value[i + 12] >> 4)];
+            str[3 + i * 2] = alphabet[uint8(value[i + 12] & 0x0f)];
         }
         return string(str);
     }

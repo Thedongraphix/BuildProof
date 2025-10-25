@@ -43,7 +43,7 @@ contract BuilderStakingTest is Test {
 
         staking.stake{ value: stakeAmount }();
 
-        (uint256 stakedAmount, uint256 stakedTimestamp, , ) = staking.getStakerInfo(staker1);
+        (uint256 stakedAmount, uint256 stakedTimestamp,,) = staking.getStakerInfo(staker1);
 
         assertEq(stakedAmount, stakeAmount);
         assertEq(stakedTimestamp, block.timestamp);
@@ -71,7 +71,7 @@ contract BuilderStakingTest is Test {
 
         staking.stake{ value: 0.5 ether }();
 
-        (uint256 stakedAmount, , , ) = staking.getStakerInfo(staker1);
+        (uint256 stakedAmount,,,) = staking.getStakerInfo(staker1);
 
         assertEq(stakedAmount, 1.5 ether);
         assertEq(staking.totalStaked(), 1.5 ether);
@@ -94,7 +94,7 @@ contract BuilderStakingTest is Test {
 
         assertGt(balanceAfter, balanceBefore + stakeAmount); // Should receive stake + rewards
 
-        (uint256 stakedAmount, , , ) = staking.getStakerInfo(staker1);
+        (uint256 stakedAmount,,,) = staking.getStakerInfo(staker1);
         assertEq(stakedAmount, 0);
 
         vm.stopPrank();
@@ -137,7 +137,7 @@ contract BuilderStakingTest is Test {
         assertEq(balanceAfter - balanceBefore, pendingRewards);
 
         // Stake should still exist
-        (uint256 stakedAmount, , , ) = staking.getStakerInfo(staker1);
+        (uint256 stakedAmount,,,) = staking.getStakerInfo(staker1);
         assertEq(stakedAmount, stakeAmount);
 
         vm.stopPrank();
@@ -191,7 +191,7 @@ contract BuilderStakingTest is Test {
         vm.prank(staker1);
         staking.stake{ value: 1 ether }();
 
-        (uint256 stakedAmount, , , ) = staking.getStakerInfo(staker1);
+        (uint256 stakedAmount,,,) = staking.getStakerInfo(staker1);
         assertEq(stakedAmount, 1 ether);
     }
 
@@ -220,7 +220,7 @@ contract BuilderStakingTest is Test {
     function test_ReceiveETH() public {
         uint256 balanceBefore = address(staking).balance;
 
-        (bool success, ) = address(staking).call{ value: 1 ether }("");
+        (bool success,) = address(staking).call{ value: 1 ether }("");
         assertTrue(success);
 
         assertEq(address(staking).balance, balanceBefore + 1 ether);

@@ -209,7 +209,7 @@ contract StakingPoolTest is Test {
         stakingPool.stake(100 ether, 60); // Should work now
         vm.stopPrank();
 
-        (uint256 count, ) = stakingPool.getActiveStakes(user1);
+        (uint256 count,) = stakingPool.getActiveStakes(user1);
         assertEq(count, 1);
     }
 

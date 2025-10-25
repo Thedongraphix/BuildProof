@@ -75,12 +75,7 @@ contract BuilderGovernance is Ownable, Pausable, ReentrancyGuard {
     );
 
     /// @notice Emitted when a vote is cast
-    event VoteCast(
-        uint256 indexed proposalId,
-        address indexed voter,
-        bool support,
-        uint256 weight
-    );
+    event VoteCast(uint256 indexed proposalId, address indexed voter, bool support, uint256 weight);
 
     /// @notice Emitted when a proposal is executed
     event ProposalExecuted(uint256 indexed proposalId);
@@ -116,7 +111,11 @@ contract BuilderGovernance is Ownable, Pausable, ReentrancyGuard {
     function createProposal(
         string calldata title,
         string calldata description
-    ) external whenNotPaused returns (uint256) {
+    )
+        external
+        whenNotPaused
+        returns (uint256)
+    {
         if (votingPower[msg.sender] < MIN_PROPOSAL_REPUTATION) {
             revert InsufficientReputation();
         }
@@ -267,8 +266,7 @@ contract BuilderGovernance is Ownable, Pausable, ReentrancyGuard {
     function isQuorumReached(uint256 proposalId) public view returns (bool) {
         Proposal memory proposal = proposals[proposalId];
         uint256 totalVotes = proposal.forVotes + proposal.againstVotes;
-        uint256 requiredQuorum = (totalVotingPower * QUORUM_BASIS_POINTS) /
-            BASIS_POINTS_DIVISOR;
+        uint256 requiredQuorum = (totalVotingPower * QUORUM_BASIS_POINTS) / BASIS_POINTS_DIVISOR;
 
         return totalVotes >= requiredQuorum;
     }
@@ -287,15 +285,16 @@ contract BuilderGovernance is Ownable, Pausable, ReentrancyGuard {
      * @param proposal Proposal struct
      * @return ProposalStatus Outcome status
      */
-    function _checkProposalOutcome(
-        Proposal memory proposal
-    ) private view returns (ProposalStatus) {
+    function _checkProposalOutcome(Proposal memory proposal)
+        private
+        view
+        returns (ProposalStatus)
+    {
         if (!isQuorumReached(proposal.id)) return ProposalStatus.Defeated;
 
-        return
-            proposal.forVotes > proposal.againstVotes
-                ? ProposalStatus.Succeeded
-                : ProposalStatus.Defeated;
+        return proposal.forVotes > proposal.againstVotes
+            ? ProposalStatus.Succeeded
+            : ProposalStatus.Defeated;
     }
 
     /**

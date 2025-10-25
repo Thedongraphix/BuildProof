@@ -66,7 +66,7 @@ contract BuilderStaking is Ownable, Pausable, ReentrancyGuard {
     /**
      * @dev Constructor sets the contract owner
      */
-    constructor() Ownable(msg.sender) {}
+    constructor() Ownable(msg.sender) { }
 
     /**
      * @notice Stake ETH to earn rewards and boost reputation
@@ -119,7 +119,7 @@ contract BuilderStaking is Ownable, Pausable, ReentrancyGuard {
         uint256 totalPayout = stakedAmount + rewards;
         if (address(this).balance < totalPayout) revert InsufficientRewards();
 
-        (bool success, ) = msg.sender.call{ value: totalPayout }("");
+        (bool success,) = msg.sender.call{ value: totalPayout }("");
         if (!success) revert TransferFailed();
 
         emit Unstaked(msg.sender, stakedAmount, rewards);
@@ -141,7 +141,7 @@ contract BuilderStaking is Ownable, Pausable, ReentrancyGuard {
 
         if (address(this).balance < rewards) revert InsufficientRewards();
 
-        (bool success, ) = msg.sender.call{ value: rewards }("");
+        (bool success,) = msg.sender.call{ value: rewards }("");
         if (!success) revert TransferFailed();
 
         emit RewardsClaimed(msg.sender, rewards);
@@ -164,15 +164,23 @@ contract BuilderStaking is Ownable, Pausable, ReentrancyGuard {
      * @return rewardsEarned Accumulated rewards
      * @return lastRewardClaim Last reward claim timestamp
      */
-    function getStakerInfo(
-        address stakerAddress
-    )
+    function getStakerInfo(address stakerAddress)
         external
         view
-        returns (uint256 stakedAmount, uint256 stakedTimestamp, uint256 rewardsEarned, uint256 lastRewardClaim)
+        returns (
+            uint256 stakedAmount,
+            uint256 stakedTimestamp,
+            uint256 rewardsEarned,
+            uint256 lastRewardClaim
+        )
     {
         Staker memory staker = stakers[stakerAddress];
-        return (staker.stakedAmount, staker.stakedTimestamp, staker.rewardsEarned, staker.lastRewardClaim);
+        return (
+            staker.stakedAmount,
+            staker.stakedTimestamp,
+            staker.rewardsEarned,
+            staker.lastRewardClaim
+        );
     }
 
     /**
@@ -186,8 +194,8 @@ contract BuilderStaking is Ownable, Pausable, ReentrancyGuard {
         if (staker.stakedAmount == 0) return 0;
 
         uint256 stakingDuration = block.timestamp - staker.lastRewardClaim;
-        uint256 rewards = (staker.stakedAmount * APY_BASIS_POINTS * stakingDuration) /
-            (BASIS_POINTS_DIVISOR * SECONDS_PER_YEAR);
+        uint256 rewards = (staker.stakedAmount * APY_BASIS_POINTS * stakingDuration)
+            / (BASIS_POINTS_DIVISOR * SECONDS_PER_YEAR);
 
         return rewards;
     }
@@ -218,7 +226,7 @@ contract BuilderStaking is Ownable, Pausable, ReentrancyGuard {
      */
     function emergencyWithdraw() external onlyOwner whenPaused {
         uint256 balance = address(this).balance;
-        (bool success, ) = owner().call{ value: balance }("");
+        (bool success,) = owner().call{ value: balance }("");
         if (!success) revert TransferFailed();
     }
 

@@ -74,9 +74,13 @@ contract BuilderEscrow {
         uint256 totalAmount
     );
 
-    event MilestoneAdded(uint256 indexed escrowId, uint256 milestoneIndex, string description, uint256 amount);
+    event MilestoneAdded(
+        uint256 indexed escrowId, uint256 milestoneIndex, string description, uint256 amount
+    );
 
-    event MilestoneCompleted(uint256 indexed escrowId, uint256 milestoneIndex, address indexed builder);
+    event MilestoneCompleted(
+        uint256 indexed escrowId, uint256 milestoneIndex, address indexed builder
+    );
 
     event MilestoneApproved(
         uint256 indexed escrowId, uint256 milestoneIndex, address indexed client, uint256 amount
@@ -291,7 +295,8 @@ contract BuilderEscrow {
     {
         Escrow storage escrow = escrows[_escrowId];
         require(
-            msg.sender == escrow.client || msg.sender == escrow.builder, "Only client or builder can dispute"
+            msg.sender == escrow.client || msg.sender == escrow.builder,
+            "Only client or builder can dispute"
         );
         require(_milestoneIndex < escrow.milestoneCount, "Invalid milestone index");
 
@@ -428,7 +433,10 @@ contract BuilderEscrow {
      * @param _milestoneIndex Milestone index
      * @return MilestoneInfo struct
      */
-    function getMilestone(uint256 _escrowId, uint256 _milestoneIndex)
+    function getMilestone(
+        uint256 _escrowId,
+        uint256 _milestoneIndex
+    )
         external
         view
         escrowExists(_escrowId)

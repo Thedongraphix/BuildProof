@@ -37,7 +37,9 @@ contract StakingPool is Ownable, ReentrancyGuard {
     mapping(uint256 => LockPeriodConfig) public lockPeriods;
     uint256[] public availableLockPeriods;
 
-    event Staked(address indexed user, uint256 amount, uint256 lockPeriod, uint256 apy, uint256 stakeId);
+    event Staked(
+        address indexed user, uint256 amount, uint256 lockPeriod, uint256 apy, uint256 stakeId
+    );
     event Withdrawn(address indexed user, uint256 amount, uint256 penalty, uint256 stakeId);
     event RewardsClaimed(address indexed user, uint256 amount);
     event LockPeriodConfigured(uint256 lockDays, uint256 apy, bool enabled);
@@ -47,10 +49,10 @@ contract StakingPool is Ownable, ReentrancyGuard {
         stakingToken = IERC20(_stakingToken);
 
         // Initialize default lock periods
-        _configureLockPeriod(30, 1200, true);   // 30 days - 12% APY
-        _configureLockPeriod(90, 1800, true);   // 90 days - 18% APY
-        _configureLockPeriod(180, 2500, true);  // 180 days - 25% APY
-        _configureLockPeriod(365, 3500, true);  // 365 days - 35% APY
+        _configureLockPeriod(30, 1200, true); // 30 days - 12% APY
+        _configureLockPeriod(90, 1800, true); // 90 days - 18% APY
+        _configureLockPeriod(180, 2500, true); // 180 days - 25% APY
+        _configureLockPeriod(365, 3500, true); // 365 days - 35% APY
     }
 
     /**
@@ -79,7 +81,9 @@ contract StakingPool is Ownable, ReentrancyGuard {
 
         totalStaked += amount;
 
-        emit Staked(msg.sender, amount, lockPeriodDays, config.apy, userStakes[msg.sender].length - 1);
+        emit Staked(
+            msg.sender, amount, lockPeriodDays, config.apy, userStakes[msg.sender].length - 1
+        );
     }
 
     /**
@@ -97,8 +101,7 @@ contract StakingPool is Ownable, ReentrancyGuard {
         }
 
         uint256 stakingDuration = block.timestamp - stakeInfo.lastClaimTime;
-        uint256 rewards = (stakeInfo.amount * stakeInfo.apy * stakingDuration) /
-            (365 days * 10000);
+        uint256 rewards = (stakeInfo.amount * stakeInfo.apy * stakingDuration) / (365 days * 10000);
 
         return rewards;
     }
@@ -197,7 +200,11 @@ contract StakingPool is Ownable, ReentrancyGuard {
      * @return count Number of active stakes
      * @return totalAmount Total amount staked
      */
-    function getActiveStakes(address user) external view returns (uint256 count, uint256 totalAmount) {
+    function getActiveStakes(address user)
+        external
+        view
+        returns (uint256 count, uint256 totalAmount)
+    {
         for (uint256 i = 0; i < userStakes[user].length; i++) {
             if (userStakes[user][i].active) {
                 count++;
@@ -227,11 +234,7 @@ contract StakingPool is Ownable, ReentrancyGuard {
      * @param apy APY in basis points
      * @param enabled Whether this period is enabled
      */
-    function configureLockPeriod(
-        uint256 lockDays,
-        uint256 apy,
-        bool enabled
-    ) external onlyOwner {
+    function configureLockPeriod(uint256 lockDays, uint256 apy, bool enabled) external onlyOwner {
         _configureLockPeriod(lockDays, apy, enabled);
     }
 
@@ -240,7 +243,7 @@ contract StakingPool is Ownable, ReentrancyGuard {
             availableLockPeriods.push(lockDays);
         }
 
-        lockPeriods[lockDays] = LockPeriodConfig({duration: lockDays, apy: apy, enabled: enabled});
+        lockPeriods[lockDays] = LockPeriodConfig({ duration: lockDays, apy: apy, enabled: enabled });
 
         emit LockPeriodConfigured(lockDays, apy, enabled);
     }
