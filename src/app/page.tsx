@@ -167,6 +167,12 @@ export default function Home() {
               Staking
             </Link>
             <Link
+              href="/defi"
+              className="text-gray-400 hover:text-white transition-colors text-sm font-medium"
+            >
+              DeFi
+            </Link>
+            <Link
               href="/dashboard"
               className="text-gray-400 hover:text-white transition-colors text-sm font-medium"
             >
