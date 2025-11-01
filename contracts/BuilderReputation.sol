@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
+import "@openzeppelin/contracts/access/Ownable2Step.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
+
 /**
  * @title BuilderReputation
  * @dev On-chain reputation system for builders with skills and achievements
  * @author BuildProof Team
  */
-contract BuilderReputation {
+contract BuilderReputation is Ownable2Step, ReentrancyGuard, Pausable {
     struct BuilderProfile {
         address builder;
         string username;
@@ -36,7 +40,6 @@ contract BuilderReputation {
     mapping(address => Achievement[]) public builderAchievements;
     mapping(address => bool) public authorizedIssuers;
 
-    address public owner;
     uint256 public totalBuilders;
 
     event BuilderRegistered(address indexed builder, string username, uint256 timestamp);
@@ -57,14 +60,9 @@ contract BuilderReputation {
 
     event IssuerRevoked(address indexed issuer);
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function");
-        _;
-    }
-
     modifier onlyAuthorizedIssuer() {
         require(
-            authorizedIssuers[msg.sender] || msg.sender == owner,
+            authorizedIssuers[msg.sender] || msg.sender == owner(),
             "Not authorized to issue achievements"
         );
         _;
@@ -75,8 +73,10 @@ contract BuilderReputation {
         _;
     }
 
-    constructor() {
-        owner = msg.sender;
+    /**
+     * @dev Constructor sets the contract owner and authorizes them as issuer
+     */
+    constructor() Ownable(msg.sender) {
         authorizedIssuers[msg.sender] = true;
     }
 
@@ -84,7 +84,7 @@ contract BuilderReputation {
      * @dev Register as a builder
      * @param _username Unique username for the builder
      */
-    function registerBuilder(string memory _username) external {
+    function registerBuilder(string memory _username) external whenNotPaused {
         require(!builders[msg.sender].isActive, "Builder already registered");
         require(bytes(_username).length > 0, "Username cannot be empty");
         require(bytes(_username).length <= 32, "Username too long");
@@ -280,7 +280,7 @@ contract BuilderReputation {
      * @param _issuer Address to revoke
      */
     function revokeIssuer(address _issuer) external onlyOwner {
-        require(_issuer != owner, "Cannot revoke owner");
+        require(_issuer != owner(), "Cannot revoke owner");
         authorizedIssuers[_issuer] = false;
         emit IssuerRevoked(_issuer);
     }
@@ -304,12 +304,16 @@ contract BuilderReputation {
     }
 
     /**
-     * @dev Transfer ownership (only owner)
-     * @param _newOwner Address of the new owner
+     * @notice Pause the contract (emergency stop)
      */
-    function transferOwnership(address _newOwner) external onlyOwner {
-        require(_newOwner != address(0), "Invalid new owner address");
-        owner = _newOwner;
-        authorizedIssuers[_newOwner] = true;
+    function pause() external onlyOwner {
+        _pause();
+    }
+
+    /**
+     * @notice Unpause the contract
+     */
+    function unpause() external onlyOwner {
+        _unpause();
     }
 }
