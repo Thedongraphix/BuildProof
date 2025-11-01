@@ -7,6 +7,21 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
+interface IBuilderReputation {
+    function builders(address)
+        external
+        view
+        returns (
+            address builder,
+            string memory username,
+            uint256 reputationScore,
+            uint256 completedProjects,
+            uint256 totalEarnings,
+            uint256 joinedAt,
+            bool isActive
+        );
+}
+
 /**
  * @title BuilderNFT
  * @dev NFT contract for awarding achievements to builders on BuildProof platform
@@ -28,6 +43,11 @@ contract BuilderNFT is ERC721, ERC721URIStorage, Ownable, Pausable, ReentrancyGu
     /// @dev Maximum supply of NFTs
     uint256 public constant MAX_SUPPLY = 10000;
 
+    IBuilderReputation public reputationContract;
+
+    /// @dev Base URI for token metadata
+    string private _baseTokenURI;
+
     /// @notice Emitted when a new achievement NFT is minted
     event AchievementMinted(
         address indexed builder, uint256 indexed tokenId, string achievementType
@@ -35,6 +55,8 @@ contract BuilderNFT is ERC721, ERC721URIStorage, Ownable, Pausable, ReentrancyGu
 
     /// @notice Emitted when base URI is updated
     event BaseURIUpdated(string newBaseURI);
+
+    event ReputationContractUpdated(address indexed newContract);
 
     /// @dev Custom errors for gas efficiency
     error MaxSupplyReached();
@@ -47,6 +69,86 @@ contract BuilderNFT is ERC721, ERC721URIStorage, Ownable, Pausable, ReentrancyGu
      */
     constructor() ERC721("BuildProof Achievement", "BPACH") Ownable(msg.sender) {
         _tokenIdCounter = 1; // Start token IDs from 1
+        _baseTokenURI = "ipfs://";
+    }
+
+    /**
+     * @notice Automatically check and mint milestone achievements for a builder
+     * @param builder Address to check and mint achievements for
+     */
+    function checkAndMintAchievements(address builder) external whenNotPaused {
+        if (address(reputationContract) == address(0)) return;
+
+        try reputationContract.builders(builder) returns (
+            address,
+            string memory,
+            uint256 reputationScore,
+            uint256 completedProjects,
+            uint256 totalEarnings,
+            uint256,
+            bool isActive
+        ) {
+            if (!isActive) return;
+
+            // First Bounty Achievement
+            if (completedProjects == 1 && !builderAchievements[builder]["FIRST_BOUNTY"]) {
+                _mintAchievementInternal(builder, "FIRST_BOUNTY", "first_bounty");
+            }
+
+            // Rising Star - 5 completed projects
+            if (completedProjects >= 5 && !builderAchievements[builder]["RISING_STAR"]) {
+                _mintAchievementInternal(builder, "RISING_STAR", "rising_star");
+            }
+
+            // Established Builder - 25 completed projects
+            if (completedProjects >= 25 && !builderAchievements[builder]["ESTABLISHED_BUILDER"]) {
+                _mintAchievementInternal(builder, "ESTABLISHED_BUILDER", "established_builder");
+            }
+
+            // Power Builder - 50+ projects
+            if (completedProjects >= 50 && !builderAchievements[builder]["POWER_BUILDER"]) {
+                _mintAchievementInternal(builder, "POWER_BUILDER", "power_builder");
+            }
+
+            // High Reputation - 1000+ reputation points
+            if (reputationScore >= 1000 && !builderAchievements[builder]["HIGH_REPUTATION"]) {
+                _mintAchievementInternal(builder, "HIGH_REPUTATION", "high_reputation");
+            }
+
+            // Elite Builder - 5000+ reputation points
+            if (reputationScore >= 5000 && !builderAchievements[builder]["ELITE_BUILDER"]) {
+                _mintAchievementInternal(builder, "ELITE_BUILDER", "elite_builder");
+            }
+
+            // High Earner - 10+ ETH earned
+            if (totalEarnings >= 10 ether && !builderAchievements[builder]["HIGH_EARNER"]) {
+                _mintAchievementInternal(builder, "HIGH_EARNER", "high_earner");
+            }
+        } catch { }
+    }
+
+    /**
+     * @dev Internal function to mint achievement
+     */
+    function _mintAchievementInternal(
+        address builder,
+        string memory achievementType,
+        string memory uriSuffix
+    )
+        private
+    {
+        if (_tokenIdCounter > MAX_SUPPLY) return;
+        if (builderAchievements[builder][achievementType]) return;
+
+        uint256 tokenId = _tokenIdCounter++;
+        _safeMint(builder, tokenId);
+        _setTokenURI(tokenId, string(abi.encodePacked(_baseTokenURI, uriSuffix, ".json")));
+
+        achievements[tokenId] = achievementType;
+        builderAchievements[builder][achievementType] = true;
+        achievementCounts[achievementType]++;
+
+        emit AchievementMinted(builder, tokenId, achievementType);
     }
 
     /**
@@ -149,6 +251,24 @@ contract BuilderNFT is ERC721, ERC721URIStorage, Ownable, Pausable, ReentrancyGu
      */
     function totalMinted() external view returns (uint256) {
         return _tokenIdCounter - 1;
+    }
+
+    /**
+     * @dev Set the reputation contract address for automatic achievement minting
+     * @param _reputationContract Address of the BuilderReputation contract
+     */
+    function setReputationContract(address _reputationContract) external onlyOwner {
+        reputationContract = IBuilderReputation(_reputationContract);
+        emit ReputationContractUpdated(_reputationContract);
+    }
+
+    /**
+     * @dev Set base URI for token metadata
+     * @param baseURI New base URI
+     */
+    function setBaseURI(string memory baseURI) external onlyOwner {
+        _baseTokenURI = baseURI;
+        emit BaseURIUpdated(baseURI);
     }
 
     /**
