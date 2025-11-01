@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
+import "@openzeppelin/contracts/access/Ownable2Step.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
+
 /**
  * @title BuilderEscrow
  * @dev Secure milestone-based escrow system for builders with dispute resolution
  * @author BuildProof Team
  */
-contract BuilderEscrow {
+contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
     struct Milestone {
         string description;
         uint256 amount;
@@ -63,7 +67,6 @@ contract BuilderEscrow {
 
     uint256 public totalEscrows;
     uint256 public platformFee = 25; // 2.5% fee (basis points)
-    address public owner;
     uint256 public collectedFees;
 
     event EscrowCreated(
@@ -96,11 +99,6 @@ contract BuilderEscrow {
 
     event FeeUpdated(uint256 newFee);
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function");
-        _;
-    }
-
     modifier onlyClient(uint256 _escrowId) {
         require(escrows[_escrowId].client == msg.sender, "Only client can call this");
         _;
@@ -121,9 +119,10 @@ contract BuilderEscrow {
         _;
     }
 
-    constructor() {
-        owner = msg.sender;
-    }
+    /**
+     * @dev Constructor sets the contract owner
+     */
+    constructor() Ownable(msg.sender) { }
 
     /**
      * @dev Create a new escrow
@@ -142,6 +141,7 @@ contract BuilderEscrow {
     )
         external
         payable
+        whenNotPaused
         returns (uint256)
     {
         require(_builder != address(0), "Invalid builder address");
@@ -238,6 +238,7 @@ contract BuilderEscrow {
         uint256 _milestoneIndex
     )
         external
+        nonReentrant
         onlyClient(_escrowId)
         escrowExists(_escrowId)
         escrowActive(_escrowId)
@@ -323,6 +324,7 @@ contract BuilderEscrow {
         bool _approveForBuilder
     )
         external
+        nonReentrant
         onlyOwner
         escrowExists(_escrowId)
     {
@@ -349,7 +351,7 @@ contract BuilderEscrow {
             (bool success,) = payable(escrow.builder).call{ value: builderPayment }("");
             require(success, "Transfer to builder failed");
 
-            emit MilestoneApproved(_escrowId, _milestoneIndex, owner, builderPayment);
+            emit MilestoneApproved(_escrowId, _milestoneIndex, owner(), builderPayment);
         } else {
             // Refund not implemented in this simple version
             // In production, you might want to allow partial refunds
@@ -379,6 +381,7 @@ contract BuilderEscrow {
      */
     function cancelEscrow(uint256 _escrowId)
         external
+        nonReentrant
         onlyClient(_escrowId)
         escrowExists(_escrowId)
         escrowActive(_escrowId)
@@ -517,20 +520,25 @@ contract BuilderEscrow {
     /**
      * @dev Withdraw collected fees (only owner)
      */
-    function withdrawFees() external onlyOwner {
+    function withdrawFees() external nonReentrant onlyOwner {
         uint256 amount = collectedFees;
         collectedFees = 0;
 
-        (bool success,) = payable(owner).call{ value: amount }("");
+        (bool success,) = payable(owner()).call{ value: amount }("");
         require(success, "Fee withdrawal failed");
     }
 
     /**
-     * @dev Transfer ownership (only owner)
-     * @param _newOwner Address of the new owner
+     * @notice Pause the contract (emergency stop)
      */
-    function transferOwnership(address _newOwner) external onlyOwner {
-        require(_newOwner != address(0), "Invalid new owner address");
-        owner = _newOwner;
+    function pause() external onlyOwner {
+        _pause();
+    }
+
+    /**
+     * @notice Unpause the contract
+     */
+    function unpause() external onlyOwner {
+        _unpause();
     }
 }
