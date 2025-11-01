@@ -5,6 +5,15 @@ import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
 
+interface IBuilderReputation {
+    function recordProjectCompletion(
+        address _builder,
+        uint256 _earnings,
+        uint256 _reputationPoints
+    )
+        external;
+}
+
 /**
  * @title BuilderBounty
  * @dev A decentralized bounty system for builders to post and claim rewards
@@ -40,6 +49,9 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
     uint256 public platformFee = 25; // 2.5% fee (basis points)
     uint256 public collectedFees;
 
+    IBuilderReputation public reputationContract;
+    uint256 public constant REPUTATION_PER_ETH = 100; // 100 reputation points per ETH earned
+
     /// @dev Custom errors for gas efficiency
     error InvalidReward();
     error InvalidDeadline();
@@ -74,6 +86,8 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
     event BountyCancelled(uint256 indexed bountyId, address indexed creator);
 
     event FeeUpdated(uint256 newFee);
+
+    event ReputationContractUpdated(address indexed newContract);
 
     modifier onlyCreator(uint256 _bountyId) {
         if (bounties[_bountyId].creator != msg.sender) revert OnlyCreatorAllowed();
@@ -185,6 +199,14 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
         (bool success,) = payable(bounty.claimer).call{ value: claimerReward }("");
         if (!success) revert TransferFailed();
 
+        // Update reputation if contract is set
+        if (address(reputationContract) != address(0)) {
+            uint256 reputationPoints = (claimerReward * REPUTATION_PER_ETH) / 1 ether;
+            try reputationContract.recordProjectCompletion(
+                bounty.claimer, claimerReward, reputationPoints
+            ) { } catch { }
+        }
+
         emit BountyCompleted(_bountyId, bounty.claimer, claimerReward);
     }
 
@@ -252,6 +274,15 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
 
         (bool success,) = payable(owner()).call{ value: amount }("");
         if (!success) revert TransferFailed();
+    }
+
+    /**
+     * @dev Set the reputation contract address for cross-contract integration
+     * @param _reputationContract Address of the BuilderReputation contract
+     */
+    function setReputationContract(address _reputationContract) external onlyOwner {
+        reputationContract = IBuilderReputation(_reputationContract);
+        emit ReputationContractUpdated(_reputationContract);
     }
 
     /**
