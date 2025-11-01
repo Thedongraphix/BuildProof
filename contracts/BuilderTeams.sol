@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
 /**
  * @title BuilderTeams
  * @dev Collaborative team management for builders with reward splitting
  * @author BuildProof Team
  */
-contract BuilderTeams {
+contract BuilderTeams is ReentrancyGuard, Pausable, Ownable {
     struct Team {
         uint256 teamId;
         string name;
@@ -43,6 +47,11 @@ contract BuilderTeams {
     mapping(address => uint256[]) public createdTeams;
 
     uint256 public totalTeams;
+
+    /**
+     * @dev Constructor sets the contract owner
+     */
+    constructor() Ownable(msg.sender) { }
 
     event TeamCreated(
         uint256 indexed teamId, string name, address indexed creator, uint256 timestamp
@@ -92,6 +101,7 @@ contract BuilderTeams {
         uint256[] memory _initialShares
     )
         external
+        whenNotPaused
         returns (uint256)
     {
         require(bytes(_name).length > 0, "Team name cannot be empty");
@@ -241,6 +251,8 @@ contract BuilderTeams {
     function distributeReward(uint256 _teamId)
         external
         payable
+        nonReentrant
+        whenNotPaused
         teamExists(_teamId)
         teamIsActive(_teamId)
     {
@@ -401,5 +413,19 @@ contract BuilderTeams {
         returns (uint256)
     {
         return teams[_teamId].rewardShares[_member];
+    }
+
+    /**
+     * @notice Pause the contract (emergency stop)
+     */
+    function pause() external onlyOwner {
+        _pause();
+    }
+
+    /**
+     * @notice Unpause the contract
+     */
+    function unpause() external onlyOwner {
+        _unpause();
     }
 }
