@@ -142,7 +142,7 @@ contract BuilderBountyTest is Test {
 
     function test_RevertWhen_CreateBountyWithZeroReward() public {
         vm.prank(creator);
-        vm.expectRevert("Reward must be greater than 0");
+        vm.expectRevert(bytes("Reward must be greater than 0"));
         bounty.createBounty{ value: 0 }(
             "Build DApp", "Create a decentralized application", block.timestamp + 7 days
         );
@@ -153,14 +153,14 @@ contract BuilderBountyTest is Test {
         bounty.createBounty{ value: 1 ether }(
             "Build DApp", "Create a decentralized application", block.timestamp + 7 days
         );
-        vm.expectRevert("Creator cannot claim own bounty");
+        vm.expectRevert(bytes("Creator cannot claim own bounty"));
         bounty.claimBounty(0);
         vm.stopPrank();
     }
 
     function test_RevertWhen_DeadlineInPast() public {
         vm.prank(creator);
-        vm.expectRevert("Deadline must be in the future");
+        vm.expectRevert(bytes("Deadline must be in the future"));
         bounty.createBounty{ value: 1 ether }(
             "Build DApp", "Create a decentralized application", block.timestamp - 1 days
         );
@@ -175,7 +175,7 @@ contract BuilderBountyTest is Test {
         vm.warp(block.timestamp + 2 days);
 
         vm.prank(claimer);
-        vm.expectRevert("Bounty deadline has passed");
+        vm.expectRevert(bytes("Bounty deadline has passed"));
         bounty.claimBounty(0);
     }
 
@@ -217,9 +217,11 @@ contract BuilderBountyTest is Test {
         uint256 expectedFees = (1 ether * 25) / 10_000;
         assertEq(bounty.collectedFees(), expectedFees);
 
-        uint256 ownerBalanceBefore = owner.balance;
+        uint256 ownerBalanceBefore = address(this).balance;
         bounty.withdrawFees();
-        assertEq(owner.balance, ownerBalanceBefore + expectedFees);
+        assertEq(address(this).balance, ownerBalanceBefore + expectedFees);
         assertEq(bounty.collectedFees(), 0);
     }
+
+    receive() external payable { }
 }

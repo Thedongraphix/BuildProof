@@ -153,7 +153,7 @@ contract BuilderReputationTest is Test {
     function test_RevertWhen_RegisterTwice() public {
         vm.startPrank(builder1);
         reputation.registerBuilder("alice_dev");
-        vm.expectRevert("Builder already registered");
+        vm.expectRevert(bytes("Builder already registered"));
         reputation.registerBuilder("alice_dev2");
         vm.stopPrank();
     }
@@ -162,7 +162,7 @@ contract BuilderReputationTest is Test {
         vm.startPrank(builder1);
         reputation.registerBuilder("alice_dev");
         reputation.addSkill("Solidity");
-        vm.expectRevert("Cannot endorse own skills");
+        vm.expectRevert(bytes("Cannot endorse own skills"));
         reputation.endorseSkill(builder1, "Solidity");
         vm.stopPrank();
     }
@@ -172,7 +172,7 @@ contract BuilderReputationTest is Test {
         reputation.registerBuilder("alice_dev");
 
         vm.prank(builder2);
-        vm.expectRevert("Not authorized to issue achievements");
+        vm.expectRevert(bytes("Not authorized to issue achievements"));
         reputation.awardAchievement(builder1, "Fake Achievement", "This should fail");
     }
 

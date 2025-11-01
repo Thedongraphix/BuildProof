@@ -68,17 +68,17 @@ contract ContractRegistryTest is Test {
     }
 
     function test_RegisterContract_RevertsOnZeroAddress() public {
-        vm.expectRevert("Invalid contract address");
+        vm.expectRevert(bytes("Invalid contract address"));
         registry.registerContract(address(0), "TestContract", "1.0.0", 85, "QmTest123");
     }
 
     function test_RegisterContract_RevertsOnHighScore() public {
-        vm.expectRevert("Security score must be <= 100");
+        vm.expectRevert(bytes("Security score must be <= 100"));
         registry.registerContract(testContract, "TestContract", "1.0.0", 101, "QmTest123");
     }
 
     function test_RegisterContract_RevertsOnEmptyName() public {
-        vm.expectRevert("Contract name cannot be empty");
+        vm.expectRevert(bytes("Contract name cannot be empty"));
         registry.registerContract(testContract, "", "1.0.0", 85, "QmTest123");
     }
 
@@ -126,19 +126,19 @@ contract ContractRegistryTest is Test {
         registry.registerContract(testContract, "TestContract", "1.0.0", 85, "QmTest123");
 
         vm.prank(user);
-        vm.expectRevert("Only verifiers can call this function");
+        vm.expectRevert(bytes("Only verifiers can call this function"));
         registry.verifyContract(testContract, 95, "QmVerified123");
     }
 
     function test_VerifyContract_RevertsOnUnregistered() public {
-        vm.expectRevert("Contract not registered");
+        vm.expectRevert(bytes("Contract not registered"));
         registry.verifyContract(testContract, 95, "QmVerified123");
     }
 
     function test_VerifyContract_RevertsOnHighScore() public {
         registry.registerContract(testContract, "TestContract", "1.0.0", 85, "QmTest123");
 
-        vm.expectRevert("Security score must be <= 100");
+        vm.expectRevert(bytes("Security score must be <= 100"));
         registry.verifyContract(testContract, 101, "QmVerified123");
     }
 
@@ -154,12 +154,12 @@ contract ContractRegistryTest is Test {
 
     function test_AddVerifier_OnlyOwner() public {
         vm.prank(user);
-        vm.expectRevert("Only owner can call this function");
+        vm.expectRevert(bytes("Only owner can call this function"));
         registry.addVerifier(verifier);
     }
 
     function test_AddVerifier_RevertsOnZeroAddress() public {
-        vm.expectRevert("Invalid verifier address");
+        vm.expectRevert(bytes("Invalid verifier address"));
         registry.addVerifier(address(0));
     }
 
@@ -190,12 +190,12 @@ contract ContractRegistryTest is Test {
         registry.addVerifier(verifier);
 
         vm.prank(user);
-        vm.expectRevert("Only owner can call this function");
+        vm.expectRevert(bytes("Only owner can call this function"));
         registry.removeVerifier(verifier);
     }
 
     function test_RemoveVerifier_CannotRemoveOwner() public {
-        vm.expectRevert("Cannot remove owner as verifier");
+        vm.expectRevert(bytes("Cannot remove owner as verifier"));
         registry.removeVerifier(owner);
     }
 
@@ -233,12 +233,12 @@ contract ContractRegistryTest is Test {
         address newOwner = makeAddr("newOwner");
 
         vm.prank(user);
-        vm.expectRevert("Only owner can call this function");
+        vm.expectRevert(bytes("Only owner can call this function"));
         registry.transferOwnership(newOwner);
     }
 
     function test_TransferOwnership_RevertsOnZeroAddress() public {
-        vm.expectRevert("Invalid new owner address");
+        vm.expectRevert(bytes("Invalid new owner address"));
         registry.transferOwnership(address(0));
     }
 
@@ -260,12 +260,12 @@ contract ContractRegistryTest is Test {
     }
 
     function test_GetContractsBySecurityScore_RevertsOnInvalidRange() public {
-        vm.expectRevert("Invalid score range");
+        vm.expectRevert(bytes("Invalid score range"));
         registry.getContractsBySecurityScore(100, 50);
     }
 
     function test_GetContractsBySecurityScore_RevertsOnHighMaxScore() public {
-        vm.expectRevert("Max score cannot exceed 100");
+        vm.expectRevert(bytes("Max score cannot exceed 100"));
         registry.getContractsBySecurityScore(0, 101);
     }
 
