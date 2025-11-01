@@ -40,6 +40,23 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
     uint256 public platformFee = 25; // 2.5% fee (basis points)
     uint256 public collectedFees;
 
+    /// @dev Custom errors for gas efficiency
+    error InvalidReward();
+    error InvalidDeadline();
+    error EmptyTitle();
+    error BountyNotOpen();
+    error DeadlinePassed();
+    error CannotClaimOwnBounty();
+    error OnlyClaimerCanSubmit();
+    error BountyNotClaimed();
+    error EmptySubmission();
+    error BountyNotUnderReview();
+    error OnlyCreatorAllowed();
+    error CanOnlyCancelOpenBounties();
+    error TransferFailed();
+    error FeeTooHigh();
+    error InvalidOwnerAddress();
+
     event BountyCreated(
         uint256 indexed bountyId,
         address indexed creator,
@@ -59,7 +76,7 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
     event FeeUpdated(uint256 newFee);
 
     modifier onlyCreator(uint256 _bountyId) {
-        require(bounties[_bountyId].creator == msg.sender, "Only bounty creator can call this");
+        if (bounties[_bountyId].creator != msg.sender) revert OnlyCreatorAllowed();
         _;
     }
 
@@ -84,9 +101,9 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
         whenNotPaused
         returns (uint256)
     {
-        require(msg.value > 0, "Reward must be greater than 0");
-        require(_deadline > block.timestamp, "Deadline must be in the future");
-        require(bytes(_title).length > 0, "Title cannot be empty");
+        if (msg.value == 0) revert InvalidReward();
+        if (_deadline <= block.timestamp) revert InvalidDeadline();
+        if (bytes(_title).length == 0) revert EmptyTitle();
 
         uint256 bountyId = totalBounties++;
 
@@ -117,9 +134,9 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
     function claimBounty(uint256 _bountyId) external whenNotPaused {
         Bounty storage bounty = bounties[_bountyId];
 
-        require(bounty.status == BountyStatus.Open, "Bounty is not open");
-        require(block.timestamp < bounty.deadline, "Bounty deadline has passed");
-        require(bounty.creator != msg.sender, "Creator cannot claim own bounty");
+        if (bounty.status != BountyStatus.Open) revert BountyNotOpen();
+        if (block.timestamp >= bounty.deadline) revert DeadlinePassed();
+        if (bounty.creator == msg.sender) revert CannotClaimOwnBounty();
 
         bounty.status = BountyStatus.Claimed;
         bounty.claimer = msg.sender;
@@ -137,9 +154,9 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
     function submitWork(uint256 _bountyId, string memory _ipfsHash) external {
         Bounty storage bounty = bounties[_bountyId];
 
-        require(bounty.claimer == msg.sender, "Only claimer can submit work");
-        require(bounty.status == BountyStatus.Claimed, "Bounty must be in Claimed status");
-        require(bytes(_ipfsHash).length > 0, "IPFS hash cannot be empty");
+        if (bounty.claimer != msg.sender) revert OnlyClaimerCanSubmit();
+        if (bounty.status != BountyStatus.Claimed) revert BountyNotClaimed();
+        if (bytes(_ipfsHash).length == 0) revert EmptySubmission();
 
         bounty.status = BountyStatus.UnderReview;
         bounty.ipfsSubmission = _ipfsHash;
@@ -154,7 +171,7 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
     function approveBounty(uint256 _bountyId) external nonReentrant onlyCreator(_bountyId) {
         Bounty storage bounty = bounties[_bountyId];
 
-        require(bounty.status == BountyStatus.UnderReview, "Bounty must be under review");
+        if (bounty.status != BountyStatus.UnderReview) revert BountyNotUnderReview();
 
         bounty.status = BountyStatus.Completed;
 
@@ -166,7 +183,7 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
 
         // Transfer reward to claimer
         (bool success,) = payable(bounty.claimer).call{ value: claimerReward }("");
-        require(success, "Transfer to claimer failed");
+        if (!success) revert TransferFailed();
 
         emit BountyCompleted(_bountyId, bounty.claimer, claimerReward);
     }
@@ -178,13 +195,13 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
     function cancelBounty(uint256 _bountyId) external nonReentrant onlyCreator(_bountyId) {
         Bounty storage bounty = bounties[_bountyId];
 
-        require(bounty.status == BountyStatus.Open, "Can only cancel open bounties");
+        if (bounty.status != BountyStatus.Open) revert CanOnlyCancelOpenBounties();
 
         bounty.status = BountyStatus.Cancelled;
 
         // Refund creator
         (bool success,) = payable(bounty.creator).call{ value: bounty.reward }("");
-        require(success, "Refund to creator failed");
+        if (!success) revert TransferFailed();
 
         emit BountyCancelled(_bountyId, msg.sender);
     }
@@ -221,7 +238,7 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
      * @param _newFee New fee in basis points (100 = 1%)
      */
     function updatePlatformFee(uint256 _newFee) external onlyOwner {
-        require(_newFee <= 1000, "Fee cannot exceed 10%");
+        if (_newFee > 1000) revert FeeTooHigh();
         platformFee = _newFee;
         emit FeeUpdated(_newFee);
     }
@@ -234,7 +251,7 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
         collectedFees = 0;
 
         (bool success,) = payable(owner()).call{ value: amount }("");
-        require(success, "Fee withdrawal failed");
+        if (!success) revert TransferFailed();
     }
 
     /**

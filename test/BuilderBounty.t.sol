@@ -142,7 +142,7 @@ contract BuilderBountyTest is Test {
 
     function test_RevertWhen_CreateBountyWithZeroReward() public {
         vm.prank(creator);
-        vm.expectRevert(bytes("Reward must be greater than 0"));
+        vm.expectRevert(BuilderBounty.InvalidReward.selector);
         bounty.createBounty{ value: 0 }(
             "Build DApp", "Create a decentralized application", block.timestamp + 7 days
         );
@@ -153,14 +153,14 @@ contract BuilderBountyTest is Test {
         bounty.createBounty{ value: 1 ether }(
             "Build DApp", "Create a decentralized application", block.timestamp + 7 days
         );
-        vm.expectRevert(bytes("Creator cannot claim own bounty"));
+        vm.expectRevert(BuilderBounty.CannotClaimOwnBounty.selector);
         bounty.claimBounty(0);
         vm.stopPrank();
     }
 
     function test_RevertWhen_DeadlineInPast() public {
         vm.prank(creator);
-        vm.expectRevert(bytes("Deadline must be in the future"));
+        vm.expectRevert(BuilderBounty.InvalidDeadline.selector);
         bounty.createBounty{ value: 1 ether }(
             "Build DApp", "Create a decentralized application", block.timestamp - 1 days
         );
@@ -175,7 +175,7 @@ contract BuilderBountyTest is Test {
         vm.warp(block.timestamp + 2 days);
 
         vm.prank(claimer);
-        vm.expectRevert(bytes("Bounty deadline has passed"));
+        vm.expectRevert(BuilderBounty.DeadlinePassed.selector);
         bounty.claimBounty(0);
     }
 
