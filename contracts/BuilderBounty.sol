@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
+import "@openzeppelin/contracts/access/Ownable2Step.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
+
 /**
  * @title BuilderBounty
  * @dev A decentralized bounty system for builders to post and claim rewards
  * @author BuildProof Team
  */
-contract BuilderBounty {
+contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
     struct Bounty {
         uint256 bountyId;
         address creator;
@@ -34,7 +38,6 @@ contract BuilderBounty {
 
     uint256 public totalBounties;
     uint256 public platformFee = 25; // 2.5% fee (basis points)
-    address public owner;
     uint256 public collectedFees;
 
     event BountyCreated(
@@ -55,19 +58,15 @@ contract BuilderBounty {
 
     event FeeUpdated(uint256 newFee);
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function");
-        _;
-    }
-
     modifier onlyCreator(uint256 _bountyId) {
         require(bounties[_bountyId].creator == msg.sender, "Only bounty creator can call this");
         _;
     }
 
-    constructor() {
-        owner = msg.sender;
-    }
+    /**
+     * @dev Constructor sets the contract owner
+     */
+    constructor() Ownable(msg.sender) { }
 
     /**
      * @dev Create a new bounty
@@ -82,6 +81,7 @@ contract BuilderBounty {
     )
         external
         payable
+        whenNotPaused
         returns (uint256)
     {
         require(msg.value > 0, "Reward must be greater than 0");
@@ -114,7 +114,7 @@ contract BuilderBounty {
      * @dev Claim a bounty
      * @param _bountyId ID of the bounty to claim
      */
-    function claimBounty(uint256 _bountyId) external {
+    function claimBounty(uint256 _bountyId) external whenNotPaused {
         Bounty storage bounty = bounties[_bountyId];
 
         require(bounty.status == BountyStatus.Open, "Bounty is not open");
@@ -151,7 +151,7 @@ contract BuilderBounty {
      * @dev Approve and complete a bounty (only creator)
      * @param _bountyId ID of the bounty to approve
      */
-    function approveBounty(uint256 _bountyId) external onlyCreator(_bountyId) {
+    function approveBounty(uint256 _bountyId) external nonReentrant onlyCreator(_bountyId) {
         Bounty storage bounty = bounties[_bountyId];
 
         require(bounty.status == BountyStatus.UnderReview, "Bounty must be under review");
@@ -175,7 +175,7 @@ contract BuilderBounty {
      * @dev Cancel a bounty and refund creator (only before it's claimed)
      * @param _bountyId ID of the bounty to cancel
      */
-    function cancelBounty(uint256 _bountyId) external onlyCreator(_bountyId) {
+    function cancelBounty(uint256 _bountyId) external nonReentrant onlyCreator(_bountyId) {
         Bounty storage bounty = bounties[_bountyId];
 
         require(bounty.status == BountyStatus.Open, "Can only cancel open bounties");
@@ -229,20 +229,25 @@ contract BuilderBounty {
     /**
      * @dev Withdraw collected fees (only owner)
      */
-    function withdrawFees() external onlyOwner {
+    function withdrawFees() external nonReentrant onlyOwner {
         uint256 amount = collectedFees;
         collectedFees = 0;
 
-        (bool success,) = payable(owner).call{ value: amount }("");
+        (bool success,) = payable(owner()).call{ value: amount }("");
         require(success, "Fee withdrawal failed");
     }
 
     /**
-     * @dev Transfer ownership (only owner)
-     * @param _newOwner Address of the new owner
+     * @notice Pause the contract (emergency stop)
      */
-    function transferOwnership(address _newOwner) external onlyOwner {
-        require(_newOwner != address(0), "Invalid new owner address");
-        owner = _newOwner;
+    function pause() external onlyOwner {
+        _pause();
+    }
+
+    /**
+     * @notice Unpause the contract
+     */
+    function unpause() external onlyOwner {
+        _unpause();
     }
 }
