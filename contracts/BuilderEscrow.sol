@@ -5,6 +5,15 @@ import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
 
+interface IBuilderReputation {
+    function recordProjectCompletion(
+        address _builder,
+        uint256 _earnings,
+        uint256 _reputationPoints
+    )
+        external;
+}
+
 /**
  * @title BuilderEscrow
  * @dev Secure milestone-based escrow system for builders with dispute resolution
@@ -69,6 +78,9 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
     uint256 public platformFee = 25; // 2.5% fee (basis points)
     uint256 public collectedFees;
 
+    IBuilderReputation public reputationContract;
+    uint256 public constant REPUTATION_PER_ETH = 100;
+
     event EscrowCreated(
         uint256 indexed escrowId,
         address indexed client,
@@ -98,6 +110,8 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
     event EscrowCancelled(uint256 indexed escrowId, uint256 refundAmount);
 
     event FeeUpdated(uint256 newFee);
+
+    event ReputationContractUpdated(address indexed newContract);
 
     modifier onlyClient(uint256 _escrowId) {
         require(escrows[_escrowId].client == msg.sender, "Only client can call this");
@@ -263,6 +277,14 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
         // Transfer payment to builder
         (bool success,) = payable(escrow.builder).call{ value: builderPayment }("");
         require(success, "Transfer to builder failed");
+
+        // Update reputation if contract is set
+        if (address(reputationContract) != address(0)) {
+            uint256 reputationPoints = (builderPayment * REPUTATION_PER_ETH) / 1 ether;
+            try reputationContract.recordProjectCompletion(
+                escrow.builder, builderPayment, reputationPoints
+            ) { } catch { }
+        }
 
         emit MilestoneApproved(_escrowId, _milestoneIndex, msg.sender, builderPayment);
 
@@ -526,6 +548,15 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
 
         (bool success,) = payable(owner()).call{ value: amount }("");
         require(success, "Fee withdrawal failed");
+    }
+
+    /**
+     * @dev Set the reputation contract address for cross-contract integration
+     * @param _reputationContract Address of the BuilderReputation contract
+     */
+    function setReputationContract(address _reputationContract) external onlyOwner {
+        reputationContract = IBuilderReputation(_reputationContract);
+        emit ReputationContractUpdated(_reputationContract);
     }
 
     /**
