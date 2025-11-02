@@ -21,10 +21,10 @@ interface IBuilderReputation {
  */
 contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
     struct Submission {
-        address submitter;
-        string ipfsHash;
         uint256 submittedAt;
+        address submitter;
         SubmissionStatus status;
+        string ipfsHash;
         string reviewNotes;
     }
 
@@ -37,18 +37,18 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
 
     struct Bounty {
         uint256 bountyId;
-        address creator;
-        string title;
-        string description;
         uint256 reward;
         uint256 deadline;
-        BountyStatus status;
-        address claimer;
-        string ipfsSubmission;
         uint256 createdAt;
-        bool allowsMultipleSubmissions;
         uint256 maxSubmissions;
         uint256 submissionCount;
+        address creator;
+        address claimer;
+        BountyStatus status;
+        bool allowsMultipleSubmissions;
+        string title;
+        string description;
+        string ipfsSubmission;
     }
 
     enum BountyStatus {

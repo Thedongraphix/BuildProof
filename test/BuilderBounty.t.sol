@@ -16,7 +16,9 @@ contract BuilderBountyTest is Test {
         address indexed creator,
         string title,
         uint256 reward,
-        uint256 deadline
+        uint256 deadline,
+        bool allowsMultipleSubmissions,
+        uint256 maxSubmissions
     );
 
     function setUp() public {
@@ -38,7 +40,7 @@ contract BuilderBountyTest is Test {
         uint256 deadline = block.timestamp + 7 days;
 
         vm.expectEmit(true, true, false, true);
-        emit BountyCreated(0, creator, "Build DApp", reward, deadline);
+        emit BountyCreated(0, creator, "Build DApp", reward, deadline, false, 1);
 
         uint256 bountyId = bounty.createSimpleBounty{ value: reward }(
             "Build DApp", "Create a decentralized application", deadline

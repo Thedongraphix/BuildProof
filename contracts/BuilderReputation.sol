@@ -28,26 +28,26 @@ contract BuilderReputation is Ownable2Step, ReentrancyGuard, Pausable {
     error NotAuthorizedIssuer();
 
     struct BuilderProfile {
-        address builder;
-        string username;
         uint256 reputationScore;
         uint256 completedProjects;
         uint256 totalEarnings;
         uint256 joinedAt;
+        address builder;
         bool isActive;
+        string username;
     }
 
     struct Skill {
-        string name;
         uint256 endorsements;
+        string name;
         mapping(address => bool) endorsers;
     }
 
     struct Achievement {
-        string title;
-        string description;
         uint256 earnedAt;
         address issuer;
+        string title;
+        string description;
     }
 
     mapping(address => BuilderProfile) public builders;

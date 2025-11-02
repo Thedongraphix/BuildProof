@@ -50,24 +50,24 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
     error OnlyClientOrBuilderCanDispute();
 
     struct Milestone {
-        string description;
         uint256 amount;
         uint256 deadline;
         bool completed;
         bool approved;
         bool disputed;
+        string description;
     }
 
     struct Escrow {
         uint256 escrowId;
-        address client;
-        address builder;
-        string projectTitle;
         uint256 totalAmount;
         uint256 releasedAmount;
-        EscrowStatus status;
         uint256 createdAt;
         uint256 milestoneCount;
+        address client;
+        address builder;
+        EscrowStatus status;
+        string projectTitle;
         mapping(uint256 => Milestone) milestones;
     }
 
