@@ -20,6 +20,35 @@ interface IBuilderReputation {
  * @author BuildProof Team
  */
 contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
+    /// @dev Custom errors for gas efficiency
+    error OnlyClient();
+    error OnlyBuilder();
+    error EscrowDoesNotExist();
+    error EscrowNotActive();
+    error InvalidBuilderAddress();
+    error ClientAndBuilderCannotBeSame();
+    error ProjectTitleEmpty();
+    error MustHaveAtLeastOneMilestone();
+    error MilestoneAmountMustBeGreaterThanZero();
+    error MilestoneDeadlineMustBeInFuture();
+    error SentValueMustEqualTotalMilestoneAmounts();
+    error InvalidMilestoneIndex();
+    error MilestoneAlreadyCompleted();
+    error MilestoneAlreadyApproved();
+    error MilestoneIsDisputed();
+    error MilestoneNotCompletedByBuilder();
+    error CannotApproveDisputedMilestone();
+    error TransferToBuilderFailed();
+    error CanOnlyDisputeCompletedMilestones();
+    error CannotDisputeApprovedMilestone();
+    error MilestoneAlreadyDisputed();
+    error MilestoneNotDisputed();
+    error CannotCancelAfterMilestoneApproval();
+    error RefundToClientFailed();
+    error FeeCannotExceed10Percent();
+    error FeeWithdrawalFailed();
+    error OnlyClientOrBuilderCanDispute();
+
     struct Milestone {
         string description;
         uint256 amount;
@@ -114,22 +143,22 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
     event ReputationContractUpdated(address indexed newContract);
 
     modifier onlyClient(uint256 _escrowId) {
-        require(escrows[_escrowId].client == msg.sender, "Only client can call this");
+        if (escrows[_escrowId].client != msg.sender) revert OnlyClient();
         _;
     }
 
     modifier onlyBuilder(uint256 _escrowId) {
-        require(escrows[_escrowId].builder == msg.sender, "Only builder can call this");
+        if (escrows[_escrowId].builder != msg.sender) revert OnlyBuilder();
         _;
     }
 
     modifier escrowExists(uint256 _escrowId) {
-        require(_escrowId < totalEscrows, "Escrow does not exist");
+        if (_escrowId >= totalEscrows) revert EscrowDoesNotExist();
         _;
     }
 
     modifier escrowActive(uint256 _escrowId) {
-        require(escrows[_escrowId].status == EscrowStatus.Active, "Escrow is not active");
+        if (escrows[_escrowId].status != EscrowStatus.Active) revert EscrowNotActive();
         _;
     }
 
@@ -158,27 +187,26 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
         whenNotPaused
         returns (uint256)
     {
-        require(_builder != address(0), "Invalid builder address");
-        require(_builder != msg.sender, "Client and builder cannot be the same");
-        require(bytes(_projectTitle).length > 0, "Project title cannot be empty");
-        require(_milestoneDescriptions.length > 0, "Must have at least one milestone");
-        require(
-            _milestoneDescriptions.length == _milestoneAmounts.length
-                && _milestoneAmounts.length == _milestoneDeadlines.length,
-            "Milestone arrays length mismatch"
-        );
+        if (_builder == address(0)) revert InvalidBuilderAddress();
+        if (_builder == msg.sender) revert ClientAndBuilderCannotBeSame();
+        if (bytes(_projectTitle).length == 0) revert ProjectTitleEmpty();
+        if (_milestoneDescriptions.length == 0) revert MustHaveAtLeastOneMilestone();
+        if (
+            _milestoneDescriptions.length != _milestoneAmounts.length
+                || _milestoneAmounts.length != _milestoneDeadlines.length
+        ) {
+            revert MustHaveAtLeastOneMilestone();
+        }
 
         // Calculate total amount
         uint256 totalAmount = 0;
         for (uint256 i = 0; i < _milestoneAmounts.length; i++) {
-            require(_milestoneAmounts[i] > 0, "Milestone amount must be greater than 0");
-            require(
-                _milestoneDeadlines[i] > block.timestamp, "Milestone deadline must be in the future"
-            );
+            if (_milestoneAmounts[i] == 0) revert MilestoneAmountMustBeGreaterThanZero();
+            if (_milestoneDeadlines[i] <= block.timestamp) revert MilestoneDeadlineMustBeInFuture();
             totalAmount += _milestoneAmounts[i];
         }
 
-        require(msg.value == totalAmount, "Sent value must equal total milestone amounts");
+        if (msg.value != totalAmount) revert SentValueMustEqualTotalMilestoneAmounts();
 
         uint256 escrowId = totalEscrows++;
         Escrow storage escrow = escrows[escrowId];
@@ -230,12 +258,12 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
         escrowActive(_escrowId)
     {
         Escrow storage escrow = escrows[_escrowId];
-        require(_milestoneIndex < escrow.milestoneCount, "Invalid milestone index");
+        if (_milestoneIndex >= escrow.milestoneCount) revert InvalidMilestoneIndex();
 
         Milestone storage milestone = escrow.milestones[_milestoneIndex];
-        require(!milestone.completed, "Milestone already completed");
-        require(!milestone.approved, "Milestone already approved");
-        require(!milestone.disputed, "Milestone is disputed");
+        if (milestone.completed) revert MilestoneAlreadyCompleted();
+        if (milestone.approved) revert MilestoneAlreadyApproved();
+        if (milestone.disputed) revert MilestoneIsDisputed();
 
         milestone.completed = true;
 
@@ -258,12 +286,12 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
         escrowActive(_escrowId)
     {
         Escrow storage escrow = escrows[_escrowId];
-        require(_milestoneIndex < escrow.milestoneCount, "Invalid milestone index");
+        if (_milestoneIndex >= escrow.milestoneCount) revert InvalidMilestoneIndex();
 
         Milestone storage milestone = escrow.milestones[_milestoneIndex];
-        require(milestone.completed, "Milestone not completed by builder");
-        require(!milestone.approved, "Milestone already approved");
-        require(!milestone.disputed, "Cannot approve disputed milestone");
+        if (!milestone.completed) revert MilestoneNotCompletedByBuilder();
+        if (milestone.approved) revert MilestoneAlreadyApproved();
+        if (milestone.disputed) revert CannotApproveDisputedMilestone();
 
         milestone.approved = true;
 
@@ -276,7 +304,7 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
 
         // Transfer payment to builder
         (bool success,) = payable(escrow.builder).call{ value: builderPayment }("");
-        require(success, "Transfer to builder failed");
+        if (!success) revert TransferToBuilderFailed();
 
         // Update reputation if contract is set
         if (address(reputationContract) != address(0)) {
@@ -317,16 +345,15 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
         escrowActive(_escrowId)
     {
         Escrow storage escrow = escrows[_escrowId];
-        require(
-            msg.sender == escrow.client || msg.sender == escrow.builder,
-            "Only client or builder can dispute"
-        );
-        require(_milestoneIndex < escrow.milestoneCount, "Invalid milestone index");
+        if (msg.sender != escrow.client && msg.sender != escrow.builder) {
+            revert OnlyClientOrBuilderCanDispute();
+        }
+        if (_milestoneIndex >= escrow.milestoneCount) revert InvalidMilestoneIndex();
 
         Milestone storage milestone = escrow.milestones[_milestoneIndex];
-        require(milestone.completed, "Can only dispute completed milestones");
-        require(!milestone.approved, "Cannot dispute approved milestone");
-        require(!milestone.disputed, "Milestone already disputed");
+        if (!milestone.completed) revert CanOnlyDisputeCompletedMilestones();
+        if (milestone.approved) revert CannotDisputeApprovedMilestone();
+        if (milestone.disputed) revert MilestoneAlreadyDisputed();
 
         milestone.disputed = true;
         escrow.status = EscrowStatus.Disputed;
@@ -351,10 +378,10 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
         escrowExists(_escrowId)
     {
         Escrow storage escrow = escrows[_escrowId];
-        require(_milestoneIndex < escrow.milestoneCount, "Invalid milestone index");
+        if (_milestoneIndex >= escrow.milestoneCount) revert InvalidMilestoneIndex();
 
         Milestone storage milestone = escrow.milestones[_milestoneIndex];
-        require(milestone.disputed, "Milestone is not disputed");
+        if (!milestone.disputed) revert MilestoneNotDisputed();
 
         milestone.disputed = false;
         escrow.status = EscrowStatus.Active;
@@ -371,7 +398,7 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
 
             // Transfer payment to builder
             (bool success,) = payable(escrow.builder).call{ value: builderPayment }("");
-            require(success, "Transfer to builder failed");
+            if (!success) revert TransferToBuilderFailed();
 
             emit MilestoneApproved(_escrowId, _milestoneIndex, owner(), builderPayment);
         } else {
@@ -412,7 +439,7 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
 
         // Check that no milestones have been approved
         for (uint256 i = 0; i < escrow.milestoneCount; i++) {
-            require(!escrow.milestones[i].approved, "Cannot cancel after milestone approval");
+            if (escrow.milestones[i].approved) revert CannotCancelAfterMilestoneApproval();
         }
 
         escrow.status = EscrowStatus.Cancelled;
@@ -421,7 +448,7 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
         uint256 refundAmount = escrow.totalAmount - escrow.releasedAmount;
 
         (bool success,) = payable(escrow.client).call{ value: refundAmount }("");
-        require(success, "Refund to client failed");
+        if (!success) revert RefundToClientFailed();
 
         emit EscrowCancelled(_escrowId, refundAmount);
     }
@@ -468,7 +495,7 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
         returns (MilestoneInfo memory)
     {
         Escrow storage escrow = escrows[_escrowId];
-        require(_milestoneIndex < escrow.milestoneCount, "Invalid milestone index");
+        if (_milestoneIndex >= escrow.milestoneCount) revert InvalidMilestoneIndex();
 
         Milestone storage milestone = escrow.milestones[_milestoneIndex];
 
@@ -534,7 +561,7 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
      * @param _newFee New fee in basis points (100 = 1%)
      */
     function updatePlatformFee(uint256 _newFee) external onlyOwner {
-        require(_newFee <= 1000, "Fee cannot exceed 10%");
+        if (_newFee > 1000) revert FeeCannotExceed10Percent();
         platformFee = _newFee;
         emit FeeUpdated(_newFee);
     }
@@ -547,7 +574,7 @@ contract BuilderEscrow is Ownable2Step, ReentrancyGuard, Pausable {
         collectedFees = 0;
 
         (bool success,) = payable(owner()).call{ value: amount }("");
-        require(success, "Fee withdrawal failed");
+        if (!success) revert FeeWithdrawalFailed();
     }
 
     /**
