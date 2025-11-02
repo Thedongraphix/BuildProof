@@ -5,6 +5,21 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
+interface IBuilderReputation {
+    function builders(address)
+        external
+        view
+        returns (
+            address builder,
+            string memory username,
+            uint256 reputationScore,
+            uint256 completedProjects,
+            uint256 totalEarnings,
+            uint256 joinedAt,
+            bool isActive
+        );
+}
+
 /**
  * @title BuilderStaking
  * @dev Staking contract for builders to stake ETH and earn rewards
@@ -42,6 +57,12 @@ contract BuilderStaking is Ownable, Pausable, ReentrancyGuard {
 
     /// @dev Minimum staking period (7 days)
     uint256 public constant MIN_STAKING_PERIOD = 7 days;
+
+    /// @dev Reputation contract for bonus rewards
+    IBuilderReputation public reputationContract;
+
+    /// @dev Max reputation bonus multiplier (100% = 10000 basis points)
+    uint256 public constant MAX_REPUTATION_BONUS = 10000;
 
     /// @notice Emitted when a user stakes ETH
     event Staked(address indexed staker, uint256 amount, uint256 timestamp);
@@ -186,7 +207,7 @@ contract BuilderStaking is Ownable, Pausable, ReentrancyGuard {
     /**
      * @dev Internal function to calculate rewards based on time staked
      * @param stakerAddress Address of the staker
-     * @return uint256 Calculated rewards
+     * @return uint256 Calculated rewards with reputation bonus
      */
     function _calculateRewards(address stakerAddress) private view returns (uint256) {
         Staker memory staker = stakers[stakerAddress];
@@ -194,10 +215,39 @@ contract BuilderStaking is Ownable, Pausable, ReentrancyGuard {
         if (staker.stakedAmount == 0) return 0;
 
         uint256 stakingDuration = block.timestamp - staker.lastRewardClaim;
-        uint256 rewards = (staker.stakedAmount * APY_BASIS_POINTS * stakingDuration)
+
+        // Base rewards
+        uint256 baseRewards = (staker.stakedAmount * APY_BASIS_POINTS * stakingDuration)
             / (BASIS_POINTS_DIVISOR * SECONDS_PER_YEAR);
 
-        return rewards;
+        // Apply reputation bonus if contract is set
+        if (address(reputationContract) != address(0)) {
+            try reputationContract.builders(stakerAddress) returns (
+                address,
+                string memory,
+                uint256 reputationScore,
+                uint256,
+                uint256,
+                uint256,
+                bool isActive
+            ) {
+                if (isActive && reputationScore > 0) {
+                    // Bonus: 1% per 100 reputation points, max 100% (10000 basis points)
+                    uint256 reputationBonus = (reputationScore * 100); // 100 basis points per 100
+                        // rep
+                    if (reputationBonus > MAX_REPUTATION_BONUS) {
+                        reputationBonus = MAX_REPUTATION_BONUS;
+                    }
+
+                    uint256 bonusRewards = (baseRewards * reputationBonus) / BASIS_POINTS_DIVISOR;
+                    return baseRewards + bonusRewards;
+                }
+            } catch {
+                return baseRewards;
+            }
+        }
+
+        return baseRewards;
     }
 
     /**
@@ -205,6 +255,14 @@ contract BuilderStaking is Ownable, Pausable, ReentrancyGuard {
      */
     function fundRewards() external payable onlyOwner {
         emit RewardsFunded(msg.sender, msg.value);
+    }
+
+    /**
+     * @dev Set the reputation contract address for bonus rewards
+     * @param _reputationContract Address of the BuilderReputation contract
+     */
+    function setReputationContract(address _reputationContract) external onlyOwner {
+        reputationContract = IBuilderReputation(_reputationContract);
     }
 
     /**
