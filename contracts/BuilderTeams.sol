@@ -11,6 +11,24 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * @author BuildProof Team
  */
 contract BuilderTeams is ReentrancyGuard, Pausable, Ownable {
+    /// @dev Custom errors for gas efficiency
+    error OnlyTeamCreator();
+    error OnlyTeamMembers();
+    error TeamDoesNotExist();
+    error TeamNotActive();
+    error TeamNameEmpty();
+    error MustHaveAtLeastOneMember();
+    error MembersAndSharesLengthMismatch();
+    error InvalidMemberAddress();
+    error ShareMustBeGreaterThanZero();
+    error DuplicateMember();
+    error TotalSharesMustEqual10000();
+    error MemberAlreadyExists();
+    error MemberDoesNotExist();
+    error CannotRemoveTeamCreator();
+    error RewardMustBeGreaterThanZero();
+    error TransferFailed();
+
     struct Team {
         uint256 teamId;
         string name;
@@ -70,22 +88,22 @@ contract BuilderTeams is ReentrancyGuard, Pausable, Ownable {
     event BountyCompleted(uint256 indexed teamId, uint256 bountyCount, uint256 earnings);
 
     modifier onlyTeamCreator(uint256 _teamId) {
-        require(teams[_teamId].creator == msg.sender, "Only team creator can call this");
+        if (teams[_teamId].creator != msg.sender) revert OnlyTeamCreator();
         _;
     }
 
     modifier onlyTeamMember(uint256 _teamId) {
-        require(teams[_teamId].isMember[msg.sender], "Only team members can call this");
+        if (!teams[_teamId].isMember[msg.sender]) revert OnlyTeamMembers();
         _;
     }
 
     modifier teamExists(uint256 _teamId) {
-        require(_teamId < totalTeams, "Team does not exist");
+        if (_teamId >= totalTeams) revert TeamDoesNotExist();
         _;
     }
 
     modifier teamIsActive(uint256 _teamId) {
-        require(teams[_teamId].isActive, "Team is not active");
+        if (!teams[_teamId].isActive) revert TeamNotActive();
         _;
     }
 
@@ -104,11 +122,9 @@ contract BuilderTeams is ReentrancyGuard, Pausable, Ownable {
         whenNotPaused
         returns (uint256)
     {
-        require(bytes(_name).length > 0, "Team name cannot be empty");
-        require(_initialMembers.length > 0, "Must have at least one member");
-        require(
-            _initialMembers.length == _initialShares.length, "Members and shares length mismatch"
-        );
+        if (bytes(_name).length == 0) revert TeamNameEmpty();
+        if (_initialMembers.length == 0) revert MustHaveAtLeastOneMember();
+        if (_initialMembers.length != _initialShares.length) revert MembersAndSharesLengthMismatch();
 
         uint256 teamId = totalTeams++;
         Team storage team = teams[teamId];
@@ -127,9 +143,9 @@ contract BuilderTeams is ReentrancyGuard, Pausable, Ownable {
             address member = _initialMembers[i];
             uint256 share = _initialShares[i];
 
-            require(member != address(0), "Invalid member address");
-            require(share > 0, "Share must be greater than 0");
-            require(!team.isMember[member], "Duplicate member");
+            if (member == address(0)) revert InvalidMemberAddress();
+            if (share == 0) revert ShareMustBeGreaterThanZero();
+            if (team.isMember[member]) revert DuplicateMember();
 
             team.members.push(member);
             team.isMember[member] = true;
@@ -139,7 +155,7 @@ contract BuilderTeams is ReentrancyGuard, Pausable, Ownable {
             memberTeams[member].push(teamId);
         }
 
-        require(totalSharesSum == 10_000, "Total shares must equal 100% (10000 basis points)");
+        if (totalSharesSum != 10_000) revert TotalSharesMustEqual10000();
         team.totalShares = totalSharesSum;
 
         createdTeams[msg.sender].push(teamId);
@@ -167,9 +183,9 @@ contract BuilderTeams is ReentrancyGuard, Pausable, Ownable {
     {
         Team storage team = teams[_teamId];
 
-        require(_member != address(0), "Invalid member address");
-        require(_share > 0, "Share must be greater than 0");
-        require(!team.isMember[_member], "Member already exists");
+        if (_member == address(0)) revert InvalidMemberAddress();
+        if (_share == 0) revert ShareMustBeGreaterThanZero();
+        if (team.isMember[_member]) revert MemberAlreadyExists();
 
         team.members.push(_member);
         team.isMember[_member] = true;
@@ -197,8 +213,8 @@ contract BuilderTeams is ReentrancyGuard, Pausable, Ownable {
     {
         Team storage team = teams[_teamId];
 
-        require(team.isMember[_member], "Member does not exist");
-        require(_member != team.creator, "Cannot remove team creator");
+        if (!team.isMember[_member]) revert MemberDoesNotExist();
+        if (_member == team.creator) revert CannotRemoveTeamCreator();
 
         team.isMember[_member] = false;
         team.totalShares -= team.rewardShares[_member];
@@ -234,8 +250,8 @@ contract BuilderTeams is ReentrancyGuard, Pausable, Ownable {
     {
         Team storage team = teams[_teamId];
 
-        require(team.isMember[_member], "Member does not exist");
-        require(_newShare > 0, "Share must be greater than 0");
+        if (!team.isMember[_member]) revert MemberDoesNotExist();
+        if (_newShare == 0) revert ShareMustBeGreaterThanZero();
 
         uint256 oldShare = team.rewardShares[_member];
         team.totalShares = team.totalShares - oldShare + _newShare;
@@ -256,7 +272,7 @@ contract BuilderTeams is ReentrancyGuard, Pausable, Ownable {
         teamExists(_teamId)
         teamIsActive(_teamId)
     {
-        require(msg.value > 0, "Reward must be greater than 0");
+        if (msg.value == 0) revert RewardMustBeGreaterThanZero();
 
         Team storage team = teams[_teamId];
         uint256 totalAmount = msg.value;
@@ -269,7 +285,7 @@ contract BuilderTeams is ReentrancyGuard, Pausable, Ownable {
 
             if (memberReward > 0) {
                 (bool success,) = payable(member).call{ value: memberReward }("");
-                require(success, "Transfer failed");
+                if (!success) revert TransferFailed();
             }
         }
 
