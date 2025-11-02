@@ -11,6 +11,22 @@ import "@openzeppelin/contracts/utils/Pausable.sol";
  * @author BuildProof Team
  */
 contract BuilderReputation is Ownable2Step, ReentrancyGuard, Pausable {
+    /// @dev Custom errors for gas efficiency
+    error BuilderAlreadyRegistered();
+    error BuilderNotActive();
+    error UsernameEmpty();
+    error UsernameTooLong();
+    error SkillNameEmpty();
+    error SkillAlreadyExists();
+    error CannotEndorseSelf();
+    error EndorserNotActive();
+    error SkillDoesNotExist();
+    error AlreadyEndorsed();
+    error TitleEmpty();
+    error InvalidIssuerAddress();
+    error CannotRevokeOwner();
+    error NotAuthorizedIssuer();
+
     struct BuilderProfile {
         address builder;
         string username;
@@ -61,15 +77,14 @@ contract BuilderReputation is Ownable2Step, ReentrancyGuard, Pausable {
     event IssuerRevoked(address indexed issuer);
 
     modifier onlyAuthorizedIssuer() {
-        require(
-            authorizedIssuers[msg.sender] || msg.sender == owner(),
-            "Not authorized to issue achievements"
-        );
+        if (!authorizedIssuers[msg.sender] && msg.sender != owner()) {
+            revert NotAuthorizedIssuer();
+        }
         _;
     }
 
     modifier onlyActiveBuilder(address _builder) {
-        require(builders[_builder].isActive, "Builder profile not active");
+        if (!builders[_builder].isActive) revert BuilderNotActive();
         _;
     }
 
@@ -85,9 +100,9 @@ contract BuilderReputation is Ownable2Step, ReentrancyGuard, Pausable {
      * @param _username Unique username for the builder
      */
     function registerBuilder(string memory _username) external whenNotPaused {
-        require(!builders[msg.sender].isActive, "Builder already registered");
-        require(bytes(_username).length > 0, "Username cannot be empty");
-        require(bytes(_username).length <= 32, "Username too long");
+        if (builders[msg.sender].isActive) revert BuilderAlreadyRegistered();
+        if (bytes(_username).length == 0) revert UsernameEmpty();
+        if (bytes(_username).length > 32) revert UsernameTooLong();
 
         builders[msg.sender] = BuilderProfile({
             builder: msg.sender,
@@ -109,8 +124,8 @@ contract BuilderReputation is Ownable2Step, ReentrancyGuard, Pausable {
      * @param _skill Name of the skill
      */
     function addSkill(string memory _skill) external onlyActiveBuilder(msg.sender) {
-        require(bytes(_skill).length > 0, "Skill name cannot be empty");
-        require(builderSkills[msg.sender][_skill].endorsements == 0, "Skill already exists");
+        if (bytes(_skill).length == 0) revert SkillNameEmpty();
+        if (builderSkills[msg.sender][_skill].endorsements != 0) revert SkillAlreadyExists();
 
         builderSkills[msg.sender][_skill].name = _skill;
         builderSkillsList[msg.sender].push(_skill);
@@ -130,12 +145,10 @@ contract BuilderReputation is Ownable2Step, ReentrancyGuard, Pausable {
         external
         onlyActiveBuilder(_builder)
     {
-        require(msg.sender != _builder, "Cannot endorse own skills");
-        require(builders[msg.sender].isActive, "Endorser must be an active builder");
-        require(bytes(builderSkills[_builder][_skill].name).length > 0, "Skill does not exist");
-        require(
-            !builderSkills[_builder][_skill].endorsers[msg.sender], "Already endorsed this skill"
-        );
+        if (msg.sender == _builder) revert CannotEndorseSelf();
+        if (!builders[msg.sender].isActive) revert EndorserNotActive();
+        if (bytes(builderSkills[_builder][_skill].name).length == 0) revert SkillDoesNotExist();
+        if (builderSkills[_builder][_skill].endorsers[msg.sender]) revert AlreadyEndorsed();
 
         builderSkills[_builder][_skill].endorsers[msg.sender] = true;
         builderSkills[_builder][_skill].endorsements++;
@@ -158,7 +171,7 @@ contract BuilderReputation is Ownable2Step, ReentrancyGuard, Pausable {
         onlyAuthorizedIssuer
         onlyActiveBuilder(_builder)
     {
-        require(bytes(_title).length > 0, "Title cannot be empty");
+        if (bytes(_title).length == 0) revert TitleEmpty();
 
         builderAchievements[_builder].push(
             Achievement({
@@ -270,7 +283,7 @@ contract BuilderReputation is Ownable2Step, ReentrancyGuard, Pausable {
      * @param _issuer Address to authorize
      */
     function authorizeIssuer(address _issuer) external onlyOwner {
-        require(_issuer != address(0), "Invalid issuer address");
+        if (_issuer == address(0)) revert InvalidIssuerAddress();
         authorizedIssuers[_issuer] = true;
         emit IssuerAuthorized(_issuer);
     }
@@ -280,7 +293,7 @@ contract BuilderReputation is Ownable2Step, ReentrancyGuard, Pausable {
      * @param _issuer Address to revoke
      */
     function revokeIssuer(address _issuer) external onlyOwner {
-        require(_issuer != owner(), "Cannot revoke owner");
+        if (_issuer == owner()) revert CannotRevokeOwner();
         authorizedIssuers[_issuer] = false;
         emit IssuerRevoked(_issuer);
     }
@@ -290,8 +303,8 @@ contract BuilderReputation is Ownable2Step, ReentrancyGuard, Pausable {
      * @param _newUsername New username
      */
     function updateUsername(string memory _newUsername) external onlyActiveBuilder(msg.sender) {
-        require(bytes(_newUsername).length > 0, "Username cannot be empty");
-        require(bytes(_newUsername).length <= 32, "Username too long");
+        if (bytes(_newUsername).length == 0) revert UsernameEmpty();
+        if (bytes(_newUsername).length > 32) revert UsernameTooLong();
 
         builders[msg.sender].username = _newUsername;
     }
