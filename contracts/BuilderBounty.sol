@@ -20,6 +20,21 @@ interface IBuilderReputation {
  * @author BuildProof Team
  */
 contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
+    struct Submission {
+        address submitter;
+        string ipfsHash;
+        uint256 submittedAt;
+        SubmissionStatus status;
+        string reviewNotes;
+    }
+
+    enum SubmissionStatus {
+        Pending,
+        UnderReview,
+        Approved,
+        Rejected
+    }
+
     struct Bounty {
         uint256 bountyId;
         address creator;
@@ -31,6 +46,9 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
         address claimer;
         string ipfsSubmission;
         uint256 createdAt;
+        bool allowsMultipleSubmissions;
+        uint256 maxSubmissions;
+        uint256 submissionCount;
     }
 
     enum BountyStatus {
@@ -44,6 +62,8 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
     mapping(uint256 => Bounty) public bounties;
     mapping(address => uint256[]) public creatorBounties;
     mapping(address => uint256[]) public claimerBounties;
+    mapping(uint256 => Submission[]) public bountySubmissions;
+    mapping(uint256 => mapping(address => bool)) public hasSubmitted;
 
     uint256 public totalBounties;
     uint256 public platformFee = 25; // 2.5% fee (basis points)
@@ -68,18 +88,33 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
     error TransferFailed();
     error FeeTooHigh();
     error InvalidOwnerAddress();
+    error AlreadySubmitted();
+    error MaxSubmissionsReached();
+    error InvalidMaxSubmissions();
 
     event BountyCreated(
         uint256 indexed bountyId,
         address indexed creator,
         string title,
         uint256 reward,
-        uint256 deadline
+        uint256 deadline,
+        bool allowsMultipleSubmissions,
+        uint256 maxSubmissions
     );
 
     event BountyClaimed(uint256 indexed bountyId, address indexed claimer);
 
-    event SubmissionMade(uint256 indexed bountyId, address indexed claimer, string ipfsSubmission);
+    event SubmissionMade(
+        uint256 indexed bountyId, address indexed submitter, string ipfsSubmission
+    );
+
+    event SubmissionReviewed(
+        uint256 indexed bountyId,
+        address indexed submitter,
+        uint256 submissionIndex,
+        SubmissionStatus status,
+        string reviewNotes
+    );
 
     event BountyCompleted(uint256 indexed bountyId, address indexed claimer, uint256 reward);
 
@@ -104,11 +139,15 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
      * @param _title Bounty title
      * @param _description Bounty description
      * @param _deadline Unix timestamp for deadline
+     * @param _allowsMultipleSubmissions Whether multiple builders can submit
+     * @param _maxSubmissions Maximum number of submissions (0 = unlimited)
      */
     function createBounty(
         string memory _title,
         string memory _description,
-        uint256 _deadline
+        uint256 _deadline,
+        bool _allowsMultipleSubmissions,
+        uint256 _maxSubmissions
     )
         external
         payable
@@ -118,6 +157,7 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
         if (msg.value == 0) revert InvalidReward();
         if (_deadline <= block.timestamp) revert InvalidDeadline();
         if (bytes(_title).length == 0) revert EmptyTitle();
+        if (_allowsMultipleSubmissions && _maxSubmissions == 0) revert InvalidMaxSubmissions();
 
         uint256 bountyId = totalBounties++;
 
@@ -131,14 +171,44 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
             status: BountyStatus.Open,
             claimer: address(0),
             ipfsSubmission: "",
-            createdAt: block.timestamp
+            createdAt: block.timestamp,
+            allowsMultipleSubmissions: _allowsMultipleSubmissions,
+            maxSubmissions: _maxSubmissions,
+            submissionCount: 0
         });
 
         creatorBounties[msg.sender].push(bountyId);
 
-        emit BountyCreated(bountyId, msg.sender, _title, msg.value, _deadline);
+        emit BountyCreated(
+            bountyId,
+            msg.sender,
+            _title,
+            msg.value,
+            _deadline,
+            _allowsMultipleSubmissions,
+            _maxSubmissions
+        );
 
         return bountyId;
+    }
+
+    /**
+     * @dev Create a simple bounty (backwards compatible)
+     * @param _title Bounty title
+     * @param _description Bounty description
+     * @param _deadline Unix timestamp for deadline
+     */
+    function createSimpleBounty(
+        string memory _title,
+        string memory _description,
+        uint256 _deadline
+    )
+        external
+        payable
+        whenNotPaused
+        returns (uint256)
+    {
+        return this.createBounty{ value: msg.value }(_title, _description, _deadline, false, 1);
     }
 
     /**
@@ -161,21 +231,138 @@ contract BuilderBounty is Ownable2Step, ReentrancyGuard, Pausable {
     }
 
     /**
-     * @dev Submit work for a bounty
+     * @dev Submit work for a bounty (new multi-submission system)
      * @param _bountyId ID of the bounty
      * @param _ipfsHash IPFS hash of the submission
      */
-    function submitWork(uint256 _bountyId, string memory _ipfsHash) external {
+    function submitWork(uint256 _bountyId, string memory _ipfsHash) external whenNotPaused {
         Bounty storage bounty = bounties[_bountyId];
 
-        if (bounty.claimer != msg.sender) revert OnlyClaimerCanSubmit();
-        if (bounty.status != BountyStatus.Claimed) revert BountyNotClaimed();
+        if (bounty.status != BountyStatus.Open && bounty.status != BountyStatus.Claimed) {
+            revert BountyNotOpen();
+        }
+        if (block.timestamp >= bounty.deadline) revert DeadlinePassed();
+        if (bounty.creator == msg.sender) revert CannotClaimOwnBounty();
         if (bytes(_ipfsHash).length == 0) revert EmptySubmission();
 
-        bounty.status = BountyStatus.UnderReview;
-        bounty.ipfsSubmission = _ipfsHash;
+        // Check if multiple submissions are allowed
+        if (!bounty.allowsMultipleSubmissions && hasSubmitted[_bountyId][msg.sender]) {
+            revert AlreadySubmitted();
+        }
+
+        // Check max submissions limit
+        if (bounty.maxSubmissions > 0 && bounty.submissionCount >= bounty.maxSubmissions) {
+            revert MaxSubmissionsReached();
+        }
+
+        // Create submission
+        bountySubmissions[_bountyId].push(
+            Submission({
+                submitter: msg.sender,
+                ipfsHash: _ipfsHash,
+                submittedAt: block.timestamp,
+                status: SubmissionStatus.Pending,
+                reviewNotes: ""
+            })
+        );
+
+        hasSubmitted[_bountyId][msg.sender] = true;
+        bounty.submissionCount++;
+
+        if (bounty.status == BountyStatus.Open) {
+            bounty.status = BountyStatus.UnderReview;
+        }
 
         emit SubmissionMade(_bountyId, msg.sender, _ipfsHash);
+    }
+
+    /**
+     * @dev Review a submission (approve or reject)
+     * @param _bountyId ID of the bounty
+     * @param _submissionIndex Index of the submission to review
+     * @param _approve Whether to approve the submission
+     * @param _reviewNotes Notes from the review
+     */
+    function reviewSubmission(
+        uint256 _bountyId,
+        uint256 _submissionIndex,
+        bool _approve,
+        string memory _reviewNotes
+    )
+        external
+        onlyCreator(_bountyId)
+    {
+        Bounty storage bounty = bounties[_bountyId];
+        Submission storage submission = bountySubmissions[_bountyId][_submissionIndex];
+
+        if (submission.status != SubmissionStatus.Pending) revert BountyNotUnderReview();
+
+        submission.status = _approve ? SubmissionStatus.Approved : SubmissionStatus.Rejected;
+        submission.reviewNotes = _reviewNotes;
+
+        emit SubmissionReviewed(
+            _bountyId, submission.submitter, _submissionIndex, submission.status, _reviewNotes
+        );
+    }
+
+    /**
+     * @dev Approve a submission and pay the builder
+     * @param _bountyId ID of the bounty
+     * @param _submissionIndex Index of the approved submission
+     * @param _rewardAmount Amount to pay (can be partial for multi-submission bounties)
+     */
+    function approveAndPaySubmission(
+        uint256 _bountyId,
+        uint256 _submissionIndex,
+        uint256 _rewardAmount
+    )
+        external
+        nonReentrant
+        onlyCreator(_bountyId)
+    {
+        Bounty storage bounty = bounties[_bountyId];
+        Submission storage submission = bountySubmissions[_bountyId][_submissionIndex];
+
+        if (submission.status != SubmissionStatus.Pending) revert BountyNotUnderReview();
+        if (_rewardAmount > bounty.reward) revert InvalidReward();
+
+        // Mark as approved
+        submission.status = SubmissionStatus.Approved;
+
+        // Calculate fees
+        uint256 fee = (_rewardAmount * platformFee) / 10_000;
+        uint256 builderPayment = _rewardAmount - fee;
+
+        collectedFees += fee;
+        bounty.reward -= _rewardAmount;
+
+        // Transfer reward to builder
+        (bool success,) = payable(submission.submitter).call{ value: builderPayment }("");
+        if (!success) revert TransferFailed();
+
+        // Update reputation if contract is set
+        if (address(reputationContract) != address(0)) {
+            uint256 reputationPoints = (builderPayment * REPUTATION_PER_ETH) / 1 ether;
+            try reputationContract.recordProjectCompletion(
+                submission.submitter, builderPayment, reputationPoints
+            ) { } catch { }
+        }
+
+        // Mark bounty as completed if all rewards distributed
+        if (bounty.reward == 0) {
+            bounty.status = BountyStatus.Completed;
+        }
+
+        emit BountyCompleted(_bountyId, submission.submitter, builderPayment);
+    }
+
+    /**
+     * @dev Get all submissions for a bounty
+     * @param _bountyId ID of the bounty
+     * @return Array of submissions
+     */
+    function getSubmissions(uint256 _bountyId) external view returns (Submission[] memory) {
+        return bountySubmissions[_bountyId];
     }
 
     /**

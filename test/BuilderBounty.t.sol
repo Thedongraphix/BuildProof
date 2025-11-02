@@ -40,7 +40,7 @@ contract BuilderBountyTest is Test {
         vm.expectEmit(true, true, false, true);
         emit BountyCreated(0, creator, "Build DApp", reward, deadline);
 
-        uint256 bountyId = bounty.createBounty{ value: reward }(
+        uint256 bountyId = bounty.createSimpleBounty{ value: reward }(
             "Build DApp", "Create a decentralized application", deadline
         );
 
@@ -58,7 +58,7 @@ contract BuilderBountyTest is Test {
     function test_ClaimBounty() public {
         // Create bounty
         vm.prank(creator);
-        bounty.createBounty{ value: 1 ether }(
+        bounty.createSimpleBounty{ value: 1 ether }(
             "Build DApp", "Create a decentralized application", block.timestamp + 7 days
         );
 
@@ -74,7 +74,7 @@ contract BuilderBountyTest is Test {
     function test_SubmitWork() public {
         // Create and claim bounty
         vm.prank(creator);
-        bounty.createBounty{ value: 1 ether }(
+        bounty.createSimpleBounty{ value: 1 ether }(
             "Build DApp", "Create a decentralized application", block.timestamp + 7 days
         );
 
@@ -93,7 +93,7 @@ contract BuilderBountyTest is Test {
     function test_ApproveBounty() public {
         // Create, claim, and submit work
         vm.prank(creator);
-        bounty.createBounty{ value: 1 ether }(
+        bounty.createSimpleBounty{ value: 1 ether }(
             "Build DApp", "Create a decentralized application", block.timestamp + 7 days
         );
 
@@ -122,7 +122,7 @@ contract BuilderBountyTest is Test {
         vm.startPrank(creator);
 
         uint256 creatorBalanceBefore = creator.balance;
-        bounty.createBounty{ value: 1 ether }(
+        bounty.createSimpleBounty{ value: 1 ether }(
             "Build DApp", "Create a decentralized application", block.timestamp + 7 days
         );
 
@@ -143,14 +143,14 @@ contract BuilderBountyTest is Test {
     function test_RevertWhen_CreateBountyWithZeroReward() public {
         vm.prank(creator);
         vm.expectRevert(BuilderBounty.InvalidReward.selector);
-        bounty.createBounty{ value: 0 }(
+        bounty.createSimpleBounty{ value: 0 }(
             "Build DApp", "Create a decentralized application", block.timestamp + 7 days
         );
     }
 
     function test_RevertWhen_ClaimOwnBounty() public {
         vm.startPrank(creator);
-        bounty.createBounty{ value: 1 ether }(
+        bounty.createSimpleBounty{ value: 1 ether }(
             "Build DApp", "Create a decentralized application", block.timestamp + 7 days
         );
         vm.expectRevert(BuilderBounty.CannotClaimOwnBounty.selector);
@@ -161,14 +161,14 @@ contract BuilderBountyTest is Test {
     function test_RevertWhen_DeadlineInPast() public {
         vm.prank(creator);
         vm.expectRevert(BuilderBounty.InvalidDeadline.selector);
-        bounty.createBounty{ value: 1 ether }(
+        bounty.createSimpleBounty{ value: 1 ether }(
             "Build DApp", "Create a decentralized application", block.timestamp - 1 days
         );
     }
 
     function test_RevertWhen_ClaimExpiredBounty() public {
         vm.prank(creator);
-        bounty.createBounty{ value: 1 ether }(
+        bounty.createSimpleBounty{ value: 1 ether }(
             "Build DApp", "Create a decentralized application", block.timestamp + 1 days
         );
 
@@ -182,9 +182,11 @@ contract BuilderBountyTest is Test {
     function test_MultipleBounties() public {
         vm.startPrank(creator);
 
-        bounty.createBounty{ value: 1 ether }("Bounty 1", "Description 1", block.timestamp + 7 days);
+        bounty.createSimpleBounty{ value: 1 ether }(
+            "Bounty 1", "Description 1", block.timestamp + 7 days
+        );
 
-        bounty.createBounty{ value: 2 ether }(
+        bounty.createSimpleBounty{ value: 2 ether }(
             "Bounty 2", "Description 2", block.timestamp + 14 days
         );
 
@@ -201,7 +203,7 @@ contract BuilderBountyTest is Test {
 
     function test_WithdrawFees() public {
         vm.prank(creator);
-        bounty.createBounty{ value: 1 ether }(
+        bounty.createSimpleBounty{ value: 1 ether }(
             "Build DApp", "Create a decentralized application", block.timestamp + 7 days
         );
 
