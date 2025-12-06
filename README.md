@@ -32,7 +32,7 @@ BuildProof is a **comprehensive builder platform** that combines smart contract 
 - Automatic payment distribution
 - 2.5% platform fee
 
-#### 3. **Builder Reputation**
+#### 3. **Builder Reputation onchain**
 - On-chain reputation tracking system
 - Skill endorsements from peers
 - Achievement badges and credentials
