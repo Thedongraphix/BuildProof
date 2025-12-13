@@ -14,7 +14,7 @@
 
 ---
 
-## ✨ What BuildProof 
+## ✨ What is BuildProof 
 
 BuildProof is a **comprehensive builder platform** that combines smart contract verification with collaborative tools for blockchain developers. It provides a complete ecosystem for builders to work together, earn reputation, and manage projects securely.
 
