@@ -26,7 +26,7 @@ BuildProof is a **comprehensive builder platform** that combines smart contract 
 - Gas efficiency analysis
 - Industry compliance checks
 
-#### 2. **Builder Bounties**
+#### 2. **Builder Bountie**
 - Create and manage blockchain development bounties
 - Submit work with IPFS proof verification
 - Automatic payment distribution
