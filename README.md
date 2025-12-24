@@ -57,7 +57,7 @@ BuildProof is a **comprehensive builder platform** that combines smart contract 
 - **Easy to Use**: Just paste an address - no technical knowledge required
 - **Always Free**: Complete security analysis at no cost
 
-### 🎯 **Perfect For**
+### 🎯 **Perfect Fo this set of users **
 - **Crypto Investors**: Verify tokens before buying
 - **DeFi Users**: Check protocols before depositing funds
 - **NFT Collectors**: Analyze NFT contracts before minting
