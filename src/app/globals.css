@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Simple professional dark theme - Blue & Black */
+/* Minimal black and white theme */
 * {
   box-sizing: border-box;
 }
@@ -8,100 +8,12 @@
 body {
   background: #000000;
   color: #ffffff;
-  font-family: var(--font-plus-jakarta-sans), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: var(--font-plus-jakarta-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   overflow-x: hidden;
   font-weight: 400;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-/* Simple background - no gradients */
-.gradient-bg {
-  background: #000000;
-}
-
-/* Sophisticated animations */
-@keyframes typing {
-  from { width: 0; }
-  to { width: 100%; }
-}
-
-@keyframes blink {
-  0%, 50% { border-color: #3b82f6; }
-  51%, 100% { border-color: transparent; }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideInFromLeft {
-  from { opacity: 0; transform: translateX(-30px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes slideInFromRight {
-  from { opacity: 0; transform: translateX(30px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
-}
-
-.terminal-cursor {
-  border-right: 2px solid #3b82f6;
-  animation: blink 1s infinite;
-}
-
-.typing-animation {
-  overflow: hidden;
-  white-space: nowrap;
-  border-right: 2px solid #3b82f6;
-  animation: typing 2s steps(40, end), blink 1s infinite;
-}
-
-/* Simple blue accent */
-.accent-blue {
-  color: #3b82f6;
-}
-
-.border-accent {
-  border-color: #3b82f6;
-}
-
-/* Simple blue text - no gradients */
-.gradient-text {
-  color: #3b82f6;
-}
-
-/* Clean terminal styling */
-.terminal-output {
-  background: #000000;
-  border: 1px solid #1a1a1a;
-  font-family: 'JetBrains Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-}
-
-/* Professional input styling */
-.contract-input {
-  background: #000000;
-  border: 1px solid #1a1a1a;
-  color: #ffffff;
-  transition: all 0.2s ease;
-  font-family: 'JetBrains Mono', 'Monaco', monospace;
-}
-
-.contract-input:focus {
-  border-color: #3b82f6;
-  outline: none;
-  background: #000000;
-}
-
-.contract-input::placeholder {
-  color: #666666;
 }
 
 /* Clean scrollbar */
@@ -114,137 +26,32 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1a1a1a;
-  border-radius: 0;
+  background: #ffffff;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #333333;
-}
-
-/* Remove matrix background - too common */
-.clean-bg {
-  background: #000000;
-}
-
-/* Simple button styling */
-.btn-primary {
-  background: #3b82f6;
-  color: #ffffff;
-  border: none;
-  transition: background 0.2s ease;
-  font-weight: 600;
-}
-
-.btn-primary:hover {
-  background: #2563eb;
-}
-
-.btn-primary:disabled {
-  background: #1a1a1a;
-  color: #666666;
-}
-
-/* Status colors - blue-themed */
-.status-success { color: #3b82f6; }
-.status-error { color: #ef4444; }
-.status-warning { color: #f59e0b; }
-.status-info { color: #9ca3af; }
-
-/* Simple card styling */
-.card {
-  background: #000000;
-  border: 1px solid #1a1a1a;
-  transition: border-color 0.2s ease;
-}
-
-.card:hover {
-  border-color: #3b82f6;
-}
-
-/* Simple glass card - minimal effect */
-.glass-card {
-  background: #000000;
-  border: 1px solid #1a1a1a;
-}
-
-/* Navigation styling */
-.nav-border {
-  border-bottom: 1px solid #0f172a;
-}
-
-/* Animation classes with GPU acceleration */
-.fade-in {
-  animation: fadeIn 0.8s ease-out;
-  transform: translateZ(0); /* Force GPU acceleration */
-}
-
-.slide-in-left {
-  animation: slideInFromLeft 0.6s ease-out;
-  transform: translateZ(0); /* Force GPU acceleration */
-}
-
-.slide-in-right {
-  animation: slideInFromRight 0.6s ease-out;
-  transform: translateZ(0); /* Force GPU acceleration */
-}
-
-.stagger-1 { animation-delay: 0.1s; }
-.stagger-2 { animation-delay: 0.2s; }
-.stagger-3 { animation-delay: 0.3s; }
-.stagger-4 { animation-delay: 0.4s; }
-
-/* Enhanced focus states */
-button:focus-visible,
-input:focus-visible {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
-}
-
-/* Simple hover states */
-.hover-lift:hover {
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
-}
-
-/* Professional borders */
-.border-professional {
-  border-color: rgba(55, 65, 81, 0.3);
+  background: #ffffff;
 }
 
 /* Text selection */
 ::selection {
-  background: #3b82f6;
+  background: #ffffff;
   color: #000000;
 }
 
-/* Simple feature card - no animations */
-.feature-card {
-  background: #000000;
-  border: 1px solid #1a1a1a;
-  transition: border-color 0.2s ease;
+/* Focus states */
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
 }
 
-.feature-card:hover {
-  border-color: #3b82f6;
-}
-
-/* Stats counter animation */
-@keyframes countUp {
-  from { opacity: 0; transform: translateY(10px); }
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.stat-item {
-  animation: countUp 0.6s ease-out forwards;
-}
-
-/* Floating animation */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-.float-animation {
-  animation: float 3s ease-in-out infinite;
+.fade-in {
+  animation: fadeIn 0.8s ease-out;
 }
