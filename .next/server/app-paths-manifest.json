@@ -1,11 +1,4 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/bounties/page": "app/bounties/page.js",
-  "/page": "app/page.js",
-  "/reputation/page": "app/reputation/page.js",
-  "/referrals/page": "app/referrals/page.js",
-  "/defi/page": "app/defi/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/staking/page": "app/staking/page.js",
-  "/teams/page": "app/teams/page.js"
+  "/page": "app/page.js"
 }
