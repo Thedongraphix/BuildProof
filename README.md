@@ -1,4 +1,4 @@
-# BuildProof v2
+# BuildProof v2.0
 
 <div align="center">
   <img src="https://img.shields.io/badge/Smart_Contract-Verifier-00ff41?style=for-the-badge&logo=ethereum&logoColor=black" alt="Smart Contract" />
