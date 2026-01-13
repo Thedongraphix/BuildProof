@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Premium black and white design system */
+/* iOS Premium Design System */
 * {
   box-sizing: border-box;
 }
@@ -8,46 +8,46 @@
 body {
   background: #000000;
   color: #ffffff;
-  font-family: var(--font-plus-jakarta-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
   overflow-x: hidden;
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Premium scrollbar */
+/* iOS-style scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #000000;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* Text selection */
+/* Text selection - iOS style */
 ::selection {
-  background: rgba(255, 255, 255, 0.99);
-  color: #000000;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
 }
 
-/* Focus states */
+/* iOS-style focus states */
 button:focus-visible,
 input:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.5);
-  outline-offset: 2px;
+  outline: 3px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 3px;
 }
 
-/* Premium animations */
+/* Smooth iOS animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -60,7 +60,7 @@ input:focus-visible {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -68,107 +68,48 @@ input:focus-visible {
   }
 }
 
-@keyframes borderGlow {
-  0%, 100% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-@keyframes slideInFromTop {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Animation classes */
 .animate-fade-in {
-  animation: fadeIn 0.8s ease-out;
+  animation: fadeIn 0.6s ease-out;
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 1s ease-out;
+  animation: fadeInUp 0.8s ease-out;
 }
 
-.animate-border-glow {
-  animation: borderGlow 2s ease-in-out infinite;
+/* iOS Backdrop Blur */
+.backdrop-blur-xl {
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
 }
 
-.animation-delay-200 {
-  animation-delay: 0.2s;
+.backdrop-blur-2xl {
+  backdrop-filter: blur(60px);
+  -webkit-backdrop-filter: blur(60px);
 }
 
-.animation-delay-400 {
-  animation-delay: 0.4s;
+/* iOS Border Radius Presets */
+.rounded-2xl {
+  border-radius: 1rem;
 }
 
-/* Premium shadow */
-.shadow-premium {
-  box-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+.rounded-3xl {
+  border-radius: 1.5rem;
 }
 
-/* Radial gradient background */
-.bg-gradient-radial {
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+.rounded-full {
+  border-radius: 9999px;
 }
 
-/* Backdrop blur support */
-@supports (backdrop-filter: blur(20px)) {
-  .backdrop-blur-xl {
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-  }
-
-  .backdrop-blur-sm {
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-  }
-}
-
-/* Premium hover effects */
-.hover\:scale-105:hover {
-  transform: scale(1.05);
-}
-
-.hover\:scale-110:hover {
-  transform: scale(1.1);
-}
-
-/* Smooth transitions */
+/* iOS-style smooth transitions */
 * {
-  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+  transition-property: background-color, border-color, color, opacity, transform;
+  transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition-duration: 200ms;
 }
 
-/* Premium grid borders */
-.gap-px {
-  gap: 1px;
-}
-
-/* Tracking tight for modern typography */
-.tracking-tighter {
-  letter-spacing: -0.05em;
-}
-
+/* iOS Typography */
 .tracking-tight {
-  letter-spacing: -0.025em;
-}
-
-.tracking-wide {
-  letter-spacing: 0.025em;
-}
-
-/* Leading for better readability */
-.leading-none {
-  line-height: 1;
+  letter-spacing: -0.02em;
 }
 
 .leading-tight {
@@ -176,10 +117,14 @@ input:focus-visible {
 }
 
 .leading-relaxed {
-  line-height: 1.625;
+  line-height: 1.6;
 }
 
-/* Opacity utilities for premium effects */
+/* iOS Opacity Layers */
+.text-white\/30 {
+  color: rgba(255, 255, 255, 0.3);
+}
+
 .text-white\/40 {
   color: rgba(255, 255, 255, 0.4);
 }
@@ -190,10 +135,6 @@ input:focus-visible {
 
 .text-white\/60 {
   color: rgba(255, 255, 255, 0.6);
-}
-
-.text-white\/80 {
-  color: rgba(255, 255, 255, 0.8);
 }
 
 .bg-white\/5 {
@@ -212,38 +153,34 @@ input:focus-visible {
   border-color: rgba(255, 255, 255, 0.1);
 }
 
-.border-white\/20 {
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.border-white\/30 {
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-/* Premium button hover states */
+/* iOS Button Tap Highlight */
 button {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Smooth scroll */
+/* iOS Smooth Scroll */
 html {
   scroll-behavior: smooth;
 }
 
-/* Remove default link styles */
+/* iOS Links */
 a {
   text-decoration: none;
   color: inherit;
 }
 
-/* Premium focus ring */
+/* iOS Focus Ring */
 :focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.5);
-  outline-offset: 2px;
-  border-radius: 2px;
+  outline: 3px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 3px;
 }
 
-/* Disable animations for reduced motion */
+/* iOS Card Hover Effects */
+.hover\:bg-white\/10:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -252,4 +189,15 @@ a {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* iOS Spring Animation for buttons */
+button:active {
+  transform: scale(0.98);
+}
+
+/* iOS-style input placeholder */
+::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+  opacity: 1;
 }
