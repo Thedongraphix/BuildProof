@@ -1,7 +1,9 @@
 "use client"
 
 import { useState } from 'react'
-import { Github, ArrowRight, CheckCircle, AlertTriangle, XCircle, Shield, Clock, FileText } from "lucide-react"
+import { Github, ArrowRight, CheckCircle, AlertTriangle, XCircle, Shield, Clock, FileText, TrendingUp, Lock, Zap } from "lucide-react"
+import { contracts, formatEther, formatAddress, isValidAddress } from '@/lib/contracts'
+import { useReadContract } from 'wagmi'
 
 interface VerificationResult {
   isVerified: boolean
@@ -27,19 +29,36 @@ export default function Home() {
   const [contractAddress, setContractAddress] = useState('')
   const [isVerifying, setIsVerifying] = useState(false)
   const [result, setResult] = useState<VerificationResult | null>(null)
+  const [activeTab, setActiveTab] = useState<'verify' | 'insurance' | 'tools'>('verify')
+
+  // Read BuilderInsurance contract stats
+  const { data: totalStaked } = useReadContract({
+    address: contracts.builderInsurance.address,
+    abi: contracts.builderInsurance.abi,
+    functionName: 'totalStaked',
+  })
+
+  const { data: insurancePool } = useReadContract({
+    address: contracts.builderInsurance.address,
+    abi: contracts.builderInsurance.abi,
+    functionName: 'insurancePool',
+  })
+
+  const { data: totalPolicies } = useReadContract({
+    address: contracts.builderInsurance.address,
+    abi: contracts.builderInsurance.abi,
+    functionName: 'totalPolicies',
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
     if (!contractAddress) return
 
     setIsVerifying(true)
     setResult(null)
 
-    // Simulate verification process
     await new Promise(resolve => setTimeout(resolve, 2500))
 
-    // Mock verification result
     const mockResult: VerificationResult = {
       isVerified: true,
       securityScore: 85,
@@ -114,7 +133,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* iOS-style Navigation */}
+      {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-2xl">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -140,12 +159,46 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="pt-32 pb-20 px-6">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
 
-          {/* Hero Section */}
-          {!result && (
-            <div className="text-center space-y-8 animate-fade-in">
-              <div className="space-y-4">
+          {/* Tabs */}
+          <div className="flex gap-3 mb-8">
+            <button
+              onClick={() => setActiveTab('verify')}
+              className={`px-6 py-3 rounded-2xl font-semibold transition-all ${
+                activeTab === 'verify'
+                  ? 'bg-white text-black'
+                  : 'bg-white/5 text-white hover:bg-white/10'
+              }`}
+            >
+              Verify
+            </button>
+            <button
+              onClick={() => setActiveTab('insurance')}
+              className={`px-6 py-3 rounded-2xl font-semibold transition-all ${
+                activeTab === 'insurance'
+                  ? 'bg-white text-black'
+                  : 'bg-white/5 text-white hover:bg-white/10'
+              }`}
+            >
+              Insurance
+            </button>
+            <button
+              onClick={() => setActiveTab('tools')}
+              className={`px-6 py-3 rounded-2xl font-semibold transition-all ${
+                activeTab === 'tools'
+                  ? 'bg-white text-black'
+                  : 'bg-white/5 text-white hover:bg-white/10'
+              }`}
+            >
+              Tools
+            </button>
+          </div>
+
+          {/* Verify Tab */}
+          {activeTab === 'verify' && !result && (
+            <div className="space-y-8 animate-fade-in">
+              <div className="text-center space-y-4">
                 <h1 className="text-6xl md:text-7xl font-bold leading-tight tracking-tight">
                   Verify Smart Contracts
                 </h1>
@@ -154,8 +207,7 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* iOS-style Input Card */}
-              <div className="max-w-2xl mx-auto mt-12">
+              <div className="max-w-2xl mx-auto">
                 <form onSubmit={handleSubmit} className="space-y-3">
                   <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
                     <input
@@ -188,8 +240,7 @@ export default function Home() {
                 </form>
               </div>
 
-              {/* Trust Pills */}
-              <div className="flex items-center justify-center gap-3 mt-8 flex-wrap">
+              <div className="flex items-center justify-center gap-3 flex-wrap">
                 <div className="px-4 py-2 bg-white/5 backdrop-blur-xl rounded-full text-sm text-white/60 border border-white/10">
                   SOC 2 Compliant
                 </div>
@@ -204,9 +255,8 @@ export default function Home() {
           )}
 
           {/* Verification Results */}
-          {result && (
+          {activeTab === 'verify' && result && (
             <div className="space-y-6 animate-fade-in">
-              {/* Back Button */}
               <button
                 onClick={() => {
                   setResult(null)
@@ -246,7 +296,6 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Status Badge */}
                 <div className="flex items-center gap-2">
                   <CheckCircle className="text-green-400" size={20} />
                   <span className="text-green-400 font-semibold">Contract Verified</span>
@@ -299,7 +348,6 @@ export default function Home() {
                 ))}
               </div>
 
-              {/* Actions */}
               <div className="flex gap-3">
                 <button className="flex-1 bg-white text-black px-6 py-3 rounded-2xl text-sm font-semibold hover:bg-white/90 transition-all">
                   Download Report
@@ -311,58 +359,140 @@ export default function Home() {
             </div>
           )}
 
-          {/* Stats - Only show when no results */}
-          {!result && !isVerifying && (
-            <>
-              <div className="max-w-4xl mx-auto mt-24 grid grid-cols-3 gap-4">
-                <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 text-center hover:bg-white/10 transition-all">
-                  <div className="text-5xl font-bold mb-2">1K+</div>
-                  <div className="text-sm text-white/50">Verified</div>
+          {/* Insurance Tab */}
+          {activeTab === 'insurance' && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="text-center space-y-4 mb-12">
+                <h1 className="text-5xl md:text-6xl font-bold leading-tight tracking-tight">
+                  Builder Insurance
+                </h1>
+                <p className="text-xl text-white/50 max-w-xl mx-auto">
+                  Protect your projects with on-chain insurance coverage
+                </p>
+              </div>
+
+              {/* Live Stats */}
+              <div className="grid grid-cols-3 gap-4">
+                <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 text-center">
+                  <Lock className="w-8 h-8 text-white/40 mx-auto mb-3" />
+                  <div className="text-4xl font-bold mb-2">
+                    {totalStaked ? formatEther(totalStaked) : '0.0000'}
+                  </div>
+                  <div className="text-sm text-white/50">Total Staked (ETH)</div>
                 </div>
 
-                <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 text-center hover:bg-white/10 transition-all">
-                  <div className="text-5xl font-bold mb-2">99.9%</div>
-                  <div className="text-sm text-white/50">Uptime</div>
+                <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 text-center">
+                  <Shield className="w-8 h-8 text-white/40 mx-auto mb-3" />
+                  <div className="text-4xl font-bold mb-2">
+                    {insurancePool ? formatEther(insurancePool) : '0.0000'}
+                  </div>
+                  <div className="text-sm text-white/50">Insurance Pool (ETH)</div>
                 </div>
 
-                <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 text-center hover:bg-white/10 transition-all">
-                  <div className="text-5xl font-bold mb-2">&lt;2s</div>
-                  <div className="text-sm text-white/50">Response</div>
+                <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 text-center">
+                  <TrendingUp className="w-8 h-8 text-white/40 mx-auto mb-3" />
+                  <div className="text-4xl font-bold mb-2">
+                    {totalPolicies?.toString() || '0'}
+                  </div>
+                  <div className="text-sm text-white/50">Active Policies</div>
                 </div>
               </div>
 
-              {/* Features */}
-              <div className="max-w-5xl mx-auto mt-20 space-y-4">
-                <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-10 border border-white/10 hover:bg-white/10 transition-all">
-                  <div className="text-3xl mb-4">⚡</div>
-                  <h3 className="text-xl font-semibold mb-2">Real-time Verification</h3>
-                  <p className="text-white/50 leading-relaxed">
-                    Instant security analysis with our distributed verification network
+              {/* Action Cards */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:bg-white/10 transition-all">
+                  <Lock className="w-12 h-12 text-white mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">Stake as Builder</h3>
+                  <p className="text-white/50 mb-6 text-sm">
+                    Stake ETH to unlock insurance benefits and earn 5% APY rewards
                   </p>
+                  <button className="w-full bg-white text-black px-6 py-3 rounded-2xl text-sm font-semibold hover:bg-white/90 transition-all">
+                    Stake Now
+                  </button>
                 </div>
 
-                <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-10 border border-white/10 hover:bg-white/10 transition-all">
-                  <div className="text-3xl mb-4">🔒</div>
-                  <h3 className="text-xl font-semibold mb-2">Enterprise Security</h3>
-                  <p className="text-white/50 leading-relaxed">
-                    Bank-grade encryption with SOC 2 compliance
+                <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:bg-white/10 transition-all">
+                  <Shield className="w-12 h-12 text-white mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">Purchase Policy</h3>
+                  <p className="text-white/50 mb-6 text-sm">
+                    Get insurance coverage for your projects and protect against disputes
                   </p>
-                </div>
-
-                <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-10 border border-white/10 hover:bg-white/10 transition-all">
-                  <div className="text-3xl mb-4">🌐</div>
-                  <h3 className="text-xl font-semibold mb-2">Multi-Chain Support</h3>
-                  <p className="text-white/50 leading-relaxed">
-                    Support for Ethereum, Base, Polygon, Arbitrum, and more
-                  </p>
+                  <button className="w-full bg-white text-black px-6 py-3 rounded-2xl text-sm font-semibold hover:bg-white/90 transition-all">
+                    Get Coverage
+                  </button>
                 </div>
               </div>
-            </>
+
+              {/* Contract Info */}
+              <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+                <h3 className="font-semibold mb-3">Contract Address</h3>
+                <div className="flex items-center justify-between">
+                  <code className="text-sm text-white/60">{contracts.builderInsurance.address}</code>
+                  <a
+                    href={`https://sepolia.basescan.org/address/${contracts.builderInsurance.address}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-white/60 hover:text-white transition-colors"
+                  >
+                    View on Basescan
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Tools Tab */}
+          {activeTab === 'tools' && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="text-center space-y-4 mb-12">
+                <h1 className="text-5xl md:text-6xl font-bold leading-tight tracking-tight">
+                  Security Tools
+                </h1>
+                <p className="text-xl text-white/50 max-w-xl mx-auto">
+                  Comprehensive security analysis and development utilities
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-10 border border-white/10 hover:bg-white/10 transition-all">
+                  <Zap className="w-10 h-10 text-white mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">Gas Estimator</h3>
+                  <p className="text-white/50 leading-relaxed mb-4">
+                    Estimate gas costs for your contract transactions across multiple networks
+                  </p>
+                  <button className="bg-white/10 text-white px-6 py-2 rounded-2xl text-sm font-semibold hover:bg-white/20 transition-all border border-white/10">
+                    Coming Soon
+                  </button>
+                </div>
+
+                <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-10 border border-white/10 hover:bg-white/10 transition-all">
+                  <Shield className="w-10 h-10 text-white mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">Security Scanner</h3>
+                  <p className="text-white/50 leading-relaxed mb-4">
+                    Advanced static analysis to detect vulnerabilities and security issues
+                  </p>
+                  <button className="bg-white/10 text-white px-6 py-2 rounded-2xl text-sm font-semibold hover:bg-white/20 transition-all border border-white/10">
+                    Coming Soon
+                  </button>
+                </div>
+
+                <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-10 border border-white/10 hover:bg-white/10 transition-all">
+                  <FileText className="w-10 h-10 text-white mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">Code Formatter</h3>
+                  <p className="text-white/50 leading-relaxed mb-4">
+                    Format and beautify your Solidity code with best practices
+                  </p>
+                  <button className="bg-white/10 text-white px-6 py-2 rounded-2xl text-sm font-semibold hover:bg-white/20 transition-all border border-white/10">
+                    Coming Soon
+                  </button>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </main>
 
-      {/* iOS Footer */}
+      {/* Footer */}
       <footer className="px-6 py-8 mt-20">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/40">
           <div className="flex items-center gap-2">
