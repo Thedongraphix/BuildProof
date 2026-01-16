@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useEffect } from 'react'
 import { Zap, TrendingUp, TrendingDown, DollarSign, Clock, BarChart3 } from 'lucide-react'
@@ -35,8 +35,8 @@ export function GasTracker() {
       trend: 'down',
       estimatedCost: {
         verification: 0.005,
-        deployment: 0.015
-      }
+        deployment: 0.015,
+      },
     },
     baseSepolia: {
       network: 'Base Sepolia',
@@ -48,8 +48,8 @@ export function GasTracker() {
       trend: 'stable',
       estimatedCost: {
         verification: 0.0001,
-        deployment: 0.0003
-      }
+        deployment: 0.0003,
+      },
     },
     celoSepolia: {
       network: 'Celo Sepolia',
@@ -61,9 +61,9 @@ export function GasTracker() {
       trend: 'up',
       estimatedCost: {
         verification: 0.00005,
-        deployment: 0.00015
-      }
-    }
+        deployment: 0.00015,
+      },
+    },
   })
 
   const [historicalData, setHistoricalData] = useState<HistoricalData[]>([])
@@ -76,7 +76,7 @@ export function GasTracker() {
     for (let i = 24; i >= 0; i--) {
       data.push({
         timestamp: now - i * 3600000,
-        price: gasData[selectedNetwork].standard + (Math.random() - 0.5) * 10
+        price: gasData[selectedNetwork].standard + (Math.random() - 0.5) * 10,
       })
     }
     setHistoricalData(data)
@@ -95,7 +95,7 @@ export function GasTracker() {
             standard: Math.max(0.01, updated[key].standard + change),
             fast: Math.max(0.01, updated[key].fast + change),
             instant: Math.max(0.01, updated[key].instant + change),
-            trend: change > 0.5 ? 'up' : change < -0.5 ? 'down' : 'stable'
+            trend: change > 0.5 ? 'up' : change < -0.5 ? 'down' : 'stable',
           }
         })
         return updated
@@ -121,11 +121,16 @@ export function GasTracker() {
 
   const getSpeedColor = (speed: string) => {
     switch (speed) {
-      case 'slow': return 'border-blue-500/30 bg-blue-500/5'
-      case 'standard': return 'border-green-500/30 bg-green-500/5'
-      case 'fast': return 'border-yellow-500/30 bg-yellow-500/5'
-      case 'instant': return 'border-red-500/30 bg-red-500/5'
-      default: return 'border-gray-500/30 bg-gray-500/5'
+      case 'slow':
+        return 'border-blue-500/30 bg-blue-500/5'
+      case 'standard':
+        return 'border-green-500/30 bg-green-500/5'
+      case 'fast':
+        return 'border-yellow-500/30 bg-yellow-500/5'
+      case 'instant':
+        return 'border-red-500/30 bg-red-500/5'
+      default:
+        return 'border-gray-500/30 bg-gray-500/5'
     }
   }
 
@@ -153,7 +158,7 @@ export function GasTracker() {
 
       {/* Network Selector */}
       <div className="flex gap-2">
-        {Object.keys(gasData).map((key) => (
+        {Object.keys(gasData).map(key => (
           <button
             key={key}
             onClick={() => setSelectedNetwork(key)}
@@ -170,7 +175,7 @@ export function GasTracker() {
 
       {/* Gas Prices Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {(['slow', 'standard', 'fast', 'instant'] as const).map((speed) => (
+        {(['slow', 'standard', 'fast', 'instant'] as const).map(speed => (
           <div key={speed} className={`card p-4 border ${getSpeedColor(speed)}`}>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -207,9 +212,7 @@ export function GasTracker() {
             </span>
           </div>
         </div>
-        <div className="text-xs text-gray-500">
-          Updated just now
-        </div>
+        <div className="text-xs text-gray-500">Updated just now</div>
       </div>
 
       {/* Historical Chart (Simple) */}
@@ -252,16 +255,22 @@ export function GasTracker() {
           <div className="border border-gray-800 rounded p-3 bg-gray-900/20">
             <p className="text-xs text-gray-400 mb-1">Contract Verification</p>
             <p className="text-lg font-bold text-white">
-              ${current.estimatedCost.verification.toFixed(4)} <span className="text-xs font-normal text-gray-500">ETH</span>
+              ${current.estimatedCost.verification.toFixed(4)}{' '}
+              <span className="text-xs font-normal text-gray-500">ETH</span>
             </p>
-            <p className="text-xs text-gray-500 mt-1">~${(current.estimatedCost.verification * 2500).toFixed(2)} USD</p>
+            <p className="text-xs text-gray-500 mt-1">
+              ~${(current.estimatedCost.verification * 2500).toFixed(2)} USD
+            </p>
           </div>
           <div className="border border-gray-800 rounded p-3 bg-gray-900/20">
             <p className="text-xs text-gray-400 mb-1">Contract Deployment</p>
             <p className="text-lg font-bold text-white">
-              ${current.estimatedCost.deployment.toFixed(4)} <span className="text-xs font-normal text-gray-500">ETH</span>
+              ${current.estimatedCost.deployment.toFixed(4)}{' '}
+              <span className="text-xs font-normal text-gray-500">ETH</span>
             </p>
-            <p className="text-xs text-gray-500 mt-1">~${(current.estimatedCost.deployment * 2500).toFixed(2)} USD</p>
+            <p className="text-xs text-gray-500 mt-1">
+              ~${(current.estimatedCost.deployment * 2500).toFixed(2)} USD
+            </p>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { Bell, CheckCircle, AlertTriangle, Info, X } from 'lucide-react'
@@ -22,7 +22,7 @@ export function NotificationsCenter() {
       message: 'Contract 0x742d...9c7a verified successfully',
       timestamp: Date.now() - 120000,
       read: false,
-      action: { label: 'View Report', onClick: () => alert('View Report') }
+      action: { label: 'View Report', onClick: () => alert('View Report') },
     },
     {
       id: '2',
@@ -31,7 +31,7 @@ export function NotificationsCenter() {
       message: '2 critical vulnerabilities detected in recent verification',
       timestamp: Date.now() - 300000,
       read: false,
-      action: { label: 'Review', onClick: () => alert('Review') }
+      action: { label: 'Review', onClick: () => alert('Review') },
     },
     {
       id: '3',
@@ -39,8 +39,8 @@ export function NotificationsCenter() {
       title: 'New Template Available',
       message: 'ERC-1155 Multi-Token template is now available',
       timestamp: Date.now() - 600000,
-      read: true
-    }
+      read: true,
+    },
   ])
 
   const [isOpen, setIsOpen] = useState(false)
@@ -48,7 +48,7 @@ export function NotificationsCenter() {
   const unreadCount = notifications.filter(n => !n.read).length
 
   const markAsRead = (id: string) => {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
+    setNotifications(prev => prev.map(n => (n.id === id ? { ...n, read: true } : n)))
   }
 
   const deleteNotification = (id: string) => {
@@ -126,11 +126,9 @@ export function NotificationsCenter() {
           {/* Notification List */}
           <div className="space-y-2 max-h-96 overflow-y-auto">
             {notifications.length === 0 ? (
-              <div className="text-center py-8 text-gray-500 text-sm">
-                No notifications
-              </div>
+              <div className="text-center py-8 text-gray-500 text-sm">No notifications</div>
             ) : (
-              notifications.map((notification) => (
+              notifications.map(notification => (
                 <div
                   key={notification.id}
                   className={`border rounded p-3 ${getColor(notification.type)} ${!notification.read ? 'border-l-4' : ''} cursor-pointer hover:bg-gray-900/20 transition-colors`}
@@ -142,7 +140,7 @@ export function NotificationsCenter() {
                       <div className="flex items-start justify-between gap-2">
                         <h4 className="text-sm font-semibold text-white">{notification.title}</h4>
                         <button
-                          onClick={(e) => {
+                          onClick={e => {
                             e.stopPropagation()
                             deleteNotification(notification.id)
                           }}
@@ -153,10 +151,12 @@ export function NotificationsCenter() {
                       </div>
                       <p className="text-xs text-gray-400 mt-1">{notification.message}</p>
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs text-gray-500">{formatTime(notification.timestamp)}</span>
+                        <span className="text-xs text-gray-500">
+                          {formatTime(notification.timestamp)}
+                        </span>
                         {notification.action && (
                           <button
-                            onClick={(e) => {
+                            onClick={e => {
                               e.stopPropagation()
                               notification.action!.onClick()
                             }}

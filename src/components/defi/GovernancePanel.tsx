@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useAccount } from 'wagmi'
@@ -6,38 +6,42 @@ import { Vote, Users, TrendingUp, Clock } from 'lucide-react'
 import { useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { formatEther } from 'viem'
 
-const BPROOF_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_BPROOF_TOKEN_ADDRESS as `0x${string}` || '0x0d9c6536BcF92932558E6bFF19151bb41d336e55'
-const TIMELOCK_ADDRESS = process.env.NEXT_PUBLIC_TIMELOCK_ADDRESS as `0x${string}` || '0xdAc134B725be453A9Ef2de4383066ea7CDc50DaD'
+const BPROOF_TOKEN_ADDRESS =
+  (process.env.NEXT_PUBLIC_BPROOF_TOKEN_ADDRESS as `0x${string}`) ||
+  '0x0d9c6536BcF92932558E6bFF19151bb41d336e55'
+const TIMELOCK_ADDRESS =
+  (process.env.NEXT_PUBLIC_TIMELOCK_ADDRESS as `0x${string}`) ||
+  '0xdAc134B725be453A9Ef2de4383066ea7CDc50DaD'
 
 const TOKEN_ABI = [
   {
-    "inputs": [{"internalType": "address","name": "account","type": "address"}],
-    "name": "balanceOf",
-    "outputs": [{"internalType": "uint256","name": "","type": "uint256"}],
-    "stateMutability": "view",
-    "type": "function"
+    inputs: [{ internalType: 'address', name: 'account', type: 'address' }],
+    name: 'balanceOf',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [{"internalType": "address","name": "owner","type": "address"}],
-    "name": "getVotes",
-    "outputs": [{"internalType": "uint256","name": "","type": "uint256"}],
-    "stateMutability": "view",
-    "type": "function"
+    inputs: [{ internalType: 'address', name: 'owner', type: 'address' }],
+    name: 'getVotes',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [{"internalType": "address","name": "account","type": "address"}],
-    "name": "delegates",
-    "outputs": [{"internalType": "address","name": "","type": "address"}],
-    "stateMutability": "view",
-    "type": "function"
+    inputs: [{ internalType: 'address', name: 'account', type: 'address' }],
+    name: 'delegates',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [{"internalType": "address","name": "delegatee","type": "address"}],
-    "name": "delegate",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }
+    inputs: [{ internalType: 'address', name: 'delegatee', type: 'address' }],
+    name: 'delegate',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
 ] as const
 
 export function GovernancePanel() {
@@ -50,7 +54,7 @@ export function GovernancePanel() {
     abi: TOKEN_ABI,
     functionName: 'balanceOf',
     args: address ? [address] : undefined,
-    query: { enabled: !!address }
+    query: { enabled: !!address },
   })
 
   // Read voting power
@@ -59,7 +63,7 @@ export function GovernancePanel() {
     abi: TOKEN_ABI,
     functionName: 'getVotes',
     args: address ? [address] : undefined,
-    query: { enabled: !!address }
+    query: { enabled: !!address },
   })
 
   // Read current delegate
@@ -68,11 +72,15 @@ export function GovernancePanel() {
     abi: TOKEN_ABI,
     functionName: 'delegates',
     args: address ? [address] : undefined,
-    query: { enabled: !!address }
+    query: { enabled: !!address },
   })
 
   // Delegate voting power
-  const { writeContract: delegate, data: delegateHash, isPending: isDelegating } = useWriteContract()
+  const {
+    writeContract: delegate,
+    data: delegateHash,
+    isPending: isDelegating,
+  } = useWriteContract()
   const { isLoading: isDelegateConfirming } = useWaitForTransactionReceipt({ hash: delegateHash })
 
   const handleDelegate = async (e: React.FormEvent) => {
@@ -84,7 +92,7 @@ export function GovernancePanel() {
         address: BPROOF_TOKEN_ADDRESS,
         abi: TOKEN_ABI,
         functionName: 'delegate',
-        args: [delegateAddress as `0x${string}`]
+        args: [delegateAddress as `0x${string}`],
       })
       setDelegateAddress('')
     } catch (error) {
@@ -100,7 +108,7 @@ export function GovernancePanel() {
         address: BPROOF_TOKEN_ADDRESS,
         abi: TOKEN_ABI,
         functionName: 'delegate',
-        args: [address]
+        args: [address],
       })
     } catch (error) {
       console.error('Self-delegation failed:', error)
@@ -117,8 +125,10 @@ export function GovernancePanel() {
     )
   }
 
-  const isDelegated = currentDelegate && currentDelegate !== '0x0000000000000000000000000000000000000000'
-  const isSelfDelegated = currentDelegate && currentDelegate.toLowerCase() === address?.toLowerCase()
+  const isDelegated =
+    currentDelegate && currentDelegate !== '0x0000000000000000000000000000000000000000'
+  const isSelfDelegated =
+    currentDelegate && currentDelegate.toLowerCase() === address?.toLowerCase()
 
   return (
     <div className="space-y-6">
@@ -180,18 +190,24 @@ export function GovernancePanel() {
                   <p className="text-sm text-gray-400">Currently Delegated To</p>
                   {isDelegated ? (
                     <p className="text-white font-mono text-sm mt-1">
-                      {isSelfDelegated ? 'Self (Active)' : `${currentDelegate?.slice(0, 6)}...${currentDelegate?.slice(-4)}`}
+                      {isSelfDelegated
+                        ? 'Self (Active)'
+                        : `${currentDelegate?.slice(0, 6)}...${currentDelegate?.slice(-4)}`}
                     </p>
                   ) : (
                     <p className="text-gray-500 text-sm mt-1">Not delegated</p>
                   )}
                 </div>
               </div>
-              <div className={`px-3 py-1 text-xs font-semibold ${
-                isSelfDelegated ? 'bg-blue-500/20 text-blue-400' :
-                isDelegated ? 'bg-gray-700 text-gray-300' :
-                'bg-red-500/20 text-red-400'
-              }`}>
+              <div
+                className={`px-3 py-1 text-xs font-semibold ${
+                  isSelfDelegated
+                    ? 'bg-blue-500/20 text-blue-400'
+                    : isDelegated
+                      ? 'bg-gray-700 text-gray-300'
+                      : 'bg-red-500/20 text-red-400'
+                }`}
+              >
                 {isSelfDelegated ? 'Active' : isDelegated ? 'Delegated' : 'Inactive'}
               </div>
             </div>
@@ -200,7 +216,8 @@ export function GovernancePanel() {
           {!isSelfDelegated && (
             <div className="p-4 bg-yellow-500/10 border border-yellow-500/20">
               <p className="text-yellow-400 text-sm">
-                ⚠️ Your voting power is inactive. Delegate to yourself to activate it and participate in governance.
+                ⚠️ Your voting power is inactive. Delegate to yourself to activate it and
+                participate in governance.
               </p>
             </div>
           )}
@@ -221,14 +238,19 @@ export function GovernancePanel() {
             </div>
           </div>
           <p className="text-gray-400 text-sm mb-4">
-            Activate your voting power by delegating to your own address. This allows you to vote on proposals.
+            Activate your voting power by delegating to your own address. This allows you to vote on
+            proposals.
           </p>
           <button
             onClick={handleSelfDelegate}
             disabled={isSelfDelegated || isDelegating || isDelegateConfirming}
             className="btn-primary w-full px-6 py-3 font-semibold disabled:cursor-not-allowed"
           >
-            {isSelfDelegated ? 'Already Active' : isDelegating || isDelegateConfirming ? 'Activating...' : 'Activate Now'}
+            {isSelfDelegated
+              ? 'Already Active'
+              : isDelegating || isDelegateConfirming
+                ? 'Activating...'
+                : 'Activate Now'}
           </button>
         </div>
 
@@ -248,7 +270,7 @@ export function GovernancePanel() {
               <input
                 type="text"
                 value={delegateAddress}
-                onChange={(e) => setDelegateAddress(e.target.value)}
+                onChange={e => setDelegateAddress(e.target.value)}
                 placeholder="0x..."
                 className="contract-input w-full px-4 py-3 text-white text-base border-gray-700 bg-black"
               />

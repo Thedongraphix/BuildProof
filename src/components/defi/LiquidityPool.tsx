@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useAccount } from 'wagmi'
@@ -6,72 +6,76 @@ import { Droplet, Plus, Minus, TrendingUp, Percent } from 'lucide-react'
 import { useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { formatEther, parseEther } from 'viem'
 
-const BPROOF_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_BPROOF_TOKEN_ADDRESS as `0x${string}` || '0x0d9c6536BcF92932558E6bFF19151bb41d336e55'
-const LIQUIDITY_POOL_ADDRESS = process.env.NEXT_PUBLIC_LIQUIDITY_POOL_ADDRESS as `0x${string}` || '0x7AEa0d4279C5601a7a745937Babb41391e04A5a7'
+const BPROOF_TOKEN_ADDRESS =
+  (process.env.NEXT_PUBLIC_BPROOF_TOKEN_ADDRESS as `0x${string}`) ||
+  '0x0d9c6536BcF92932558E6bFF19151bb41d336e55'
+const LIQUIDITY_POOL_ADDRESS =
+  (process.env.NEXT_PUBLIC_LIQUIDITY_POOL_ADDRESS as `0x${string}`) ||
+  '0x7AEa0d4279C5601a7a745937Babb41391e04A5a7'
 
 const POOL_ABI = [
   {
-    "inputs": [],
-    "name": "reserveBproof",
-    "outputs": [{"internalType": "uint256","name": "","type": "uint256"}],
-    "stateMutability": "view",
-    "type": "function"
+    inputs: [],
+    name: 'reserveBproof',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [],
-    "name": "reserveEth",
-    "outputs": [{"internalType": "uint256","name": "","type": "uint256"}],
-    "stateMutability": "view",
-    "type": "function"
+    inputs: [],
+    name: 'reserveEth',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [{"internalType": "address","name": "provider","type": "address"}],
-    "name": "getLiquidityInfo",
-    "outputs": [
-      {"internalType": "uint256","name": "liquidityShares","type": "uint256"},
-      {"internalType": "uint256","name": "bproofValue","type": "uint256"},
-      {"internalType": "uint256","name": "ethValue","type": "uint256"}
+    inputs: [{ internalType: 'address', name: 'provider', type: 'address' }],
+    name: 'getLiquidityInfo',
+    outputs: [
+      { internalType: 'uint256', name: 'liquidityShares', type: 'uint256' },
+      { internalType: 'uint256', name: 'bproofValue', type: 'uint256' },
+      { internalType: 'uint256', name: 'ethValue', type: 'uint256' },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [
-      {"internalType": "uint256","name": "bproofAmount","type": "uint256"},
-      {"internalType": "uint256","name": "minLiquidity","type": "uint256"}
+    inputs: [
+      { internalType: 'uint256', name: 'bproofAmount', type: 'uint256' },
+      { internalType: 'uint256', name: 'minLiquidity', type: 'uint256' },
     ],
-    "name": "addLiquidity",
-    "outputs": [{"internalType": "uint256","name": "liquidityMinted","type": "uint256"}],
-    "stateMutability": "payable",
-    "type": "function"
+    name: 'addLiquidity',
+    outputs: [{ internalType: 'uint256', name: 'liquidityMinted', type: 'uint256' }],
+    stateMutability: 'payable',
+    type: 'function',
   },
   {
-    "inputs": [
-      {"internalType": "uint256","name": "liquidityAmount","type": "uint256"},
-      {"internalType": "uint256","name": "minBproof","type": "uint256"},
-      {"internalType": "uint256","name": "minEth","type": "uint256"}
+    inputs: [
+      { internalType: 'uint256', name: 'liquidityAmount', type: 'uint256' },
+      { internalType: 'uint256', name: 'minBproof', type: 'uint256' },
+      { internalType: 'uint256', name: 'minEth', type: 'uint256' },
     ],
-    "name": "removeLiquidity",
-    "outputs": [
-      {"internalType": "uint256","name": "bproofAmount","type": "uint256"},
-      {"internalType": "uint256","name": "ethAmount","type": "uint256"}
+    name: 'removeLiquidity',
+    outputs: [
+      { internalType: 'uint256', name: 'bproofAmount', type: 'uint256' },
+      { internalType: 'uint256', name: 'ethAmount', type: 'uint256' },
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
 ] as const
 
 const TOKEN_ABI = [
   {
-    "inputs": [
-      {"internalType": "address","name": "spender","type": "address"},
-      {"internalType": "uint256","name": "amount","type": "uint256"}
+    inputs: [
+      { internalType: 'address', name: 'spender', type: 'address' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
     ],
-    "name": "approve",
-    "outputs": [{"internalType": "bool","name": "","type": "bool"}],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }
+    name: 'approve',
+    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
 ] as const
 
 export function LiquidityPool() {
@@ -85,13 +89,13 @@ export function LiquidityPool() {
   const { data: reserveBproof } = useReadContract({
     address: LIQUIDITY_POOL_ADDRESS,
     abi: POOL_ABI,
-    functionName: 'reserveBproof'
+    functionName: 'reserveBproof',
   })
 
   const { data: reserveEth } = useReadContract({
     address: LIQUIDITY_POOL_ADDRESS,
     abi: POOL_ABI,
-    functionName: 'reserveEth'
+    functionName: 'reserveEth',
   })
 
   // Read user liquidity info
@@ -100,7 +104,7 @@ export function LiquidityPool() {
     abi: POOL_ABI,
     functionName: 'getLiquidityInfo',
     args: address ? [address] : undefined,
-    query: { enabled: !!address }
+    query: { enabled: !!address },
   })
 
   // Approve tokens
@@ -112,7 +116,11 @@ export function LiquidityPool() {
   const { isLoading: isAddConfirming } = useWaitForTransactionReceipt({ hash: addHash })
 
   // Remove liquidity
-  const { writeContract: removeLiquidity, data: removeHash, isPending: isRemoving } = useWriteContract()
+  const {
+    writeContract: removeLiquidity,
+    data: removeHash,
+    isPending: isRemoving,
+  } = useWriteContract()
   const { isLoading: isRemoveConfirming } = useWaitForTransactionReceipt({ hash: removeHash })
 
   const handleApprove = async () => {
@@ -123,7 +131,7 @@ export function LiquidityPool() {
         address: BPROOF_TOKEN_ADDRESS,
         abi: TOKEN_ABI,
         functionName: 'approve',
-        args: [LIQUIDITY_POOL_ADDRESS, parseEther(bproofAmount)]
+        args: [LIQUIDITY_POOL_ADDRESS, parseEther(bproofAmount)],
       })
     } catch (error) {
       console.error('Approval failed:', error)
@@ -140,7 +148,7 @@ export function LiquidityPool() {
         abi: POOL_ABI,
         functionName: 'addLiquidity',
         args: [parseEther(bproofAmount), BigInt(0)],
-        value: parseEther(ethAmount)
+        value: parseEther(ethAmount),
       })
       setBproofAmount('')
       setEthAmount('')
@@ -158,7 +166,7 @@ export function LiquidityPool() {
         address: LIQUIDITY_POOL_ADDRESS,
         abi: POOL_ABI,
         functionName: 'removeLiquidity',
-        args: [parseEther(liquidityAmount), BigInt(0), BigInt(0)]
+        args: [parseEther(liquidityAmount), BigInt(0), BigInt(0)],
       })
       setLiquidityAmount('')
     } catch (error) {
@@ -171,7 +179,9 @@ export function LiquidityPool() {
       <div className="card p-12 text-center">
         <Droplet className="w-16 h-16 text-blue-500 mx-auto mb-4" />
         <h3 className="text-2xl font-bold text-white mb-2">Connect Wallet</h3>
-        <p className="text-gray-400">Connect your wallet to provide liquidity and earn trading fees</p>
+        <p className="text-gray-400">
+          Connect your wallet to provide liquidity and earn trading fees
+        </p>
       </div>
     )
   }
@@ -231,15 +241,21 @@ export function LiquidityPool() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 bg-gray-900/50 border border-gray-800">
               <p className="text-gray-400 text-sm mb-1">LP Tokens</p>
-              <p className="text-xl font-bold text-white">{parseFloat(formatEther(liquidityInfo[0])).toFixed(4)}</p>
+              <p className="text-xl font-bold text-white">
+                {parseFloat(formatEther(liquidityInfo[0])).toFixed(4)}
+              </p>
             </div>
             <div className="p-4 bg-gray-900/50 border border-gray-800">
               <p className="text-gray-400 text-sm mb-1">BPROOF Value</p>
-              <p className="text-xl font-bold text-white">{parseFloat(formatEther(liquidityInfo[1])).toFixed(2)}</p>
+              <p className="text-xl font-bold text-white">
+                {parseFloat(formatEther(liquidityInfo[1])).toFixed(2)}
+              </p>
             </div>
             <div className="p-4 bg-gray-900/50 border border-gray-800">
               <p className="text-gray-400 text-sm mb-1">ETH Value</p>
-              <p className="text-xl font-bold text-white">{parseFloat(formatEther(liquidityInfo[2])).toFixed(4)}</p>
+              <p className="text-xl font-bold text-white">
+                {parseFloat(formatEther(liquidityInfo[2])).toFixed(4)}
+              </p>
             </div>
           </div>
         </div>
@@ -285,21 +301,19 @@ export function LiquidityPool() {
                 type="number"
                 step="0.01"
                 value={bproofAmount}
-                onChange={(e) => setBproofAmount(e.target.value)}
+                onChange={e => setBproofAmount(e.target.value)}
                 placeholder="0.00"
                 className="contract-input w-full px-4 py-3 text-white text-base border-gray-700 bg-black"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-300 mb-2">
-                ETH Amount
-              </label>
+              <label className="block text-sm font-semibold text-gray-300 mb-2">ETH Amount</label>
               <input
                 type="number"
                 step="0.0001"
                 value={ethAmount}
-                onChange={(e) => setEthAmount(e.target.value)}
+                onChange={e => setEthAmount(e.target.value)}
                 placeholder="0.0000"
                 className="contract-input w-full px-4 py-3 text-white text-base border-gray-700 bg-black"
               />
@@ -340,7 +354,7 @@ export function LiquidityPool() {
                 type="number"
                 step="0.0001"
                 value={liquidityAmount}
-                onChange={(e) => setLiquidityAmount(e.target.value)}
+                onChange={e => setLiquidityAmount(e.target.value)}
                 placeholder="0.0000"
                 className="contract-input w-full px-4 py-3 text-white text-base border-gray-700 bg-black"
               />

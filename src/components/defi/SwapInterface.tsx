@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useEffect } from 'react'
 import { useAccount } from 'wagmi'
@@ -6,54 +6,58 @@ import { ArrowDownUp, ArrowLeftRight, Zap } from 'lucide-react'
 import { useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { formatEther, parseEther } from 'viem'
 
-const BPROOF_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_BPROOF_TOKEN_ADDRESS as `0x${string}` || '0x0d9c6536BcF92932558E6bFF19151bb41d336e55'
-const LIQUIDITY_POOL_ADDRESS = process.env.NEXT_PUBLIC_LIQUIDITY_POOL_ADDRESS as `0x${string}` || '0x7AEa0d4279C5601a7a745937Babb41391e04A5a7'
+const BPROOF_TOKEN_ADDRESS =
+  (process.env.NEXT_PUBLIC_BPROOF_TOKEN_ADDRESS as `0x${string}`) ||
+  '0x0d9c6536BcF92932558E6bFF19151bb41d336e55'
+const LIQUIDITY_POOL_ADDRESS =
+  (process.env.NEXT_PUBLIC_LIQUIDITY_POOL_ADDRESS as `0x${string}`) ||
+  '0x7AEa0d4279C5601a7a745937Babb41391e04A5a7'
 
 const POOL_ABI = [
   {
-    "inputs": [{"internalType": "uint256","name": "bproofAmount","type": "uint256"}],
-    "name": "getQuoteBproofToEth",
-    "outputs": [{"internalType": "uint256","name": "ethOut","type": "uint256"}],
-    "stateMutability": "view",
-    "type": "function"
+    inputs: [{ internalType: 'uint256', name: 'bproofAmount', type: 'uint256' }],
+    name: 'getQuoteBproofToEth',
+    outputs: [{ internalType: 'uint256', name: 'ethOut', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [{"internalType": "uint256","name": "ethAmount","type": "uint256"}],
-    "name": "getQuoteEthToBproof",
-    "outputs": [{"internalType": "uint256","name": "bproofOut","type": "uint256"}],
-    "stateMutability": "view",
-    "type": "function"
+    inputs: [{ internalType: 'uint256', name: 'ethAmount', type: 'uint256' }],
+    name: 'getQuoteEthToBproof',
+    outputs: [{ internalType: 'uint256', name: 'bproofOut', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [
-      {"internalType": "uint256","name": "bproofAmount","type": "uint256"},
-      {"internalType": "uint256","name": "minEthOut","type": "uint256"}
+    inputs: [
+      { internalType: 'uint256', name: 'bproofAmount', type: 'uint256' },
+      { internalType: 'uint256', name: 'minEthOut', type: 'uint256' },
     ],
-    "name": "swapBproofForEth",
-    "outputs": [{"internalType": "uint256","name": "ethOut","type": "uint256"}],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'swapBproofForEth',
+    outputs: [{ internalType: 'uint256', name: 'ethOut', type: 'uint256' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
-    "inputs": [{"internalType": "uint256","name": "minBproofOut","type": "uint256"}],
-    "name": "swapEthForBproof",
-    "outputs": [{"internalType": "uint256","name": "bproofOut","type": "uint256"}],
-    "stateMutability": "payable",
-    "type": "function"
-  }
+    inputs: [{ internalType: 'uint256', name: 'minBproofOut', type: 'uint256' }],
+    name: 'swapEthForBproof',
+    outputs: [{ internalType: 'uint256', name: 'bproofOut', type: 'uint256' }],
+    stateMutability: 'payable',
+    type: 'function',
+  },
 ] as const
 
 const TOKEN_ABI = [
   {
-    "inputs": [
-      {"internalType": "address","name": "spender","type": "address"},
-      {"internalType": "uint256","name": "amount","type": "uint256"}
+    inputs: [
+      { internalType: 'address', name: 'spender', type: 'address' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
     ],
-    "name": "approve",
-    "outputs": [{"internalType": "bool","name": "","type": "bool"}],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }
+    name: 'approve',
+    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
 ] as const
 
 export function SwapInterface() {
@@ -69,7 +73,7 @@ export function SwapInterface() {
     abi: POOL_ABI,
     functionName: fromToken === 'ETH' ? 'getQuoteEthToBproof' : 'getQuoteBproofToEth',
     args: inputAmount ? [parseEther(inputAmount)] : undefined,
-    query: { enabled: !!inputAmount && parseFloat(inputAmount) > 0 }
+    query: { enabled: !!inputAmount && parseFloat(inputAmount) > 0 },
   })
 
   // Update output when quote changes
@@ -103,7 +107,7 @@ export function SwapInterface() {
         address: BPROOF_TOKEN_ADDRESS,
         abi: TOKEN_ABI,
         functionName: 'approve',
-        args: [LIQUIDITY_POOL_ADDRESS, parseEther(inputAmount)]
+        args: [LIQUIDITY_POOL_ADDRESS, parseEther(inputAmount)],
       })
     } catch (error) {
       console.error('Approval failed:', error)
@@ -115,7 +119,8 @@ export function SwapInterface() {
     if (!inputAmount || !outputAmount) return
 
     try {
-      const minOutput = parseEther(outputAmount) * BigInt(10000 - parseFloat(slippage) * 100) / BigInt(10000)
+      const minOutput =
+        (parseEther(outputAmount) * BigInt(10000 - parseFloat(slippage) * 100)) / BigInt(10000)
 
       if (fromToken === 'ETH') {
         await swap({
@@ -123,14 +128,14 @@ export function SwapInterface() {
           abi: POOL_ABI,
           functionName: 'swapEthForBproof',
           args: [minOutput],
-          value: parseEther(inputAmount)
+          value: parseEther(inputAmount),
         })
       } else {
         await swap({
           address: LIQUIDITY_POOL_ADDRESS,
           abi: POOL_ABI,
           functionName: 'swapBproofForEth',
-          args: [parseEther(inputAmount), minOutput]
+          args: [parseEther(inputAmount), minOutput],
         })
       }
 
@@ -181,7 +186,7 @@ export function SwapInterface() {
                   type="number"
                   step="0.0001"
                   value={inputAmount}
-                  onChange={(e) => setInputAmount(e.target.value)}
+                  onChange={e => setInputAmount(e.target.value)}
                   placeholder="0.0"
                   className="bg-transparent text-2xl font-bold text-white outline-none w-full"
                 />
@@ -229,7 +234,7 @@ export function SwapInterface() {
               <span className="text-sm text-blue-400">{slippage}%</span>
             </div>
             <div className="flex gap-2">
-              {['0.1', '0.5', '1.0'].map((value) => (
+              {['0.1', '0.5', '1.0'].map(value => (
                 <button
                   key={value}
                   type="button"
@@ -247,7 +252,7 @@ export function SwapInterface() {
                 type="number"
                 step="0.1"
                 value={slippage}
-                onChange={(e) => setSlippage(e.target.value)}
+                onChange={e => setSlippage(e.target.value)}
                 className="flex-1 px-3 py-2 bg-gray-900 text-white text-sm text-center border border-gray-800 outline-none focus:border-blue-500"
               />
             </div>
@@ -259,7 +264,9 @@ export function SwapInterface() {
               <div className="flex justify-between text-gray-400">
                 <span>Rate</span>
                 <span className="text-white">
-                  1 {fromToken} = {(parseFloat(outputAmount) / parseFloat(inputAmount || '1')).toFixed(4)} {fromToken === 'ETH' ? 'BPROOF' : 'ETH'}
+                  1 {fromToken} ={' '}
+                  {(parseFloat(outputAmount) / parseFloat(inputAmount || '1')).toFixed(4)}{' '}
+                  {fromToken === 'ETH' ? 'BPROOF' : 'ETH'}
                 </span>
               </div>
               <div className="flex justify-between text-gray-400">
@@ -269,7 +276,8 @@ export function SwapInterface() {
               <div className="flex justify-between text-gray-400">
                 <span>Minimum Received</span>
                 <span className="text-white">
-                  {(parseFloat(outputAmount) * (1 - parseFloat(slippage) / 100)).toFixed(6)} {fromToken === 'ETH' ? 'BPROOF' : 'ETH'}
+                  {(parseFloat(outputAmount) * (1 - parseFloat(slippage) / 100)).toFixed(6)}{' '}
+                  {fromToken === 'ETH' ? 'BPROOF' : 'ETH'}
                 </span>
               </div>
             </div>

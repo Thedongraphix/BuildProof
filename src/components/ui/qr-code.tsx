@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { QRCodeSVG } from 'qrcode.react'
 import { useState } from 'react'
@@ -21,7 +21,7 @@ export function QRCode({
   description,
   includeDownload = true,
   fgColor = '#3b82f6',
-  bgColor = '#000000'
+  bgColor = '#000000',
 }: QRCodeProps) {
   const [showModal, setShowModal] = useState(false)
 
@@ -76,7 +76,7 @@ export function QRCode({
         >
           <div
             className="bg-black border border-blue-500 p-8 max-w-md w-full relative"
-            onClick={(e) => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
           >
             <button
               onClick={() => setShowModal(false)}
@@ -85,23 +85,13 @@ export function QRCode({
               <X size={24} />
             </button>
 
-            {title && (
-              <h3 className="text-xl font-bold text-blue-400 mb-2">{title}</h3>
-            )}
+            {title && <h3 className="text-xl font-bold text-blue-400 mb-2">{title}</h3>}
 
-            {description && (
-              <p className="text-gray-400 text-sm mb-6">{description}</p>
-            )}
+            {description && <p className="text-gray-400 text-sm mb-6">{description}</p>}
 
             <div className="flex flex-col items-center gap-6">
               <div className="border border-blue-500 p-4">
-                <QRCodeSVG
-                  value={value}
-                  size={300}
-                  level="H"
-                  fgColor={fgColor}
-                  bgColor={bgColor}
-                />
+                <QRCodeSVG value={value} size={300} level="H" fgColor={fgColor} bgColor={bgColor} />
               </div>
 
               {includeDownload && (
@@ -117,9 +107,7 @@ export function QRCode({
               <div className="w-full border-t border-gray-800 pt-4">
                 <p className="text-xs text-gray-500 mb-2">Direct link:</p>
                 <div className="bg-gray-900 p-3 border border-gray-800">
-                  <p className="text-xs text-gray-400 break-all font-mono">
-                    {value}
-                  </p>
+                  <p className="text-xs text-gray-400 break-all font-mono">{value}</p>
                 </div>
               </div>
             </div>
@@ -133,7 +121,7 @@ export function QRCode({
 export function QRCodeButton({
   value,
   label = 'Show QR Code',
-  size = 200
+  size = 200,
 }: {
   value: string
   label?: string
@@ -155,10 +143,7 @@ export function QRCodeButton({
           className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4"
           onClick={() => setShowQR(false)}
         >
-          <div
-            className="bg-black border border-blue-500 p-8"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="bg-black border border-blue-500 p-8" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-bold text-blue-400">QR Code</h3>
               <button
@@ -170,13 +155,7 @@ export function QRCodeButton({
             </div>
 
             <div className="border border-blue-500 p-4">
-              <QRCodeSVG
-                value={value}
-                size={size}
-                level="H"
-                fgColor="#3b82f6"
-                bgColor="#000000"
-              />
+              <QRCodeSVG value={value} size={size} level="H" fgColor="#3b82f6" bgColor="#000000" />
             </div>
           </div>
         </div>

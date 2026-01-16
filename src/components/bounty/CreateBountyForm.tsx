@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Plus } from 'lucide-react'
 
 interface CreateBountyFormProps {
   onSubmit: (data: {
@@ -16,28 +16,28 @@ interface CreateBountyFormProps {
 }
 
 export function CreateBountyForm({ onSubmit, isLoading }: CreateBountyFormProps) {
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
-  const [reward, setReward] = useState("")
-  const [days, setDays] = useState("7")
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [reward, setReward] = useState('')
+  const [days, setDays] = useState('7')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const deadlineTimestamp = Math.floor(Date.now() / 1000) + (parseInt(days) * 24 * 60 * 60)
+    const deadlineTimestamp = Math.floor(Date.now() / 1000) + parseInt(days) * 24 * 60 * 60
 
     await onSubmit({
       title,
       description,
       reward,
-      deadline: deadlineTimestamp
+      deadline: deadlineTimestamp,
     })
 
     // Reset form
-    setTitle("")
-    setDescription("")
-    setReward("")
-    setDays("7")
+    setTitle('')
+    setDescription('')
+    setReward('')
+    setDays('7')
   }
 
   return (
@@ -55,13 +55,11 @@ export function CreateBountyForm({ onSubmit, isLoading }: CreateBountyFormProps)
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">
-              Bounty Title
-            </label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Bounty Title</label>
             <input
               type="text"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={e => setTitle(e.target.value)}
               placeholder="e.g., Build a DeFi Dashboard"
               className="contract-input w-full px-4 py-3 text-white text-base border-gray-800 rounded-lg"
               required
@@ -69,12 +67,10 @@ export function CreateBountyForm({ onSubmit, isLoading }: CreateBountyFormProps)
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">
-              Description
-            </label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Description</label>
             <textarea
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={e => setDescription(e.target.value)}
               placeholder="Describe what needs to be built..."
               rows={4}
               className="contract-input w-full px-4 py-3 text-white text-base border-gray-800 rounded-lg resize-none"
@@ -84,15 +80,13 @@ export function CreateBountyForm({ onSubmit, isLoading }: CreateBountyFormProps)
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">
-                Reward (ETH)
-              </label>
+              <label className="block text-sm font-medium text-gray-400 mb-2">Reward (ETH)</label>
               <input
                 type="number"
                 step="0.001"
                 min="0.001"
                 value={reward}
-                onChange={(e) => setReward(e.target.value)}
+                onChange={e => setReward(e.target.value)}
                 placeholder="0.1"
                 className="contract-input w-full px-4 py-3 text-white text-base border-gray-800 rounded-lg"
                 required
@@ -108,7 +102,7 @@ export function CreateBountyForm({ onSubmit, isLoading }: CreateBountyFormProps)
                 min="1"
                 max="365"
                 value={days}
-                onChange={(e) => setDays(e.target.value)}
+                onChange={e => setDays(e.target.value)}
                 placeholder="7"
                 className="contract-input w-full px-4 py-3 text-white text-base border-gray-800 rounded-lg"
                 required
@@ -122,7 +116,7 @@ export function CreateBountyForm({ onSubmit, isLoading }: CreateBountyFormProps)
             className="w-full"
             size="lg"
           >
-            {isLoading ? "Creating..." : "Create Bounty"}
+            {isLoading ? 'Creating...' : 'Create Bounty'}
           </Button>
         </form>
       </CardContent>

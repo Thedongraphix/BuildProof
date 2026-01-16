@@ -107,10 +107,7 @@ export function useBuilderAchievements(address: `0x${string}` | undefined) {
 }
 
 // Hook to read skill endorsements
-export function useSkillEndorsements(
-  address: `0x${string}` | undefined,
-  skill: string
-) {
+export function useSkillEndorsements(address: `0x${string}` | undefined, skill: string) {
   const { data, isLoading, error } = useReadContract({
     address: contracts.builderReputation.address,
     abi: contracts.builderReputation.abi,

@@ -1,7 +1,19 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
-import { Github, ArrowRight, CheckCircle, AlertTriangle, XCircle, Shield, Clock, FileText, TrendingUp, Lock, Zap } from "lucide-react"
+import {
+  Github,
+  ArrowRight,
+  CheckCircle,
+  AlertTriangle,
+  XCircle,
+  Shield,
+  Clock,
+  FileText,
+  TrendingUp,
+  Lock,
+  Zap,
+} from 'lucide-react'
 import { contracts, formatEther, formatAddress, isValidAddress } from '@/lib/contracts'
 import { useReadContract } from 'wagmi'
 
@@ -62,48 +74,49 @@ export default function Home() {
     const mockResult: VerificationResult = {
       isVerified: true,
       securityScore: 85,
-      contractName: "BuilderInsurance",
-      compiler: "0.8.26",
-      network: "Base Sepolia",
+      contractName: 'BuilderInsurance',
+      compiler: '0.8.26',
+      network: 'Base Sepolia',
       findings: {
         critical: 0,
         high: 1,
         medium: 2,
-        low: 3
+        low: 3,
       },
       details: [
         {
           severity: 'high',
           title: 'Reentrancy Guard',
-          description: 'Contract uses ReentrancyGuard properly to prevent reentrancy attacks'
+          description: 'Contract uses ReentrancyGuard properly to prevent reentrancy attacks',
         },
         {
           severity: 'medium',
           title: 'Access Control',
-          description: 'Owner privileges detected. Consider implementing timelock for sensitive functions'
+          description:
+            'Owner privileges detected. Consider implementing timelock for sensitive functions',
         },
         {
           severity: 'medium',
           title: 'Integer Overflow',
-          description: 'Using Solidity 0.8+ which has built-in overflow protection'
+          description: 'Using Solidity 0.8+ which has built-in overflow protection',
         },
         {
           severity: 'low',
           title: 'Gas Optimization',
-          description: 'Some functions could be optimized for gas efficiency'
+          description: 'Some functions could be optimized for gas efficiency',
         },
         {
           severity: 'low',
           title: 'Event Emissions',
-          description: 'All critical state changes emit events properly'
+          description: 'All critical state changes emit events properly',
         },
         {
           severity: 'info',
           title: 'Code Quality',
-          description: 'Contract follows best practices and uses OpenZeppelin libraries'
-        }
+          description: 'Contract follows best practices and uses OpenZeppelin libraries',
+        },
       ],
-      verifiedAt: new Date().toLocaleString()
+      verifiedAt: new Date().toLocaleString(),
     }
 
     setResult(mockResult)
@@ -160,7 +173,6 @@ export default function Home() {
       {/* Main Content */}
       <main className="pt-32 pb-20 px-6">
         <div className="max-w-5xl mx-auto">
-
           {/* Tabs */}
           <div className="flex gap-3 mb-8">
             <button
@@ -213,7 +225,7 @@ export default function Home() {
                     <input
                       type="text"
                       value={contractAddress}
-                      onChange={(e) => setContractAddress(e.target.value)}
+                      onChange={e => setContractAddress(e.target.value)}
                       placeholder="0x..."
                       className="w-full bg-transparent text-white text-lg focus:outline-none placeholder-white/30"
                       disabled={isVerifying}
@@ -233,7 +245,10 @@ export default function Home() {
                     ) : (
                       <>
                         <span>Verify Contract</span>
-                        <ArrowRight size={18} className="group-hover:translate-x-0.5 transition-transform" />
+                        <ArrowRight
+                          size={18}
+                          className="group-hover:translate-x-0.5 transition-transform"
+                        />
                       </>
                     )}
                   </button>
@@ -391,9 +406,7 @@ export default function Home() {
 
                 <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 text-center">
                   <TrendingUp className="w-8 h-8 text-white/40 mx-auto mb-3" />
-                  <div className="text-4xl font-bold mb-2">
-                    {totalPolicies?.toString() || '0'}
-                  </div>
+                  <div className="text-4xl font-bold mb-2">{totalPolicies?.toString() || '0'}</div>
                   <div className="text-sm text-white/50">Active Policies</div>
                 </div>
               </div>
@@ -427,7 +440,9 @@ export default function Home() {
               <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
                 <h3 className="font-semibold mb-3">Contract Address</h3>
                 <div className="flex items-center justify-between">
-                  <code className="text-sm text-white/60">{contracts.builderInsurance.address}</code>
+                  <code className="text-sm text-white/60">
+                    {contracts.builderInsurance.address}
+                  </code>
                   <a
                     href={`https://sepolia.basescan.org/address/${contracts.builderInsurance.address}`}
                     target="_blank"
@@ -503,9 +518,15 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-6">
-            <a href="#" className="hover:text-white transition-colors">Privacy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms</a>
-            <a href="#" className="hover:text-white transition-colors">Support</a>
+            <a href="#" className="hover:text-white transition-colors">
+              Privacy
+            </a>
+            <a href="#" className="hover:text-white transition-colors">
+              Terms
+            </a>
+            <a href="#" className="hover:text-white transition-colors">
+              Support
+            </a>
           </div>
         </div>
       </footer>

@@ -1,7 +1,16 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
-import { Download, FileText, FileJson, Table, Share2, Link as LinkIcon, Copy, Badge } from 'lucide-react'
+import {
+  Download,
+  FileText,
+  FileJson,
+  Table,
+  Share2,
+  Link as LinkIcon,
+  Copy,
+  Badge,
+} from 'lucide-react'
 
 export function ExportPanel() {
   const [shareLink, setShareLink] = useState('')
@@ -24,29 +33,29 @@ export function ExportPanel() {
       description: 'Comprehensive verification report',
       icon: FileText,
       color: 'red',
-      action: () => alert('Exporting PDF...')
+      action: () => alert('Exporting PDF...'),
     },
     {
       name: 'JSON Data',
       description: 'Machine-readable format',
       icon: FileJson,
       color: 'blue',
-      action: () => alert('Exporting JSON...')
+      action: () => alert('Exporting JSON...'),
     },
     {
       name: 'CSV Table',
       description: 'Spreadsheet compatible',
       icon: Table,
       color: 'green',
-      action: () => alert('Exporting CSV...')
+      action: () => alert('Exporting CSV...'),
     },
     {
       name: 'Verification Badge',
       description: 'Embed on website',
       icon: Badge,
       color: 'purple',
-      action: () => alert('Generating badge...')
-    }
+      action: () => alert('Generating badge...'),
+    },
   ]
 
   return (
@@ -75,7 +84,9 @@ export function ExportPanel() {
                 className="card p-4 border border-gray-800 hover:border-blue-500/30 transition-all text-left group"
               >
                 <div className="flex items-start gap-3">
-                  <div className={`p-2 bg-${format.color}-500/10 rounded group-hover:bg-${format.color}-500/20 transition-colors`}>
+                  <div
+                    className={`p-2 bg-${format.color}-500/10 rounded group-hover:bg-${format.color}-500/20 transition-colors`}
+                  >
                     <Icon className={`text-${format.color}-400`} size={20} />
                   </div>
                   <div className="flex-1">
@@ -139,7 +150,7 @@ export function ExportPanel() {
         </h4>
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/30 rounded-full">
           <svg className="w-4 h-4 text-green-400" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+            <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
           </svg>
           <span className="text-sm font-semibold text-white">Verified by BuildProof</span>
         </div>

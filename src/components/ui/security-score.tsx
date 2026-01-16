@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { Shield, AlertTriangle, CheckCircle, XCircle, Info } from 'lucide-react'
 
@@ -15,38 +15,41 @@ interface SecurityScoreProps {
 }
 
 export function SecurityScore({ score = 85, issues = [] }: SecurityScoreProps) {
-  const defaultIssues: SecurityIssue[] = issues.length > 0 ? issues : [
-    {
-      severity: 'critical',
-      title: 'Reentrancy Vulnerabilities',
-      description: 'Functions vulnerable to reentrancy attacks',
-      count: 0
-    },
-    {
-      severity: 'high',
-      title: 'Unchecked External Calls',
-      description: 'External calls without proper validation',
-      count: 1
-    },
-    {
-      severity: 'medium',
-      title: 'Gas Optimization Issues',
-      description: 'Functions that could be optimized',
-      count: 3
-    },
-    {
-      severity: 'low',
-      title: 'Code Quality Issues',
-      description: 'Minor code style and documentation issues',
-      count: 5
-    },
-    {
-      severity: 'info',
-      title: 'Informational Findings',
-      description: 'Best practice suggestions',
-      count: 8
-    }
-  ]
+  const defaultIssues: SecurityIssue[] =
+    issues.length > 0
+      ? issues
+      : [
+          {
+            severity: 'critical',
+            title: 'Reentrancy Vulnerabilities',
+            description: 'Functions vulnerable to reentrancy attacks',
+            count: 0,
+          },
+          {
+            severity: 'high',
+            title: 'Unchecked External Calls',
+            description: 'External calls without proper validation',
+            count: 1,
+          },
+          {
+            severity: 'medium',
+            title: 'Gas Optimization Issues',
+            description: 'Functions that could be optimized',
+            count: 3,
+          },
+          {
+            severity: 'low',
+            title: 'Code Quality Issues',
+            description: 'Minor code style and documentation issues',
+            count: 5,
+          },
+          {
+            severity: 'info',
+            title: 'Informational Findings',
+            description: 'Best practice suggestions',
+            count: 8,
+          },
+        ]
 
   const getScoreColor = (score: number) => {
     if (score >= 90) return 'text-green-400'
@@ -105,7 +108,9 @@ export function SecurityScore({ score = 85, issues = [] }: SecurityScoreProps) {
   }
 
   const totalIssues = defaultIssues.reduce((sum, issue) => sum + issue.count, 0)
-  const criticalCount = defaultIssues.filter(i => i.severity === 'critical' || i.severity === 'high').reduce((sum, i) => sum + i.count, 0)
+  const criticalCount = defaultIssues
+    .filter(i => i.severity === 'critical' || i.severity === 'high')
+    .reduce((sum, i) => sum + i.count, 0)
 
   return (
     <div className="card p-6 space-y-6">
@@ -149,8 +154,14 @@ export function SecurityScore({ score = 85, issues = [] }: SecurityScoreProps) {
             />
             <defs>
               <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" className={`stop-color-${getScoreGradient(score).split(' ')[0]}`} />
-                <stop offset="100%" className={`stop-color-${getScoreGradient(score).split(' ')[2]}`} />
+                <stop
+                  offset="0%"
+                  className={`stop-color-${getScoreGradient(score).split(' ')[0]}`}
+                />
+                <stop
+                  offset="100%"
+                  className={`stop-color-${getScoreGradient(score).split(' ')[2]}`}
+                />
               </linearGradient>
             </defs>
           </svg>
@@ -195,9 +206,7 @@ export function SecurityScore({ score = 85, issues = [] }: SecurityScoreProps) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-white">{issue.title}</span>
-                  <span className="text-xs uppercase font-bold opacity-70">
-                    {issue.severity}
-                  </span>
+                  <span className="text-xs uppercase font-bold opacity-70">{issue.severity}</span>
                 </div>
                 <p className="text-xs text-gray-400 mt-0.5">{issue.description}</p>
               </div>
@@ -218,7 +227,8 @@ export function SecurityScore({ score = 85, issues = [] }: SecurityScoreProps) {
             <div>
               <h5 className="text-sm font-semibold text-orange-400 mb-1">Action Required</h5>
               <p className="text-xs text-gray-400">
-                {criticalCount} critical or high severity issues detected. Review and fix these vulnerabilities before deployment.
+                {criticalCount} critical or high severity issues detected. Review and fix these
+                vulnerabilities before deployment.
               </p>
             </div>
           </div>

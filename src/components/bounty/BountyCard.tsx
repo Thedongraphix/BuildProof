@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Clock, DollarSign, User, FileText, Share2 } from "lucide-react"
-import { formatEther } from "viem"
-import { QRCodeButton } from "@/components/ui/qr-code"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Clock, DollarSign, User, FileText, Share2 } from 'lucide-react'
+import { formatEther } from 'viem'
+import { QRCodeButton } from '@/components/ui/qr-code'
 
 interface BountyCardProps {
   bountyId: number
@@ -20,13 +20,13 @@ interface BountyCardProps {
   onApprove?: () => void
 }
 
-const statusLabels = ["Open", "Claimed", "Under Review", "Completed", "Cancelled"]
+const statusLabels = ['Open', 'Claimed', 'Under Review', 'Completed', 'Cancelled']
 const statusColors = [
-  "text-green-400 bg-green-400/10",
-  "text-blue-400 bg-blue-400/10",
-  "text-yellow-400 bg-yellow-400/10",
-  "text-gray-400 bg-gray-400/10",
-  "text-red-400 bg-red-400/10"
+  'text-green-400 bg-green-400/10',
+  'text-blue-400 bg-blue-400/10',
+  'text-yellow-400 bg-yellow-400/10',
+  'text-gray-400 bg-gray-400/10',
+  'text-red-400 bg-red-400/10',
 ]
 
 export function BountyCard({
@@ -40,16 +40,15 @@ export function BountyCard({
   claimer,
   onClaim,
   onSubmit,
-  onApprove
+  onApprove,
 }: BountyCardProps) {
   const deadlineDate = new Date(deadline * 1000)
   const isExpired = Date.now() > deadline * 1000
   const rewardInEth = formatEther(reward)
 
   // Generate bounty URL for QR code
-  const bountyUrl = typeof window !== 'undefined'
-    ? `${window.location.origin}/bounties?id=${bountyId}`
-    : ''
+  const bountyUrl =
+    typeof window !== 'undefined' ? `${window.location.origin}/bounties?id=${bountyId}` : ''
 
   return (
     <Card className="hover:border-blue-500 transition-all duration-300">
@@ -57,7 +56,9 @@ export function BountyCard({
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <CardTitle className="text-xl text-white mb-3 font-bold">{title}</CardTitle>
-            <span className={`inline-flex items-center px-3 py-1 text-xs font-semibold ${statusColors[status]}`}>
+            <span
+              className={`inline-flex items-center px-3 py-1 text-xs font-semibold ${statusColors[status]}`}
+            >
               {statusLabels[status]}
             </span>
           </div>
@@ -83,9 +84,9 @@ export function BountyCard({
           </div>
 
           <div className="flex items-center gap-2 p-2 border border-gray-800">
-            <Clock size={16} className={isExpired ? "text-red-400" : "text-gray-500"} />
-            <span className={`text-xs font-medium ${isExpired ? "text-red-400" : "text-gray-400"}`}>
-              {isExpired ? "Expired" : deadlineDate.toLocaleDateString()}
+            <Clock size={16} className={isExpired ? 'text-red-400' : 'text-gray-500'} />
+            <span className={`text-xs font-medium ${isExpired ? 'text-red-400' : 'text-gray-400'}`}>
+              {isExpired ? 'Expired' : deadlineDate.toLocaleDateString()}
             </span>
           </div>
 
@@ -121,9 +122,7 @@ export function BountyCard({
           )}
 
           {status === 3 && (
-            <div className="flex-1 text-center text-sm text-gray-400">
-              Bounty Completed
-            </div>
+            <div className="flex-1 text-center text-sm text-gray-400">Bounty Completed</div>
           )}
         </div>
 
@@ -132,11 +131,7 @@ export function BountyCard({
             <div className="absolute -top-1 -right-1 bg-blue-500 text-white rounded-full p-1">
               <Share2 size={12} />
             </div>
-            <QRCodeButton
-              value={bountyUrl}
-              label="Share Bounty"
-              size={200}
-            />
+            <QRCodeButton value={bountyUrl} label="Share Bounty" size={200} />
           </div>
         )}
       </CardFooter>

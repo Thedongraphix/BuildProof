@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { FileCode, Rocket, Shield, Users, Coins, Lock, Trophy, ArrowRight } from 'lucide-react'
@@ -28,7 +28,7 @@ export function ContractTemplates() {
       verified: true,
       deployments: 15420,
       features: ['Mintable', 'Burnable', 'Pausable', 'Access Control'],
-      securityScore: 98
+      securityScore: 98,
     },
     {
       id: 'erc721',
@@ -39,7 +39,7 @@ export function ContractTemplates() {
       verified: true,
       deployments: 8950,
       features: ['Enumerable', 'URI Storage', 'Royalty', 'Batch Minting'],
-      securityScore: 96
+      securityScore: 96,
     },
     {
       id: 'multisig',
@@ -50,7 +50,7 @@ export function ContractTemplates() {
       verified: true,
       deployments: 3240,
       features: ['Multiple Owners', 'Threshold Voting', 'Transaction Queue'],
-      securityScore: 99
+      securityScore: 99,
     },
     {
       id: 'staking',
@@ -61,7 +61,7 @@ export function ContractTemplates() {
       verified: true,
       deployments: 6780,
       features: ['Flexible Periods', 'Reward Distribution', 'Emergency Withdraw'],
-      securityScore: 94
+      securityScore: 94,
     },
     {
       id: 'dao',
@@ -72,7 +72,7 @@ export function ContractTemplates() {
       verified: true,
       deployments: 2150,
       features: ['Proposal Creation', 'Voting Power', 'Timelock', 'Execution'],
-      securityScore: 97
+      securityScore: 97,
     },
     {
       id: 'airdrop',
@@ -83,8 +83,8 @@ export function ContractTemplates() {
       verified: true,
       deployments: 4320,
       features: ['Merkle Proof', 'Batch Claims', 'Time Windows'],
-      securityScore: 95
-    }
+      securityScore: 95,
+    },
   ]
 
   const categories = [
@@ -92,13 +92,20 @@ export function ContractTemplates() {
     { id: 'token', name: 'Tokens', count: templates.filter(t => t.category === 'token').length },
     { id: 'nft', name: 'NFTs', count: templates.filter(t => t.category === 'nft').length },
     { id: 'defi', name: 'DeFi', count: templates.filter(t => t.category === 'defi').length },
-    { id: 'governance', name: 'Governance', count: templates.filter(t => t.category === 'governance').length },
-    { id: 'security', name: 'Security', count: templates.filter(t => t.category === 'security').length }
+    {
+      id: 'governance',
+      name: 'Governance',
+      count: templates.filter(t => t.category === 'governance').length,
+    },
+    {
+      id: 'security',
+      name: 'Security',
+      count: templates.filter(t => t.category === 'security').length,
+    },
   ]
 
-  const filteredTemplates = selectedCategory === 'all'
-    ? templates
-    : templates.filter(t => t.category === selectedCategory)
+  const filteredTemplates =
+    selectedCategory === 'all' ? templates : templates.filter(t => t.category === selectedCategory)
 
   const getSecurityColor = (score: number) => {
     if (score >= 95) return 'text-green-400'
@@ -127,7 +134,7 @@ export function ContractTemplates() {
 
       {/* Category Filter */}
       <div className="flex flex-wrap gap-2">
-        {categories.map((category) => (
+        {categories.map(category => (
           <button
             key={category.id}
             onClick={() => setSelectedCategory(category.id)}
@@ -145,7 +152,7 @@ export function ContractTemplates() {
 
       {/* Template Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {filteredTemplates.map((template) => {
+        {filteredTemplates.map(template => {
           const Icon = template.icon
           return (
             <div
@@ -176,9 +183,7 @@ export function ContractTemplates() {
                 </div>
 
                 {/* Description */}
-                <p className="text-sm text-gray-400 leading-relaxed">
-                  {template.description}
-                </p>
+                <p className="text-sm text-gray-400 leading-relaxed">{template.description}</p>
 
                 {/* Features */}
                 <div className="flex flex-wrap gap-1.5">
@@ -195,14 +200,20 @@ export function ContractTemplates() {
                 {/* Stats & Action */}
                 <div className="flex items-center justify-between pt-3 border-t border-gray-800">
                   <div className="text-xs text-gray-500">
-                    <span className="font-semibold text-white">{template.deployments.toLocaleString()}</span> deployments
+                    <span className="font-semibold text-white">
+                      {template.deployments.toLocaleString()}
+                    </span>{' '}
+                    deployments
                   </div>
                   <button
                     onClick={() => handleDeploy(template)}
                     className="flex items-center gap-2 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white text-sm font-semibold rounded transition-colors group"
                   >
                     Deploy
-                    <ArrowRight className="group-hover:translate-x-1 transition-transform" size={14} />
+                    <ArrowRight
+                      className="group-hover:translate-x-1 transition-transform"
+                      size={14}
+                    />
                   </button>
                 </div>
               </div>

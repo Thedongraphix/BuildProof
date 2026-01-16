@@ -6,38 +6,39 @@ import BuilderEscrowABI from './abis/BuilderEscrow.json'
 // BuilderInsurance simplified ABI for key functions
 const BuilderInsuranceABI = [
   {
-    "inputs": [{ "internalType": "uint256", "name": "_lockDuration", "type": "uint256" }],
-    "name": "stakeAsBuilder",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
+    inputs: [{ internalType: 'uint256', name: '_lockDuration', type: 'uint256' }],
+    name: 'stakeAsBuilder',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
   },
   {
-    "inputs": [],
-    "name": "totalStaked",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
+    inputs: [],
+    name: 'totalStaked',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [],
-    "name": "insurancePool",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
+    inputs: [],
+    name: 'insurancePool',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [],
-    "name": "totalPolicies",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  }
+    inputs: [],
+    name: 'totalPolicies',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
 ] as const
 
 export const contracts = {
   builderInsurance: {
-    address: (process.env.NEXT_PUBLIC_BUILDER_INSURANCE_ADDRESS || '0x5882b106397A46eA005354e0f4Fbc438734e0605') as `0x${string}`,
+    address: (process.env.NEXT_PUBLIC_BUILDER_INSURANCE_ADDRESS ||
+      '0x5882b106397A46eA005354e0f4Fbc438734e0605') as `0x${string}`,
     abi: BuilderInsuranceABI,
     chainId: 84532, // Base Sepolia
   },

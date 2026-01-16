@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { Brain, Lightbulb, AlertCircle, TrendingUp, Shield } from 'lucide-react'
 
@@ -14,27 +14,31 @@ export function AIInsights() {
     {
       type: 'security',
       title: 'Consider Using ReentrancyGuard',
-      description: 'External calls detected without reentrancy protection. Implement OpenZeppelin ReentrancyGuard to prevent attacks.',
-      impact: 'high'
+      description:
+        'External calls detected without reentrancy protection. Implement OpenZeppelin ReentrancyGuard to prevent attacks.',
+      impact: 'high',
     },
     {
       type: 'optimization',
       title: 'Optimize Storage Layout',
-      description: 'Pack variables together to reduce gas costs. Group uint256 variables and use smaller uints where possible.',
-      impact: 'medium'
+      description:
+        'Pack variables together to reduce gas costs. Group uint256 variables and use smaller uints where possible.',
+      impact: 'medium',
     },
     {
       type: 'best-practice',
       title: 'Add NatSpec Documentation',
-      description: 'Functions lack proper documentation. Add @notice, @param, and @return tags for better code clarity.',
-      impact: 'low'
+      description:
+        'Functions lack proper documentation. Add @notice, @param, and @return tags for better code clarity.',
+      impact: 'low',
     },
     {
       type: 'warning',
       title: 'Unchecked Return Values',
-      description: 'Some external calls don\'t check return values. Always verify success of external contract interactions.',
-      impact: 'high'
-    }
+      description:
+        "Some external calls don't check return values. Always verify success of external contract interactions.",
+      impact: 'high',
+    },
   ]
 
   const getTypeIcon = (type: string) => {
@@ -71,7 +75,7 @@ export function AIInsights() {
     const colors = {
       high: 'bg-red-500/10 text-red-400 border-red-500/30',
       medium: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30',
-      low: 'bg-blue-500/10 text-blue-400 border-blue-500/30'
+      low: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
     }
     return colors[impact as keyof typeof colors] || colors.low
   }
@@ -102,13 +106,13 @@ export function AIInsights() {
                   {getTypeIcon(insight.type)}
                   <h4 className="text-sm font-semibold text-white">{insight.title}</h4>
                 </div>
-                <span className={`px-2 py-0.5 rounded text-xs font-semibold border ${getImpactBadge(insight.impact)}`}>
+                <span
+                  className={`px-2 py-0.5 rounded text-xs font-semibold border ${getImpactBadge(insight.impact)}`}
+                >
                   {insight.impact.toUpperCase()}
                 </span>
               </div>
-              <p className="text-xs text-gray-400 leading-relaxed pl-6">
-                {insight.description}
-              </p>
+              <p className="text-xs text-gray-400 leading-relaxed pl-6">{insight.description}</p>
             </div>
           </div>
         ))}

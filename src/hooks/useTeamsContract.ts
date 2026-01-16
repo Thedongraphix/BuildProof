@@ -10,11 +10,7 @@ export function useTeamsContract() {
   })
 
   // Create Team
-  const createTeam = async (
-    name: string,
-    members: `0x${string}`[],
-    shares: number[]
-  ) => {
+  const createTeam = async (name: string, members: `0x${string}`[], shares: number[]) => {
     return writeContract({
       address: contracts.builderTeams.address,
       abi: contracts.builderTeams.abi,
@@ -44,11 +40,7 @@ export function useTeamsContract() {
   }
 
   // Update Member Share
-  const updateMemberShare = async (
-    teamId: number,
-    member: `0x${string}`,
-    newShare: number
-  ) => {
+  const updateMemberShare = async (teamId: number, member: `0x${string}`, newShare: number) => {
     return writeContract({
       address: contracts.builderTeams.address,
       abi: contracts.builderTeams.abi,

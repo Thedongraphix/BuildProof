@@ -1,9 +1,19 @@
-"use client"
+'use client'
 
-import { VerificationResult } from "@/hooks/useContractVerification"
-import { SourceCodeViewer } from "./source-code-viewer"
-import { ExportButton } from "./export-button"
-import { CheckCircle, AlertTriangle, XCircle, Shield, Key, AlertOctagon, Info, TrendingUp, Activity } from "lucide-react"
+import { VerificationResult } from '@/hooks/useContractVerification'
+import { SourceCodeViewer } from './source-code-viewer'
+import { ExportButton } from './export-button'
+import {
+  CheckCircle,
+  AlertTriangle,
+  XCircle,
+  Shield,
+  Key,
+  AlertOctagon,
+  Info,
+  TrendingUp,
+  Activity,
+} from 'lucide-react'
 
 interface VerificationResultsProps {
   result: VerificationResult
@@ -14,31 +24,46 @@ export function VerificationResults({ result }: VerificationResultsProps) {
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
-      case 'LOW': return 'text-blue-400'
-      case 'MEDIUM': return 'text-yellow-400'
-      case 'HIGH': return 'text-orange-400'
-      case 'CRITICAL': return 'text-red-400'
-      default: return 'text-gray-400'
+      case 'LOW':
+        return 'text-blue-400'
+      case 'MEDIUM':
+        return 'text-yellow-400'
+      case 'HIGH':
+        return 'text-orange-400'
+      case 'CRITICAL':
+        return 'text-red-400'
+      default:
+        return 'text-gray-400'
     }
   }
 
   const getRiskBgColor = (risk: string) => {
     switch (risk) {
-      case 'LOW': return 'bg-blue-500/10 border-blue-500/20'
-      case 'MEDIUM': return 'bg-yellow-500/10 border-yellow-500/20'
-      case 'HIGH': return 'bg-orange-500/10 border-orange-500/20'
-      case 'CRITICAL': return 'bg-red-500/10 border-red-500/20'
-      default: return 'bg-gray-500/10 border-gray-500/20'
+      case 'LOW':
+        return 'bg-blue-500/10 border-blue-500/20'
+      case 'MEDIUM':
+        return 'bg-yellow-500/10 border-yellow-500/20'
+      case 'HIGH':
+        return 'bg-orange-500/10 border-orange-500/20'
+      case 'CRITICAL':
+        return 'bg-red-500/10 border-red-500/20'
+      default:
+        return 'bg-gray-500/10 border-gray-500/20'
     }
   }
 
   const getRiskIcon = (risk: string) => {
     switch (risk) {
-      case 'LOW': return <Shield className="w-6 h-6 text-blue-400" />
-      case 'MEDIUM': return <AlertTriangle className="w-6 h-6 text-yellow-400" />
-      case 'HIGH': return <AlertOctagon className="w-6 h-6 text-orange-400" />
-      case 'CRITICAL': return <XCircle className="w-6 h-6 text-red-400" />
-      default: return <Info className="w-6 h-6 text-gray-400" />
+      case 'LOW':
+        return <Shield className="w-6 h-6 text-blue-400" />
+      case 'MEDIUM':
+        return <AlertTriangle className="w-6 h-6 text-yellow-400" />
+      case 'HIGH':
+        return <AlertOctagon className="w-6 h-6 text-orange-400" />
+      case 'CRITICAL':
+        return <XCircle className="w-6 h-6 text-red-400" />
+      default:
+        return <Info className="w-6 h-6 text-gray-400" />
     }
   }
 
@@ -58,11 +83,16 @@ export function VerificationResults({ result }: VerificationResultsProps) {
 
   const getSeverityIcon = (severity: string) => {
     switch (severity) {
-      case 'CRITICAL': return <XCircle className="w-5 h-5 text-red-400" />
-      case 'HIGH': return <AlertOctagon className="w-5 h-5 text-orange-400" />
-      case 'MEDIUM': return <AlertTriangle className="w-5 h-5 text-yellow-400" />
-      case 'LOW': return <Info className="w-5 h-5 text-blue-400" />
-      default: return <Info className="w-5 h-5 text-gray-400" />
+      case 'CRITICAL':
+        return <XCircle className="w-5 h-5 text-red-400" />
+      case 'HIGH':
+        return <AlertOctagon className="w-5 h-5 text-orange-400" />
+      case 'MEDIUM':
+        return <AlertTriangle className="w-5 h-5 text-yellow-400" />
+      case 'LOW':
+        return <Info className="w-5 h-5 text-blue-400" />
+      default:
+        return <Info className="w-5 h-5 text-gray-400" />
     }
   }
 
@@ -77,21 +107,22 @@ export function VerificationResults({ result }: VerificationResultsProps) {
       <div className={`card border-2 p-8 ${getRiskBgColor(securityAnalysis.riskLevel)}`}>
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-start gap-4">
-            <div className="flex-shrink-0">
-              {getRiskIcon(securityAnalysis.riskLevel)}
-            </div>
+            <div className="flex-shrink-0">{getRiskIcon(securityAnalysis.riskLevel)}</div>
             <div>
               <h3 className="text-2xl font-bold text-white mb-1">Security Assessment</h3>
               <p className={`text-lg font-semibold ${getRiskColor(securityAnalysis.riskLevel)}`}>
                 {securityAnalysis.riskLevel} RISK LEVEL
               </p>
               <p className="text-gray-400 text-sm mt-1">
-                {securityAnalysis.vulnerabilities.length} issue{securityAnalysis.vulnerabilities.length !== 1 ? 's' : ''} detected
+                {securityAnalysis.vulnerabilities.length} issue
+                {securityAnalysis.vulnerabilities.length !== 1 ? 's' : ''} detected
               </p>
             </div>
           </div>
           <div className="flex flex-col items-end">
-            <div className={`text-5xl font-bold ${getScoreColor(securityAnalysis.score)} tabular-nums`}>
+            <div
+              className={`text-5xl font-bold ${getScoreColor(securityAnalysis.score)} tabular-nums`}
+            >
               {securityAnalysis.score}
             </div>
             <div className="text-gray-400 text-sm mt-1">Security Score</div>
@@ -117,13 +148,22 @@ export function VerificationResults({ result }: VerificationResultsProps) {
             <p className="text-white font-mono text-sm break-all">{contractInfo.address}</p>
           </div>
           <div className="space-y-1">
-            <span className="text-gray-500 text-xs uppercase tracking-wide">Verification Status</span>
+            <span className="text-gray-500 text-xs uppercase tracking-wide">
+              Verification Status
+            </span>
             <div className="flex items-center gap-2">
-              {contractInfo.isVerified ?
-                <CheckCircle className="w-4 h-4 text-blue-400" /> :
+              {contractInfo.isVerified ? (
+                <CheckCircle className="w-4 h-4 text-blue-400" />
+              ) : (
                 <AlertTriangle className="w-4 h-4 text-yellow-400" />
-              }
-              <p className={contractInfo.isVerified ? 'text-blue-400 font-medium' : 'text-yellow-400 font-medium'}>
+              )}
+              <p
+                className={
+                  contractInfo.isVerified
+                    ? 'text-blue-400 font-medium'
+                    : 'text-yellow-400 font-medium'
+                }
+              >
                 {contractInfo.isVerified ? 'Verified on Etherscan' : 'Unverified'}
               </p>
             </div>
@@ -136,7 +176,9 @@ export function VerificationResults({ result }: VerificationResultsProps) {
           )}
           {contractInfo.compiler && (
             <div className="space-y-1">
-              <span className="text-gray-500 text-xs uppercase tracking-wide">Compiler Version</span>
+              <span className="text-gray-500 text-xs uppercase tracking-wide">
+                Compiler Version
+              </span>
               <p className="text-white font-mono text-sm">{contractInfo.compiler}</p>
             </div>
           )}
@@ -162,21 +204,26 @@ export function VerificationResults({ result }: VerificationResultsProps) {
                 className={`border p-5 hover:bg-gray-900/30 transition-colors ${getRiskBgColor(vuln.severity)}`}
               >
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 mt-0.5">
-                    {getSeverityIcon(vuln.severity)}
-                  </div>
+                  <div className="flex-shrink-0 mt-0.5">{getSeverityIcon(vuln.severity)}</div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-4 mb-3">
                       <h4 className="font-semibold text-white text-base">
-                        {vuln.type.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}
+                        {vuln.type
+                          .replace(/_/g, ' ')
+                          .toLowerCase()
+                          .replace(/\b\w/g, l => l.toUpperCase())}
                       </h4>
-                      <span className={`px-3 py-1 text-xs font-bold uppercase tracking-wide ${getRiskColor(vuln.severity)} bg-black/30 whitespace-nowrap`}>
+                      <span
+                        className={`px-3 py-1 text-xs font-bold uppercase tracking-wide ${getRiskColor(vuln.severity)} bg-black/30 whitespace-nowrap`}
+                      >
                         {vuln.severity}
                       </span>
                     </div>
                     <p className="text-gray-300 text-sm mb-4 leading-relaxed">{vuln.description}</p>
                     <div className="bg-black/20 border-l-2 border-blue-500/50 pl-4 py-2">
-                      <span className="text-gray-500 text-xs uppercase tracking-wide block mb-1">Recommendation</span>
+                      <span className="text-gray-500 text-xs uppercase tracking-wide block mb-1">
+                        Recommendation
+                      </span>
                       <p className="text-gray-300 text-sm leading-relaxed">{vuln.recommendation}</p>
                     </div>
                   </div>
@@ -198,30 +245,35 @@ export function VerificationResults({ result }: VerificationResultsProps) {
           <div className="space-y-4 mb-6">
             <div className="flex items-center justify-between p-3 bg-gray-900/30 border border-gray-800">
               <span className="text-gray-300 text-sm">Owner Controls</span>
-              {securityAnalysis.accessControls.hasOwner ?
-                <CheckCircle className="w-5 h-5 text-blue-400" /> :
+              {securityAnalysis.accessControls.hasOwner ? (
+                <CheckCircle className="w-5 h-5 text-blue-400" />
+              ) : (
                 <XCircle className="w-5 h-5 text-gray-600" />
-              }
+              )}
             </div>
             <div className="flex items-center justify-between p-3 bg-gray-900/30 border border-gray-800">
               <span className="text-gray-300 text-sm">Multi-signature</span>
-              {securityAnalysis.accessControls.hasMultisig ?
-                <CheckCircle className="w-5 h-5 text-blue-400" /> :
+              {securityAnalysis.accessControls.hasMultisig ? (
+                <CheckCircle className="w-5 h-5 text-blue-400" />
+              ) : (
                 <XCircle className="w-5 h-5 text-gray-600" />
-              }
+              )}
             </div>
             <div className="flex items-center justify-between p-3 bg-gray-900/30 border border-gray-800">
               <span className="text-gray-300 text-sm">Timelock Protection</span>
-              {securityAnalysis.accessControls.hasTimelock ?
-                <CheckCircle className="w-5 h-5 text-blue-400" /> :
+              {securityAnalysis.accessControls.hasTimelock ? (
+                <CheckCircle className="w-5 h-5 text-blue-400" />
+              ) : (
                 <XCircle className="w-5 h-5 text-gray-600" />
-              }
+              )}
             </div>
           </div>
 
           {securityAnalysis.accessControls.risks.length > 0 && (
             <div className="border-t border-gray-800 pt-4">
-              <h4 className="text-xs uppercase tracking-wide text-gray-500 mb-3">Recommendations</h4>
+              <h4 className="text-xs uppercase tracking-wide text-gray-500 mb-3">
+                Recommendations
+              </h4>
               <ul className="space-y-2">
                 {securityAnalysis.accessControls.risks.map((risk, index) => (
                   <li key={index} className="text-sm text-gray-300 flex items-start gap-2">
@@ -243,7 +295,9 @@ export function VerificationResults({ result }: VerificationResultsProps) {
           <div className="mb-6">
             <div className="flex items-center justify-between mb-3">
               <span className="text-gray-400 text-sm">Efficiency Score</span>
-              <span className={`text-2xl font-bold tabular-nums ${getScoreColor(securityAnalysis.gasOptimization.efficiency)}`}>
+              <span
+                className={`text-2xl font-bold tabular-nums ${getScoreColor(securityAnalysis.gasOptimization.efficiency)}`}
+              >
                 {securityAnalysis.gasOptimization.efficiency}%
               </span>
             </div>
@@ -257,7 +311,9 @@ export function VerificationResults({ result }: VerificationResultsProps) {
 
           {securityAnalysis.gasOptimization.recommendations.length > 0 && (
             <div className="border-t border-gray-800 pt-4">
-              <h4 className="text-xs uppercase tracking-wide text-gray-500 mb-3">Optimization Suggestions</h4>
+              <h4 className="text-xs uppercase tracking-wide text-gray-500 mb-3">
+                Optimization Suggestions
+              </h4>
               <ul className="space-y-2">
                 {securityAnalysis.gasOptimization.recommendations.map((rec, index) => (
                   <li key={index} className="text-sm text-gray-300 flex items-start gap-2">

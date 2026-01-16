@@ -17,7 +17,7 @@ export const TEST_CONTRACTS = {
   INVALID: '0x0000000000000000000000000000000000000000',
 
   // Non-contract address (EOA)
-  EOA: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045' // Vitalik's address
+  EOA: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045', // Vitalik's address
 } as const
 
 export type TestContractKey = keyof typeof TEST_CONTRACTS

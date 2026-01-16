@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
-import { VerificationResult } from "@/hooks/useContractVerification"
-import { ReportExporter, ExportOptions } from "@/lib/report-export"
-import { Download, FileText, Table, Printer, Settings } from "lucide-react"
+import { VerificationResult } from '@/hooks/useContractVerification'
+import { ReportExporter, ExportOptions } from '@/lib/report-export'
+import { Download, FileText, Table, Printer, Settings } from 'lucide-react'
 
 interface ExportButtonProps {
   result: VerificationResult
@@ -16,7 +16,7 @@ export function ExportButton({ result }: ExportButtonProps) {
     format: 'json',
     includeSourceCode: true,
     includeBytecode: false,
-    includeFullABI: true
+    includeFullABI: true,
   })
 
   const handleExport = (format: 'json' | 'csv' | 'pdf') => {
@@ -68,7 +68,9 @@ export function ExportButton({ result }: ExportButtonProps) {
                     <input
                       type="checkbox"
                       checked={exportOptions.includeSourceCode}
-                      onChange={(e) => setExportOptions(prev => ({ ...prev, includeSourceCode: e.target.checked }))}
+                      onChange={e =>
+                        setExportOptions(prev => ({ ...prev, includeSourceCode: e.target.checked }))
+                      }
                       className="mr-2 rounded"
                     />
                     Source Code
@@ -77,7 +79,9 @@ export function ExportButton({ result }: ExportButtonProps) {
                     <input
                       type="checkbox"
                       checked={exportOptions.includeBytecode}
-                      onChange={(e) => setExportOptions(prev => ({ ...prev, includeBytecode: e.target.checked }))}
+                      onChange={e =>
+                        setExportOptions(prev => ({ ...prev, includeBytecode: e.target.checked }))
+                      }
                       className="mr-2 rounded"
                     />
                     Bytecode
@@ -86,7 +90,9 @@ export function ExportButton({ result }: ExportButtonProps) {
                     <input
                       type="checkbox"
                       checked={exportOptions.includeFullABI}
-                      onChange={(e) => setExportOptions(prev => ({ ...prev, includeFullABI: e.target.checked }))}
+                      onChange={e =>
+                        setExportOptions(prev => ({ ...prev, includeFullABI: e.target.checked }))
+                      }
                       className="mr-2 rounded"
                     />
                     Full ABI

@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
-import { ContractInfo } from "@/lib/contract-verification"
-import { Code, Download, Copy, Check } from "lucide-react"
+import { ContractInfo } from '@/lib/contract-verification'
+import { Code, Download, Copy, Check } from 'lucide-react'
 
 interface SourceCodeViewerProps {
   contractInfo: ContractInfo
@@ -33,9 +33,18 @@ export function SourceCodeViewer({ contractInfo }: SourceCodeViewerProps) {
   const formatSourceCode = (sourceCode: string) => {
     // Basic Solidity syntax highlighting
     return sourceCode
-      .replace(/(pragma|contract|function|modifier|event|struct|enum|mapping|address|uint|bytes|string|bool)\b/g, '<span class="text-blue-400">$1</span>')
-      .replace(/(public|private|internal|external|view|pure|payable|constant)\b/g, '<span class="text-green-400">$1</span>')
-      .replace(/(if|else|for|while|do|require|assert|revert|return)\b/g, '<span class="text-yellow-400">$1</span>')
+      .replace(
+        /(pragma|contract|function|modifier|event|struct|enum|mapping|address|uint|bytes|string|bool)\b/g,
+        '<span class="text-blue-400">$1</span>'
+      )
+      .replace(
+        /(public|private|internal|external|view|pure|payable|constant)\b/g,
+        '<span class="text-green-400">$1</span>'
+      )
+      .replace(
+        /(if|else|for|while|do|require|assert|revert|return)\b/g,
+        '<span class="text-yellow-400">$1</span>'
+      )
       .replace(/\/\/.*/g, '<span class="text-gray-500">$&</span>')
       .replace(/\/\*[\s\S]*?\*\//g, '<span class="text-gray-500">$&</span>')
   }
@@ -65,9 +74,7 @@ export function SourceCodeViewer({ contractInfo }: SourceCodeViewerProps) {
             <button
               onClick={() => setActiveTab('source')}
               className={`px-3 py-1 text-sm rounded transition-colors ${
-                activeTab === 'source'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-400 hover:text-white'
+                activeTab === 'source' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'
               }`}
             >
               Source
@@ -77,9 +84,7 @@ export function SourceCodeViewer({ contractInfo }: SourceCodeViewerProps) {
             <button
               onClick={() => setActiveTab('abi')}
               className={`px-3 py-1 text-sm rounded transition-colors ${
-                activeTab === 'abi'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-400 hover:text-white'
+                activeTab === 'abi' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'
               }`}
             >
               ABI
@@ -88,9 +93,7 @@ export function SourceCodeViewer({ contractInfo }: SourceCodeViewerProps) {
           <button
             onClick={() => setActiveTab('bytecode')}
             className={`px-3 py-1 text-sm rounded transition-colors ${
-              activeTab === 'bytecode'
-                ? 'bg-blue-600 text-white'
-                : 'text-gray-400 hover:text-white'
+              activeTab === 'bytecode' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'
             }`}
           >
             Bytecode
@@ -103,7 +106,8 @@ export function SourceCodeViewer({ contractInfo }: SourceCodeViewerProps) {
         <div>
           <div className="flex items-center justify-between mb-4">
             <div className="text-sm text-gray-400">
-              <span className="font-medium">Contract:</span> {contractInfo.contractName || 'Unknown'}
+              <span className="font-medium">Contract:</span>{' '}
+              {contractInfo.contractName || 'Unknown'}
               {contractInfo.compiler && (
                 <span className="ml-4">
                   <span className="font-medium">Compiler:</span> {contractInfo.compiler}
@@ -119,7 +123,12 @@ export function SourceCodeViewer({ contractInfo }: SourceCodeViewerProps) {
                 <span>{copied ? 'Copied!' : 'Copy'}</span>
               </button>
               <button
-                onClick={() => handleDownload(contractInfo.sourceCode!, `${contractInfo.contractName || 'contract'}.sol`)}
+                onClick={() =>
+                  handleDownload(
+                    contractInfo.sourceCode!,
+                    `${contractInfo.contractName || 'contract'}.sol`
+                  )
+                }
                 className="flex items-center space-x-1 text-sm text-gray-400 hover:text-white transition-colors"
               >
                 <Download className="w-4 h-4" />
@@ -132,7 +141,7 @@ export function SourceCodeViewer({ contractInfo }: SourceCodeViewerProps) {
             <pre className="text-sm text-gray-300 whitespace-pre-wrap font-mono">
               <code
                 dangerouslySetInnerHTML={{
-                  __html: formatSourceCode(contractInfo.sourceCode)
+                  __html: formatSourceCode(contractInfo.sourceCode),
                 }}
               />
             </pre>
@@ -144,9 +153,7 @@ export function SourceCodeViewer({ contractInfo }: SourceCodeViewerProps) {
       {activeTab === 'abi' && contractInfo.abi && (
         <div>
           <div className="flex items-center justify-between mb-4">
-            <div className="text-sm text-gray-400">
-              Application Binary Interface (ABI)
-            </div>
+            <div className="text-sm text-gray-400">Application Binary Interface (ABI)</div>
             <div className="flex space-x-2">
               <button
                 onClick={() => handleCopy(JSON.stringify(contractInfo.abi, null, 2))}
@@ -156,7 +163,12 @@ export function SourceCodeViewer({ contractInfo }: SourceCodeViewerProps) {
                 <span>{copied ? 'Copied!' : 'Copy'}</span>
               </button>
               <button
-                onClick={() => handleDownload(JSON.stringify(contractInfo.abi, null, 2), `${contractInfo.contractName || 'contract'}-abi.json`)}
+                onClick={() =>
+                  handleDownload(
+                    JSON.stringify(contractInfo.abi, null, 2),
+                    `${contractInfo.contractName || 'contract'}-abi.json`
+                  )
+                }
                 className="flex items-center space-x-1 text-sm text-gray-400 hover:text-white transition-colors"
               >
                 <Download className="w-4 h-4" />
@@ -189,7 +201,12 @@ export function SourceCodeViewer({ contractInfo }: SourceCodeViewerProps) {
                 <span>{copied ? 'Copied!' : 'Copy'}</span>
               </button>
               <button
-                onClick={() => handleDownload(contractInfo.bytecode, `${contractInfo.contractName || 'contract'}-bytecode.txt`)}
+                onClick={() =>
+                  handleDownload(
+                    contractInfo.bytecode,
+                    `${contractInfo.contractName || 'contract'}-bytecode.txt`
+                  )
+                }
                 className="flex items-center space-x-1 text-sm text-gray-400 hover:text-white transition-colors"
               >
                 <Download className="w-4 h-4" />

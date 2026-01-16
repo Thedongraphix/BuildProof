@@ -1,4 +1,4 @@
-import { VerificationResult } from "@/hooks/useContractVerification"
+import { VerificationResult } from '@/hooks/useContractVerification'
 
 export interface ExportOptions {
   format: 'json' | 'pdf' | 'csv'
@@ -27,7 +27,10 @@ export class ReportExporter {
     this.downloadBlob(blob, `contract-verification-report-${result.contractInfo.address}.html`)
   }
 
-  private static generateJSONReport(result: VerificationResult, options: ExportOptions): Record<string, unknown> {
+  private static generateJSONReport(
+    result: VerificationResult,
+    options: ExportOptions
+  ): Record<string, unknown> {
     const { contractInfo, securityAnalysis, steps } = result
 
     const report: Record<string, unknown> = {
@@ -35,38 +38,38 @@ export class ReportExporter {
         generatedAt: new Date().toISOString(),
         toolVersion: 'BuildProof v1.0',
         contractAddress: contractInfo.address,
-        networkUsed: 'Ethereum Mainnet' // TODO: Get from context
+        networkUsed: 'Ethereum Mainnet', // TODO: Get from context
       },
       contractInfo: {
         address: contractInfo.address,
         isVerified: contractInfo.isVerified,
         contractName: contractInfo.contractName,
-        compiler: contractInfo.compiler
+        compiler: contractInfo.compiler,
       },
       securityAnalysis: {
         riskLevel: securityAnalysis.riskLevel,
         score: securityAnalysis.score,
         vulnerabilities: securityAnalysis.vulnerabilities,
         gasOptimization: securityAnalysis.gasOptimization,
-        accessControls: securityAnalysis.accessControls
+        accessControls: securityAnalysis.accessControls,
       },
       verificationSteps: steps.map(step => ({
         message: step.message,
         type: step.type,
-        timestamp: new Date(step.timestamp).toISOString()
-      }))
+        timestamp: new Date(step.timestamp).toISOString(),
+      })),
     }
 
     if (options.includeSourceCode && contractInfo.sourceCode) {
-      (report.contractInfo as Record<string, unknown>).sourceCode = contractInfo.sourceCode
+      ;(report.contractInfo as Record<string, unknown>).sourceCode = contractInfo.sourceCode
     }
 
     if (options.includeBytecode && contractInfo.bytecode) {
-      (report.contractInfo as Record<string, unknown>).bytecode = contractInfo.bytecode
+      ;(report.contractInfo as Record<string, unknown>).bytecode = contractInfo.bytecode
     }
 
     if (options.includeFullABI && contractInfo.abi) {
-      (report.contractInfo as Record<string, unknown>).abi = contractInfo.abi
+      ;(report.contractInfo as Record<string, unknown>).abi = contractInfo.abi
     }
 
     return report
@@ -110,10 +113,10 @@ export class ReportExporter {
     const { contractInfo, securityAnalysis, steps } = result
 
     const riskColors = {
-      'LOW': '#10b981',
-      'MEDIUM': '#f59e0b',
-      'HIGH': '#f97316',
-      'CRITICAL': '#ef4444'
+      LOW: '#10b981',
+      MEDIUM: '#f59e0b',
+      HIGH: '#f97316',
+      CRITICAL: '#ef4444',
     }
 
     return `
@@ -254,19 +257,27 @@ export class ReportExporter {
         </div>
     </div>
 
-    ${securityAnalysis.vulnerabilities.length > 0 ? `
+    ${
+      securityAnalysis.vulnerabilities.length > 0
+        ? `
     <div class="section">
         <h2>Security Vulnerabilities (${securityAnalysis.vulnerabilities.length})</h2>
-        ${securityAnalysis.vulnerabilities.map(vuln => `
+        ${securityAnalysis.vulnerabilities
+          .map(
+            vuln => `
             <div class="vulnerability">
                 <h4>${vuln.type.replace(/_/g, ' ')}</h4>
                 <span class="severity" style="background-color: ${riskColors[vuln.severity]}">${vuln.severity}</span>
                 <p><strong>Description:</strong> ${vuln.description}</p>
                 <p><strong>Recommendation:</strong> ${vuln.recommendation}</p>
             </div>
-        `).join('')}
+        `
+          )
+          .join('')}
     </div>
-    ` : ''}
+    `
+        : ''
+    }
 
     <div class="section">
         <h2>Access Control Analysis</h2>
@@ -285,35 +296,47 @@ export class ReportExporter {
             </div>
         </div>
 
-        ${securityAnalysis.accessControls.risks.length > 0 ? `
+        ${
+          securityAnalysis.accessControls.risks.length > 0
+            ? `
             <h3>Recommendations:</h3>
             <ul>
                 ${securityAnalysis.accessControls.risks.map(risk => `<li>${risk}</li>`).join('')}
             </ul>
-        ` : ''}
+        `
+            : ''
+        }
     </div>
 
     <div class="section">
         <h2>Gas Optimization</h2>
         <p><strong>Efficiency Score:</strong> ${securityAnalysis.gasOptimization.efficiency}%</p>
 
-        ${securityAnalysis.gasOptimization.recommendations.length > 0 ? `
+        ${
+          securityAnalysis.gasOptimization.recommendations.length > 0
+            ? `
             <h3>Optimization Recommendations:</h3>
             <ul>
                 ${securityAnalysis.gasOptimization.recommendations.map(rec => `<li>${rec}</li>`).join('')}
             </ul>
-        ` : ''}
+        `
+            : ''
+        }
     </div>
 
     <div class="section">
         <h2>Verification Process</h2>
         <div style="font-family: monospace; background: #f3f4f6; padding: 15px; border-radius: 8px;">
-            ${steps.map(step => `
+            ${steps
+              .map(
+                step => `
                 <div style="margin-bottom: 5px;">
                     <span style="color: ${step.type === 'ERROR' ? '#ef4444' : step.type === 'SUCCESS' ? '#10b981' : step.type === 'WARN' ? '#f59e0b' : '#6b7280'}">[${step.type}]</span>
                     ${step.message}
                 </div>
-            `).join('')}
+            `
+              )
+              .join('')}
         </div>
     </div>
 

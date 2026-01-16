@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useAccount } from 'wagmi'
@@ -6,47 +6,49 @@ import { Coins, Send, User, TrendingUp, Info } from 'lucide-react'
 import { useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { formatEther, parseEther } from 'viem'
 
-const BPROOF_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_BPROOF_TOKEN_ADDRESS as `0x${string}` || '0x0d9c6536BcF92932558E6bFF19151bb41d336e55'
+const BPROOF_TOKEN_ADDRESS =
+  (process.env.NEXT_PUBLIC_BPROOF_TOKEN_ADDRESS as `0x${string}`) ||
+  '0x0d9c6536BcF92932558E6bFF19151bb41d336e55'
 
 const TOKEN_ABI = [
   {
-    "inputs": [{"internalType": "address","name": "account","type": "address"}],
-    "name": "balanceOf",
-    "outputs": [{"internalType": "uint256","name": "","type": "uint256"}],
-    "stateMutability": "view",
-    "type": "function"
+    inputs: [{ internalType: 'address', name: 'account', type: 'address' }],
+    name: 'balanceOf',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [],
-    "name": "totalSupply",
-    "outputs": [{"internalType": "uint256","name": "","type": "uint256"}],
-    "stateMutability": "view",
-    "type": "function"
+    inputs: [],
+    name: 'totalSupply',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [{"internalType": "address","name": "owner","type": "address"}],
-    "name": "getVotes",
-    "outputs": [{"internalType": "uint256","name": "","type": "uint256"}],
-    "stateMutability": "view",
-    "type": "function"
+    inputs: [{ internalType: 'address', name: 'owner', type: 'address' }],
+    name: 'getVotes',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [
-      {"internalType": "address","name": "to","type": "address"},
-      {"internalType": "uint256","name": "amount","type": "uint256"}
+    inputs: [
+      { internalType: 'address', name: 'to', type: 'address' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
     ],
-    "name": "transfer",
-    "outputs": [{"internalType": "bool","name": "","type": "bool"}],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'transfer',
+    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
-    "inputs": [{"internalType": "address","name": "delegatee","type": "address"}],
-    "name": "delegate",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }
+    inputs: [{ internalType: 'address', name: 'delegatee', type: 'address' }],
+    name: 'delegate',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
 ] as const
 
 export function TokenDashboard() {
@@ -61,14 +63,14 @@ export function TokenDashboard() {
     abi: TOKEN_ABI,
     functionName: 'balanceOf',
     args: address ? [address] : undefined,
-    query: { enabled: !!address }
+    query: { enabled: !!address },
   })
 
   // Read total supply
   const { data: totalSupply } = useReadContract({
     address: BPROOF_TOKEN_ADDRESS,
     abi: TOKEN_ABI,
-    functionName: 'totalSupply'
+    functionName: 'totalSupply',
   })
 
   // Read voting power
@@ -77,15 +79,23 @@ export function TokenDashboard() {
     abi: TOKEN_ABI,
     functionName: 'getVotes',
     args: address ? [address] : undefined,
-    query: { enabled: !!address }
+    query: { enabled: !!address },
   })
 
   // Transfer tokens
-  const { writeContract: transfer, data: transferHash, isPending: isTransferring } = useWriteContract()
+  const {
+    writeContract: transfer,
+    data: transferHash,
+    isPending: isTransferring,
+  } = useWriteContract()
   const { isLoading: isTransferConfirming } = useWaitForTransactionReceipt({ hash: transferHash })
 
   // Delegate voting power
-  const { writeContract: delegate, data: delegateHash, isPending: isDelegating } = useWriteContract()
+  const {
+    writeContract: delegate,
+    data: delegateHash,
+    isPending: isDelegating,
+  } = useWriteContract()
   const { isLoading: isDelegateConfirming } = useWaitForTransactionReceipt({ hash: delegateHash })
 
   const handleTransfer = async (e: React.FormEvent) => {
@@ -97,7 +107,7 @@ export function TokenDashboard() {
         address: BPROOF_TOKEN_ADDRESS,
         abi: TOKEN_ABI,
         functionName: 'transfer',
-        args: [recipient as `0x${string}`, parseEther(amount)]
+        args: [recipient as `0x${string}`, parseEther(amount)],
       })
       setRecipient('')
       setAmount('')
@@ -115,7 +125,7 @@ export function TokenDashboard() {
         address: BPROOF_TOKEN_ADDRESS,
         abi: TOKEN_ABI,
         functionName: 'delegate',
-        args: [delegatee as `0x${string}`]
+        args: [delegatee as `0x${string}`],
       })
       setDelegatee('')
     } catch (error) {
@@ -128,7 +138,9 @@ export function TokenDashboard() {
       <div className="card p-12 text-center">
         <Coins className="w-16 h-16 text-blue-500 mx-auto mb-4" />
         <h3 className="text-2xl font-bold text-white mb-2">Connect Wallet</h3>
-        <p className="text-gray-400">Connect your wallet to view your BPROOF token balance and interact with the protocol</p>
+        <p className="text-gray-400">
+          Connect your wallet to view your BPROOF token balance and interact with the protocol
+        </p>
       </div>
     )
   }
@@ -172,7 +184,9 @@ export function TokenDashboard() {
             <div>
               <p className="text-gray-400 text-sm font-medium mb-2">Total Supply</p>
               <p className="text-3xl font-bold text-white">
-                {totalSupply ? (parseFloat(formatEther(totalSupply)) / 1_000_000).toFixed(2) : '0.00'}
+                {totalSupply
+                  ? (parseFloat(formatEther(totalSupply)) / 1_000_000).toFixed(2)
+                  : '0.00'}
               </p>
               <p className="text-blue-400 text-sm mt-1">Million</p>
             </div>
@@ -203,22 +217,20 @@ export function TokenDashboard() {
             <input
               type="text"
               value={recipient}
-              onChange={(e) => setRecipient(e.target.value)}
+              onChange={e => setRecipient(e.target.value)}
               placeholder="0x..."
               className="contract-input w-full px-4 py-3 text-white text-base border-gray-700 bg-black"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-300 mb-2">
-              Amount
-            </label>
+            <label className="block text-sm font-semibold text-gray-300 mb-2">Amount</label>
             <div className="relative">
               <input
                 type="number"
                 step="0.01"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={e => setAmount(e.target.value)}
                 placeholder="0.00"
                 className="contract-input w-full px-4 py-3 text-white text-base border-gray-700 bg-black pr-20"
               />
@@ -262,7 +274,7 @@ export function TokenDashboard() {
             <input
               type="text"
               value={delegatee}
-              onChange={(e) => setDelegatee(e.target.value)}
+              onChange={e => setDelegatee(e.target.value)}
               placeholder="0x..."
               className="contract-input w-full px-4 py-3 text-white text-base border-gray-700 bg-black"
             />

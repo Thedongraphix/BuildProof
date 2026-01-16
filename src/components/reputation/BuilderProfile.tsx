@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Award, Star, Briefcase, TrendingUp, User, QrCode, Share2 } from "lucide-react"
-import { formatEther } from "viem"
-import { QRCode } from "@/components/ui/qr-code"
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Award, Star, Briefcase, TrendingUp, User, QrCode, Share2 } from 'lucide-react'
+import { formatEther } from 'viem'
+import { QRCode } from '@/components/ui/qr-code'
 
 interface BuilderProfileProps {
   address: string
@@ -30,15 +30,14 @@ export function BuilderProfile({
   joinedAt,
   isActive,
   skills = [],
-  achievements = []
+  achievements = [],
 }: BuilderProfileProps) {
   const joinedDate = new Date(joinedAt * 1000)
   const earningsInEth = formatEther(totalEarnings)
 
   // Generate profile URL for QR code
-  const profileUrl = typeof window !== 'undefined'
-    ? `${window.location.origin}/reputation?address=${address}`
-    : ''
+  const profileUrl =
+    typeof window !== 'undefined' ? `${window.location.origin}/reputation?address=${address}` : ''
 
   return (
     <div className="space-y-6">
@@ -56,10 +55,14 @@ export function BuilderProfile({
                   {address.slice(0, 6)}...{address.slice(-4)}
                 </p>
                 <div className="flex items-center gap-2 mt-3">
-                  <span className={`inline-flex items-center px-3 py-1 text-xs font-semibold ${
-                    isActive ? "text-blue-400 border border-blue-500" : "text-gray-400 border border-gray-400"
-                  }`}>
-                    {isActive ? "Active" : "Inactive"}
+                  <span
+                    className={`inline-flex items-center px-3 py-1 text-xs font-semibold ${
+                      isActive
+                        ? 'text-blue-400 border border-blue-500'
+                        : 'text-gray-400 border border-gray-400'
+                    }`}
+                  >
+                    {isActive ? 'Active' : 'Inactive'}
                   </span>
                   <span className="text-xs text-gray-500 border border-gray-800 px-3 py-1">
                     Joined {joinedDate.toLocaleDateString()}
@@ -153,16 +156,15 @@ export function BuilderProfile({
           <CardContent>
             <div className="space-y-4">
               {achievements.map((achievement, index) => (
-                <div
-                  key={index}
-                  className="flex items-start gap-4 p-4 border border-blue-500"
-                >
+                <div key={index} className="flex items-start gap-4 p-4 border border-blue-500">
                   <div className="p-3 border border-blue-500">
                     <Award className="text-blue-400" size={24} />
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-white text-lg mb-1">{achievement.title}</h4>
-                    <p className="text-sm text-gray-400 leading-relaxed mb-2">{achievement.description}</p>
+                    <p className="text-sm text-gray-400 leading-relaxed mb-2">
+                      {achievement.description}
+                    </p>
                     <p className="text-xs text-gray-500 border border-gray-800 inline-block px-3 py-1">
                       Earned {new Date(achievement.earnedAt * 1000).toLocaleDateString()}
                     </p>

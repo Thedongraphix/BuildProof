@@ -50,29 +50,30 @@ export const SUPPORTED_NETWORKS: Record<string, NetworkConfig> = {
     rpcUrl: process.env.NEXT_PUBLIC_ETHEREUM_RPC_URL || 'https://eth-mainnet.g.alchemy.com/v2/demo',
     explorerApiUrl: 'https://api.etherscan.io/api',
     explorerApiKey: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY || '',
-    chainId: 1
+    chainId: 1,
   },
   arbitrum: {
     name: 'Arbitrum One',
     rpcUrl: process.env.NEXT_PUBLIC_ARBITRUM_RPC_URL || 'https://arb-mainnet.g.alchemy.com/v2/demo',
     explorerApiUrl: 'https://api.arbiscan.io/api',
     explorerApiKey: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY || '',
-    chainId: 42161
+    chainId: 42161,
   },
   polygon: {
     name: 'Polygon Mainnet',
-    rpcUrl: process.env.NEXT_PUBLIC_POLYGON_RPC_URL || 'https://polygon-mainnet.g.alchemy.com/v2/demo',
+    rpcUrl:
+      process.env.NEXT_PUBLIC_POLYGON_RPC_URL || 'https://polygon-mainnet.g.alchemy.com/v2/demo',
     explorerApiUrl: 'https://api.polygonscan.com/api',
     explorerApiKey: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY || '',
-    chainId: 137
+    chainId: 137,
   },
   baseTestnet: {
     name: 'Base Sepolia Testnet',
     rpcUrl: process.env.NEXT_PUBLIC_BASE_TESTNET_RPC_URL || 'https://sepolia.base.org',
     explorerApiUrl: 'https://api-sepolia.basescan.org/api',
     explorerApiKey: process.env.NEXT_PUBLIC_BASESCAN_API_KEY || '',
-    chainId: 84532
-  }
+    chainId: 84532,
+  },
 }
 
 export class ContractVerificationService {
@@ -100,9 +101,9 @@ export class ContractVerificationService {
           jsonrpc: '2.0',
           method: 'eth_getCode',
           params: [address, 'latest'],
-          id: 1
+          id: 1,
         }),
-        signal: controller.signal
+        signal: controller.signal,
       })
 
       clearTimeout(timeoutId)
@@ -127,7 +128,7 @@ export class ContractVerificationService {
       const contractInfo: ContractInfo = {
         address,
         bytecode,
-        isVerified: false
+        isVerified: false,
       }
 
       if (this.network.explorerApiKey && this.network.explorerApiKey !== 'YourEtherscanApiKey') {
@@ -158,7 +159,9 @@ export class ContractVerificationService {
       if (error instanceof Error && error.name === 'AbortError') {
         throw new Error('Request timeout: RPC endpoint did not respond in time')
       }
-      throw new Error(`Failed to fetch contract info: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      throw new Error(
+        `Failed to fetch contract info: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
     }
   }
 
@@ -217,7 +220,7 @@ export class ContractVerificationService {
       vulnerabilities,
       score,
       gasOptimization: this.analyzeGasEfficiency(contractInfo),
-      accessControls: this.analyzeAccessControls(contractInfo)
+      accessControls: this.analyzeAccessControls(contractInfo),
     }
   }
 
@@ -229,7 +232,8 @@ export class ContractVerificationService {
 
     // More accurate opcode detection - checking for actual opcode in context
     // DELEGATECALL opcode (0xf4) with proper context checking
-    const delegatecallPattern = /(?:60|61|62|63|64|65|66|67|68|69|6a|6b|6c|6d|6e|6f|70|71|72|73|74|75|76|77|78|79|7a|7b|7c|7d|7e|7f|80|81)[0-9a-f]*f4/g
+    const delegatecallPattern =
+      /(?:60|61|62|63|64|65|66|67|68|69|6a|6b|6c|6d|6e|6f|70|71|72|73|74|75|76|77|78|79|7a|7b|7c|7d|7e|7f|80|81)[0-9a-f]*f4/g
     const delegatecallMatches = normalizedBytecode.match(delegatecallPattern)
     if (delegatecallMatches && delegatecallMatches.length > 0) {
       const occurrences = delegatecallMatches.length
@@ -237,23 +241,28 @@ export class ContractVerificationService {
         type: 'DELEGATECALL_USAGE',
         severity: occurrences > 2 ? 'HIGH' : 'MEDIUM',
         description: `Contract uses delegatecall (${occurrences} occurrence${occurrences > 1 ? 's' : ''}) which could be risky if not properly implemented`,
-        recommendation: 'Ensure delegatecall targets are validated and trusted. Consider using upgradeable proxy patterns like UUPS or Transparent Proxy'
+        recommendation:
+          'Ensure delegatecall targets are validated and trusted. Consider using upgradeable proxy patterns like UUPS or Transparent Proxy',
       })
     }
 
     // SELFDESTRUCT opcode (0xff) - check with proper context
-    const selfdestructPattern = /(?:60|61|62|63|64|65|66|67|68|69|6a|6b|6c|6d|6e|6f)[0-9a-f]{2,40}ff/g
+    const selfdestructPattern =
+      /(?:60|61|62|63|64|65|66|67|68|69|6a|6b|6c|6d|6e|6f)[0-9a-f]{2,40}ff/g
     if (selfdestructPattern.test(normalizedBytecode)) {
       vulnerabilities.push({
         type: 'SELFDESTRUCT_PRESENT',
         severity: 'HIGH',
-        description: 'Contract contains selfdestruct functionality which allows contract destruction',
-        recommendation: 'Ensure selfdestruct is properly protected with access controls and only callable by authorized parties. Consider if this functionality is truly necessary.'
+        description:
+          'Contract contains selfdestruct functionality which allows contract destruction',
+        recommendation:
+          'Ensure selfdestruct is properly protected with access controls and only callable by authorized parties. Consider if this functionality is truly necessary.',
       })
     }
 
     // Check for CALL opcode (0xf1) with proper context - potential for reentrancy
-    const callPattern = /(?:5b|5f|60|61|62|63|64|65|66|67|68|69|6a|6b|6c|6d|6e|6f|70|71|72|73|74|75|76|77|78|79|7a|7b|7c|7d|7e|7f|80|81)[0-9a-f]*f1/g
+    const callPattern =
+      /(?:5b|5f|60|61|62|63|64|65|66|67|68|69|6a|6b|6c|6d|6e|6f|70|71|72|73|74|75|76|77|78|79|7a|7b|7c|7d|7e|7f|80|81)[0-9a-f]*f1/g
     const callMatches = normalizedBytecode.match(callPattern)
     const callOccurrences = callMatches ? callMatches.length : 0
 
@@ -262,7 +271,8 @@ export class ContractVerificationService {
         type: 'MULTIPLE_EXTERNAL_CALLS',
         severity: callOccurrences > 10 ? 'HIGH' : 'MEDIUM',
         description: `Contract has ${callOccurrences} external calls which may be vulnerable to reentrancy`,
-        recommendation: 'Implement checks-effects-interactions pattern and consider using ReentrancyGuard from OpenZeppelin'
+        recommendation:
+          'Implement checks-effects-interactions pattern and consider using ReentrancyGuard from OpenZeppelin',
       })
     }
 
@@ -272,25 +282,27 @@ export class ContractVerificationService {
         type: 'CREATE2_USAGE',
         severity: 'LOW',
         description: 'Contract uses CREATE2 for deterministic contract deployment',
-        recommendation: 'Ensure salt values are properly randomized and access-controlled to prevent address squatting'
+        recommendation:
+          'Ensure salt values are properly randomized and access-controlled to prevent address squatting',
       })
     }
 
     // Check for large bytecode (potential complexity issue)
     const bytecodeSize = normalizedBytecode.length / 2 // Convert hex chars to bytes
-    if (bytecodeSize > 24576) { // 24KB - Ethereum contract size limit
+    if (bytecodeSize > 24576) {
+      // 24KB - Ethereum contract size limit
       vulnerabilities.push({
         type: 'LARGE_CONTRACT_SIZE',
         severity: 'HIGH',
-        description: `Contract bytecode is ${Math.round(bytecodeSize/1024)}KB, near or exceeding the 24KB limit`,
-        recommendation: 'Split into multiple contracts or optimize code to stay under size limit'
+        description: `Contract bytecode is ${Math.round(bytecodeSize / 1024)}KB, near or exceeding the 24KB limit`,
+        recommendation: 'Split into multiple contracts or optimize code to stay under size limit',
       })
     } else if (bytecodeSize > 20000) {
       vulnerabilities.push({
         type: 'LARGE_CONTRACT_SIZE',
         severity: 'MEDIUM',
-        description: `Contract bytecode is ${Math.round(bytecodeSize/1024)}KB, approaching size limit`,
-        recommendation: 'Consider code optimization or splitting into multiple contracts'
+        description: `Contract bytecode is ${Math.round(bytecodeSize / 1024)}KB, approaching size limit`,
+        recommendation: 'Consider code optimization or splitting into multiple contracts',
       })
     }
 
@@ -300,8 +312,10 @@ export class ContractVerificationService {
       vulnerabilities.push({
         type: 'MINIMAL_PROXY_PATTERN',
         severity: 'LOW',
-        description: 'Contract is a minimal proxy (EIP-1167) pointing to an implementation contract',
-        recommendation: 'Verify the implementation contract being proxied to is secure and properly audited'
+        description:
+          'Contract is a minimal proxy (EIP-1167) pointing to an implementation contract',
+        recommendation:
+          'Verify the implementation contract being proxied to is secure and properly audited',
       })
     }
 
@@ -313,7 +327,7 @@ export class ContractVerificationService {
           type: 'EXTERNAL_CODE_COPY',
           severity: 'MEDIUM',
           description: `Contract copies code from external contracts (${occurrences} occurrence${occurrences > 1 ? 's' : ''})`,
-          recommendation: 'Ensure copied code is from trusted sources and properly validated'
+          recommendation: 'Ensure copied code is from trusted sources and properly validated',
         })
       }
     }
@@ -326,7 +340,8 @@ export class ContractVerificationService {
         type: 'HIGH_STORAGE_OPERATIONS',
         severity: 'LOW',
         description: `Contract has high storage operations (${sstoreCount} SSTORE, ${sloadCount} SLOAD)`,
-        recommendation: 'Optimize storage usage to reduce gas costs. Consider using memory for temporary variables.'
+        recommendation:
+          'Optimize storage usage to reduce gas costs. Consider using memory for temporary variables.',
       })
     }
 
@@ -346,14 +361,15 @@ export class ContractVerificationService {
         type: 'POTENTIAL_REENTRANCY',
         severity: 'CRITICAL',
         description: 'Contract modifies state after external calls without reentrancy protection',
-        recommendation: 'Use ReentrancyGuard modifier and follow checks-effects-interactions pattern'
+        recommendation:
+          'Use ReentrancyGuard modifier and follow checks-effects-interactions pattern',
       })
     } else if (hasExternalCall && !hasReentrancyGuard) {
       vulnerabilities.push({
         type: 'EXTERNAL_CALL_NO_GUARD',
         severity: 'MEDIUM',
         description: 'Contract uses external calls without explicit reentrancy protection',
-        recommendation: 'Consider using ReentrancyGuard for defense in depth'
+        recommendation: 'Consider using ReentrancyGuard for defense in depth',
       })
     }
 
@@ -361,14 +377,15 @@ export class ContractVerificationService {
     const callPattern = /\.(call|delegatecall)\s*\(/g
     const callMatches = sourceCode.match(callPattern) || []
     if (callMatches.length > 0) {
-      const hasProperChecking = /require\s*\(\s*.*\.call/.test(sourceCode) ||
-                                /\(bool\s+success,/.test(sourceCode)
+      const hasProperChecking =
+        /require\s*\(\s*.*\.call/.test(sourceCode) || /\(bool\s+success,/.test(sourceCode)
       if (!hasProperChecking) {
         vulnerabilities.push({
           type: 'UNCHECKED_LOW_LEVEL_CALL',
           severity: 'HIGH',
           description: `Found ${callMatches.length} low-level call(s) without proper return value checking`,
-          recommendation: 'Always check return values: (bool success, ) = addr.call(...); require(success, "Call failed");'
+          recommendation:
+            'Always check return values: (bool success, ) = addr.call(...); require(success, "Call failed");',
         })
       }
     }
@@ -380,7 +397,7 @@ export class ContractVerificationService {
         type: 'TX_ORIGIN_USAGE',
         severity: 'HIGH',
         description: `Contract uses tx.origin ${usageCount} time(s) which is vulnerable to phishing attacks`,
-        recommendation: 'Use msg.sender instead of tx.origin for all authorization checks'
+        recommendation: 'Use msg.sender instead of tx.origin for all authorization checks',
       })
     }
 
@@ -394,7 +411,8 @@ export class ContractVerificationService {
         type: 'TIMESTAMP_DEPENDENCY',
         severity,
         description: `Contract relies on block.timestamp (${timestampMatches.length} usage${timestampMatches.length > 1 ? 's' : ''})${isCriticalLogic ? ' in critical logic' : ''}`,
-        recommendation: 'Miners can manipulate timestamps by ~15 seconds. Use block.number for critical timing or accept the variance.'
+        recommendation:
+          'Miners can manipulate timestamps by ~15 seconds. Use block.number for critical timing or accept the variance.',
       })
     }
 
@@ -406,7 +424,7 @@ export class ContractVerificationService {
           type: 'UNCHECKED_ARITHMETIC',
           severity: 'CRITICAL',
           description: `Solidity ${solidityVersion} lacks built-in overflow protection`,
-          recommendation: 'Use OpenZeppelin SafeMath library or upgrade to Solidity 0.8.0+'
+          recommendation: 'Use OpenZeppelin SafeMath library or upgrade to Solidity 0.8.0+',
         })
       }
     }
@@ -414,14 +432,16 @@ export class ContractVerificationService {
     // Access control analysis - more sophisticated
     const hasModifiers = /modifier\s+only|modifier\s+\w*Owner|modifier\s+\w*Admin/i.test(sourceCode)
     const hasAccessControl = /AccessControl|Ownable|onlyOwner|onlyRole/.test(sourceCode)
-    const hasPublicFunctions = /function\s+\w+\s*\([^)]*\)\s+public(?!\s+view|pure)/.test(sourceCode)
+    const hasPublicFunctions = /function\s+\w+\s*\([^)]*\)\s+public(?!\s+view|pure)/.test(
+      sourceCode
+    )
 
     if (hasPublicFunctions && !hasModifiers && !hasAccessControl) {
       vulnerabilities.push({
         type: 'MISSING_ACCESS_CONTROL',
         severity: 'HIGH',
         description: 'Public state-changing functions detected without access control',
-        recommendation: 'Implement OpenZeppelin AccessControl or Ownable for privileged functions'
+        recommendation: 'Implement OpenZeppelin AccessControl or Ownable for privileged functions',
       })
     }
 
@@ -434,7 +454,8 @@ export class ContractVerificationService {
         type: 'HARDCODED_ADDRESSES',
         severity: 'MEDIUM',
         description: `Contract contains ${uniqueAddresses.length} hardcoded addresses`,
-        recommendation: 'Use constructor parameters or setter functions for addresses to improve flexibility'
+        recommendation:
+          'Use constructor parameters or setter functions for addresses to improve flexibility',
       })
     }
 
@@ -445,7 +466,8 @@ export class ContractVerificationService {
         type: 'INLINE_ASSEMBLY',
         severity: hasDangerousOps ? 'HIGH' : 'MEDIUM',
         description: `Contract uses inline assembly${hasDangerousOps ? ' with dangerous operations' : ''}`,
-        recommendation: 'Ensure assembly code is thoroughly audited for memory safety, overflow protection, and reentrancy'
+        recommendation:
+          'Ensure assembly code is thoroughly audited for memory safety, overflow protection, and reentrancy',
       })
     }
 
@@ -455,7 +477,7 @@ export class ContractVerificationService {
         type: 'DEPRECATED_FUNCTIONS',
         severity: 'MEDIUM',
         description: 'Contract uses deprecated Solidity functions',
-        recommendation: 'Replace: suicide()→selfdestruct(), sha3()→keccak256(), throw→revert()'
+        recommendation: 'Replace: suicide()→selfdestruct(), sha3()→keccak256(), throw→revert()',
       })
     }
 
@@ -467,7 +489,8 @@ export class ContractVerificationService {
         type: 'MISSING_EVENTS',
         severity: 'LOW',
         description: 'Contract modifies state without emitting events',
-        recommendation: 'Add events for all significant state changes to enable off-chain monitoring'
+        recommendation:
+          'Add events for all significant state changes to enable off-chain monitoring',
       })
     }
 
@@ -477,7 +500,7 @@ export class ContractVerificationService {
         type: 'FLOATING_PRAGMA',
         severity: 'LOW',
         description: 'Contract uses floating pragma (^) which may cause inconsistent compilation',
-        recommendation: 'Lock pragma to specific version for production: pragma solidity 0.8.26;'
+        recommendation: 'Lock pragma to specific version for production: pragma solidity 0.8.26;',
       })
     }
 
@@ -487,7 +510,8 @@ export class ContractVerificationService {
         type: 'ETHER_TRANSFER_IN_CALL',
         severity: 'HIGH',
         description: 'Contract sends ETH using low-level call with value',
-        recommendation: 'Verify return value and implement pull-over-push pattern for fund transfers'
+        recommendation:
+          'Verify return value and implement pull-over-push pattern for fund transfers',
       })
     }
 
@@ -528,17 +552,26 @@ export class ContractVerificationService {
 
     if (contractInfo.sourceCode) {
       // Check for gas optimization patterns
-      if (contractInfo.sourceCode.includes('memory') && contractInfo.sourceCode.includes('storage')) {
+      if (
+        contractInfo.sourceCode.includes('memory') &&
+        contractInfo.sourceCode.includes('storage')
+      ) {
         recommendations.push('Consider using memory instead of storage for temporary variables')
         efficiency -= 5
       }
 
-      if (contractInfo.sourceCode.includes('string') && !contractInfo.sourceCode.includes('bytes')) {
+      if (
+        contractInfo.sourceCode.includes('string') &&
+        !contractInfo.sourceCode.includes('bytes')
+      ) {
         recommendations.push('Consider using bytes instead of string for gas optimization')
         efficiency -= 3
       }
 
-      if (contractInfo.sourceCode.includes('require(') && !contractInfo.sourceCode.includes('custom error')) {
+      if (
+        contractInfo.sourceCode.includes('require(') &&
+        !contractInfo.sourceCode.includes('custom error')
+      ) {
         recommendations.push('Use custom errors instead of require strings in Solidity 0.8.4+')
         efficiency -= 2
       }
@@ -546,7 +579,7 @@ export class ContractVerificationService {
 
     return {
       efficiency: Math.max(0, efficiency),
-      recommendations
+      recommendations,
     }
   }
 
@@ -557,9 +590,12 @@ export class ContractVerificationService {
     let hasTimelock = false
 
     if (contractInfo.sourceCode) {
-      hasOwner = contractInfo.sourceCode.includes('owner') || contractInfo.sourceCode.includes('Ownable')
-      hasMultisig = contractInfo.sourceCode.includes('multisig') || contractInfo.sourceCode.includes('MultiSig')
-      hasTimelock = contractInfo.sourceCode.includes('timelock') || contractInfo.sourceCode.includes('TimeLock')
+      hasOwner =
+        contractInfo.sourceCode.includes('owner') || contractInfo.sourceCode.includes('Ownable')
+      hasMultisig =
+        contractInfo.sourceCode.includes('multisig') || contractInfo.sourceCode.includes('MultiSig')
+      hasTimelock =
+        contractInfo.sourceCode.includes('timelock') || contractInfo.sourceCode.includes('TimeLock')
 
       if (hasOwner && !hasMultisig) {
         risks.push('Single owner control - consider implementing multisig')
@@ -574,7 +610,7 @@ export class ContractVerificationService {
       hasOwner,
       hasMultisig,
       hasTimelock,
-      risks
+      risks,
     }
   }
 }

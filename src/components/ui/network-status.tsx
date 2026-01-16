@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useEffect } from 'react'
 import { Activity, Zap, Clock, TrendingUp, TrendingDown } from 'lucide-react'
@@ -22,7 +22,7 @@ export function NetworkStatus() {
       gasPrice: '25',
       blockTime: 12.5,
       congestion: 45,
-      lastUpdated: Date.now()
+      lastUpdated: Date.now(),
     },
     {
       name: 'Base Sepolia',
@@ -31,7 +31,7 @@ export function NetworkStatus() {
       gasPrice: '0.5',
       blockTime: 2.0,
       congestion: 22,
-      lastUpdated: Date.now()
+      lastUpdated: Date.now(),
     },
     {
       name: 'Celo Sepolia',
@@ -40,8 +40,8 @@ export function NetworkStatus() {
       gasPrice: '0.1',
       blockTime: 5.0,
       congestion: 18,
-      lastUpdated: Date.now()
-    }
+      lastUpdated: Date.now(),
+    },
   ])
 
   const [expanded, setExpanded] = useState(false)
@@ -49,12 +49,14 @@ export function NetworkStatus() {
   useEffect(() => {
     // Simulate real-time updates every 10 seconds
     const interval = setInterval(() => {
-      setNetworks(prev => prev.map(network => ({
-        ...network,
-        gasPrice: (parseFloat(network.gasPrice) + (Math.random() - 0.5) * 2).toFixed(1),
-        congestion: Math.max(0, Math.min(100, network.congestion + (Math.random() - 0.5) * 10)),
-        lastUpdated: Date.now()
-      })))
+      setNetworks(prev =>
+        prev.map(network => ({
+          ...network,
+          gasPrice: (parseFloat(network.gasPrice) + (Math.random() - 0.5) * 2).toFixed(1),
+          congestion: Math.max(0, Math.min(100, network.congestion + (Math.random() - 0.5) * 10)),
+          lastUpdated: Date.now(),
+        }))
+      )
     }, 10000)
 
     return () => clearInterval(interval)
@@ -104,7 +106,8 @@ export function NetworkStatus() {
             <div>
               <h3 className="text-sm font-semibold text-white">Network Status</h3>
               <p className="text-xs text-gray-400">
-                {networks.filter(n => n.status === 'healthy').length} of {networks.length} networks operational
+                {networks.filter(n => n.status === 'healthy').length} of {networks.length} networks
+                operational
               </p>
             </div>
           </div>
@@ -114,14 +117,15 @@ export function NetworkStatus() {
               <div
                 key={index}
                 className={`w-2 h-2 rounded-full ${
-                  network.status === 'healthy' ? 'bg-green-500' :
-                  network.status === 'degraded' ? 'bg-yellow-500' : 'bg-red-500'
+                  network.status === 'healthy'
+                    ? 'bg-green-500'
+                    : network.status === 'degraded'
+                      ? 'bg-yellow-500'
+                      : 'bg-red-500'
                 } animate-pulse`}
               />
             ))}
-            <span className="text-xs text-gray-400">
-              {expanded ? '▼' : '▶'}
-            </span>
+            <span className="text-xs text-gray-400">{expanded ? '▼' : '▶'}</span>
           </div>
         </div>
       </div>
@@ -130,28 +134,35 @@ export function NetworkStatus() {
       {expanded && (
         <div className="mt-2 space-y-2 fade-in">
           {networks.map((network, index) => (
-            <div
-              key={index}
-              className={`card p-4 border ${getStatusColor(network.status)}`}
-            >
+            <div key={index} className={`card p-4 border ${getStatusColor(network.status)}`}>
               <div className="space-y-3">
                 {/* Network Header */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`w-3 h-3 rounded-full ${
-                      network.status === 'healthy' ? 'bg-green-500' :
-                      network.status === 'degraded' ? 'bg-yellow-500' : 'bg-red-500'
-                    } animate-pulse`} />
+                    <div
+                      className={`w-3 h-3 rounded-full ${
+                        network.status === 'healthy'
+                          ? 'bg-green-500'
+                          : network.status === 'degraded'
+                            ? 'bg-yellow-500'
+                            : 'bg-red-500'
+                      } animate-pulse`}
+                    />
                     <div>
                       <h4 className="text-white font-semibold text-sm">{network.name}</h4>
                       <p className="text-xs text-gray-500">Chain ID: {network.chainId}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className={`text-xs font-semibold uppercase ${
-                      network.status === 'healthy' ? 'text-green-400' :
-                      network.status === 'degraded' ? 'text-yellow-400' : 'text-red-400'
-                    }`}>
+                    <span
+                      className={`text-xs font-semibold uppercase ${
+                        network.status === 'healthy'
+                          ? 'text-green-400'
+                          : network.status === 'degraded'
+                            ? 'text-yellow-400'
+                            : 'text-red-400'
+                      }`}
+                    >
                       {network.status}
                     </span>
                   </div>
@@ -193,7 +204,9 @@ export function NetworkStatus() {
                             style={{ width: `${network.congestion}%` }}
                           />
                         </div>
-                        <span className="text-xs text-white font-semibold">{Math.round(network.congestion)}%</span>
+                        <span className="text-xs text-white font-semibold">
+                          {Math.round(network.congestion)}%
+                        </span>
                       </div>
                     </div>
                   </div>

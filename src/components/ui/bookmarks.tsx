@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { Bookmark, Star, Trash2, ExternalLink, Copy, Tag } from 'lucide-react'
@@ -20,7 +20,7 @@ export function Bookmarks() {
       name: 'USDC Token',
       network: 'Ethereum',
       tags: ['ERC20', 'Stablecoin'],
-      addedAt: Date.now() - 86400000
+      addedAt: Date.now() - 86400000,
     },
     {
       id: '2',
@@ -28,8 +28,8 @@ export function Bookmarks() {
       name: 'My NFT Collection',
       network: 'Base Sepolia',
       tags: ['ERC721', 'NFT'],
-      addedAt: Date.now() - 172800000
-    }
+      addedAt: Date.now() - 172800000,
+    },
   ])
 
   const [isExpanded, setIsExpanded] = useState(false)
@@ -58,9 +58,7 @@ export function Bookmarks() {
             <p className="text-sm text-gray-400">{bookmarks.length} contracts saved</p>
           </div>
         </div>
-        <span className="text-xs text-gray-400">
-          {isExpanded ? '▼' : '▶'}
-        </span>
+        <span className="text-xs text-gray-400">{isExpanded ? '▼' : '▶'}</span>
       </div>
 
       {/* Bookmarks List */}
@@ -71,7 +69,7 @@ export function Bookmarks() {
               No bookmarks yet. Add contracts to quickly access them later.
             </div>
           ) : (
-            bookmarks.map((bookmark) => (
+            bookmarks.map(bookmark => (
               <div
                 key={bookmark.id}
                 className="border border-gray-800 rounded p-3 hover:border-yellow-500/30 transition-colors group"
@@ -110,7 +108,9 @@ export function Bookmarks() {
                   </div>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => window.open(`https://etherscan.io/address/${bookmark.address}`, '_blank')}
+                      onClick={() =>
+                        window.open(`https://etherscan.io/address/${bookmark.address}`, '_blank')
+                      }
                       className="text-gray-500 hover:text-blue-400 transition-colors"
                     >
                       <ExternalLink size={16} />

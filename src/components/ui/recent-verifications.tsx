@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useEffect } from 'react'
 import { Clock, CheckCircle, XCircle, Filter, ExternalLink, Copy, Shield } from 'lucide-react'
@@ -26,7 +26,7 @@ export function RecentVerifications() {
       timestamp: Date.now() - 120000,
       contractType: 'ERC20',
       securityScore: 95,
-      verifier: '0x1234...5678'
+      verifier: '0x1234...5678',
     },
     {
       id: '2',
@@ -37,7 +37,7 @@ export function RecentVerifications() {
       timestamp: Date.now() - 300000,
       contractType: 'ERC721',
       securityScore: 88,
-      verifier: '0xabcd...ef01'
+      verifier: '0xabcd...ef01',
     },
     {
       id: '3',
@@ -47,7 +47,7 @@ export function RecentVerifications() {
       status: 'failed',
       timestamp: Date.now() - 600000,
       contractType: 'Custom',
-      verifier: '0x9876...5432'
+      verifier: '0x9876...5432',
     },
     {
       id: '4',
@@ -57,8 +57,8 @@ export function RecentVerifications() {
       status: 'pending',
       timestamp: Date.now() - 30000,
       contractType: 'MultiSig',
-      verifier: '0x5555...6666'
-    }
+      verifier: '0x5555...6666',
+    },
   ])
 
   const [filterNetwork, setFilterNetwork] = useState<string>('all')
@@ -77,7 +77,7 @@ export function RecentVerifications() {
         timestamp: Date.now(),
         contractType: ['ERC20', 'ERC721', 'Custom', 'MultiSig'][Math.floor(Math.random() * 4)],
         securityScore: Math.random() > 0.3 ? Math.floor(Math.random() * 30) + 70 : undefined,
-        verifier: `0x${Math.random().toString(16).slice(2, 6)}...${Math.random().toString(16).slice(2, 6)}`
+        verifier: `0x${Math.random().toString(16).slice(2, 6)}...${Math.random().toString(16).slice(2, 6)}`,
       }
 
       setVerifications(prev => [newVerification, ...prev].slice(0, 10))
@@ -157,7 +157,7 @@ export function RecentVerifications() {
         <Filter className="text-gray-400" size={16} />
         <select
           value={filterNetwork}
-          onChange={(e) => setFilterNetwork(e.target.value)}
+          onChange={e => setFilterNetwork(e.target.value)}
           className="contract-input px-3 py-1.5 text-sm border-gray-700 rounded bg-black cursor-pointer"
         >
           <option value="all">All Networks</option>
@@ -167,7 +167,7 @@ export function RecentVerifications() {
         </select>
         <select
           value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
+          onChange={e => setFilterStatus(e.target.value)}
           className="contract-input px-3 py-1.5 text-sm border-gray-700 rounded bg-black cursor-pointer"
         >
           <option value="all">All Status</option>
@@ -180,11 +180,9 @@ export function RecentVerifications() {
       {/* Verification List */}
       <div className="space-y-2 max-h-96 overflow-y-auto">
         {filteredVerifications.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
-            No verifications match your filters
-          </div>
+          <div className="text-center py-8 text-gray-500">No verifications match your filters</div>
         ) : (
-          filteredVerifications.map((verification) => (
+          filteredVerifications.map(verification => (
             <div
               key={verification.id}
               className={`border rounded p-3 hover:border-blue-500/30 transition-all ${getStatusColor(verification.status)}`}
@@ -214,21 +212,26 @@ export function RecentVerifications() {
                     </span>
                     {verification.securityScore && (
                       <div className="flex items-center gap-1">
-                        <Shield size={12} className={getSecurityColor(verification.securityScore)} />
-                        <span className={`font-semibold ${getSecurityColor(verification.securityScore)}`}>
+                        <Shield
+                          size={12}
+                          className={getSecurityColor(verification.securityScore)}
+                        />
+                        <span
+                          className={`font-semibold ${getSecurityColor(verification.securityScore)}`}
+                        >
                           {verification.securityScore}/100
                         </span>
                       </div>
                     )}
-                    <span className="text-gray-500">
-                      by {verification.verifier}
-                    </span>
+                    <span className="text-gray-500">by {verification.verifier}</span>
                   </div>
                 </div>
 
                 {/* Right Section */}
                 <div className="flex flex-col items-end gap-2">
-                  <span className="text-xs text-gray-500">{formatTimestamp(verification.timestamp)}</span>
+                  <span className="text-xs text-gray-500">
+                    {formatTimestamp(verification.timestamp)}
+                  </span>
                   <a
                     href={`https://etherscan.io/address/${verification.address}`}
                     target="_blank"
