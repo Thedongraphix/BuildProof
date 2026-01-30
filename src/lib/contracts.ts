@@ -35,6 +35,49 @@ const BuilderInsuranceABI = [
   },
 ] as const
 
+// BuilderVault simplified ABI for key functions
+const BuilderVaultABI = [
+  {
+    inputs: [
+      { internalType: 'uint256', name: '_goalAmount', type: 'uint256' },
+      { internalType: 'uint256', name: '_lockDuration', type: 'uint256' },
+      { internalType: 'string', name: '_purpose', type: 'string' },
+    ],
+    name: 'createVault',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'totalVaults',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'totalValueLocked',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'totalWithdrawn',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'penaltyPool',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
 export const contracts = {
   builderInsurance: {
     address: (process.env.NEXT_PUBLIC_BUILDER_INSURANCE_ADDRESS ||
@@ -60,6 +103,12 @@ export const contracts = {
   builderEscrow: {
     address: '0x5b73C5498c1E3b4dbA84de0F1833c4a029d90519' as `0x${string}`,
     abi: BuilderEscrowABI,
+    chainId: 84532, // Base Sepolia
+  },
+  builderVault: {
+    address: (process.env.NEXT_PUBLIC_BUILDER_VAULT_ADDRESS ||
+      '0x2e4F4E26e3d181Ad206518EEe7E1fCE2F9f7c2e8') as `0x${string}`,
+    abi: BuilderVaultABI,
     chainId: 84532, // Base Sepolia
   },
 } as const
