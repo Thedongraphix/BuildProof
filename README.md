@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-  <h3>🔍 Smart Contract Security Verifier tool</h3>
+  <h3>🔍 Smart Contract Security Verifier tools</h3>
   <p>Instantly verify and analyze the security of any smart contract on the blockchain with our advanced verification</p>
 </div>
 
